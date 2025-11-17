@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $introduced_by = trim($_POST['introduced_by']);
     $pseudonym = trim($_POST['pseudonym']);
+    $orcid = trim($_POST['orcid']);
 
     // 2. Basic validation (very simple)
 
@@ -152,6 +153,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 '$verification_matrix', '$matrix_expiry_date')";
 
         if (mysqli_query($conn, $sql)) {
+
+            // Get the member_id that was most recently inserted (built-in MySql function)
+            $member_id = mysqli_insert_id($conn);
+
+            // If ORCID was provided, then also insert into AUTHOR table
+            if($orcid != "") {
+                $sql_author = "INSERT INTO author (member_id, orcid)
+                               VALUES ($member_id, $orcid)";
+                mysqli_query($conn, $sql_author);
+            }
+
             $_SESSION['signup_success'] = "Account created successfully!";
             header("Location: login.php");
             exit;
@@ -214,6 +226,10 @@ if ($success != "") {
 
     <label>Pseudonym (display name):
         <input type="text" name="pseudonym">
+    </label><br>
+
+     <label>ORCID (optional, for Authors):
+        <input type="text" name="orcid">
     </label><br>
 
     <label>Primary Email:
