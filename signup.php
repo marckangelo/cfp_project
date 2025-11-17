@@ -102,17 +102,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $errors[] = "Database error while checking email.";
         }
-    }
 
-    // If the user typed an introduced_by email, check if it exists in the member table
-    if ($introduced_by != "") {
+        // If the user typed an introduced_by email, check if it exists in the member table
         $sql_intro = "SELECT * FROM member WHERE primary_email = '$introduced_by'";
         $result_intro = mysqli_query($conn, $sql_intro);
-            if ($result_intro) {
-                // If no rows returned, introducer does NOT exist
-                if (mysqli_num_rows($result_intro) == 0) {
-                    $errors[] = "Introduced By email does not exist in the member list.";
-                }
+            
+        if ($result_intro) {
+            // If no rows returned, introducer does NOT exist
+            if (mysqli_num_rows($result_intro) == 0) {                    
+                $errors[] = "Introduced By email does not exist in the member list.";
+            }
         } else {                
             $errors[] = "Database error while checking Introduced By email.";
         }
