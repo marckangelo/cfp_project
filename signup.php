@@ -11,20 +11,20 @@ $success = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 1. Get values from the form
-    $name = $_POST['name'];
-    $organization = $_POST['organization'];
-    $primary_email = $_POST['primary_email'];
-    $recovery_email = $_POST['recovery_email'];
-    $password = $_POST['password'];
+    $name = trim($_POST['name']);
+    $organization = trim($_POST['organization']);
+    $primary_email = trim($_POST['primary_email']);
+    $recovery_email = trim($_POST['recovery_email']);
+    $password = trim($_POST['password']);
 
-    $street = $_POST['street'];
-    $city = $_POST['city'];
-    $state = $_POST['state'];
-    $country = $_POST['country'];
-    $postal_code = $_POST['postal_code'];
+    $street = trim($_POST['street']);
+    $city = trim($_POST['city']);
+    $state = trim($_POST['state']);
+    $country = trim($_POST['country']);
+    $postal_code = trim($_POST['postal_code']);
 
-    $introduced_by = $_POST['introduced_by'];
-    $pseudonym = $_POST['pseudonym'];
+    $introduced_by = trim($_POST['introduced_by']);
+    $pseudonym = trim($_POST['pseudonym']);
 
     // 2. Basic validation (very simple)
 
