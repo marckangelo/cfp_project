@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $result_author = mysqli_query($conn, $sql_author);
 
-                if ($result_author && mysqli_num_rows == 1) {
+                if ($result_author && mysqli_num_rows($result_author) == 1) {
                     $author_row = mysqli_fetch_assoc($result_author);
                     $_SESSION['is_author'] = true;
                     $_SESSION['orcid'] = $author_row['orcid'];
