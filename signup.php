@@ -105,13 +105,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // If the user typed an introduced_by email, check if it exists in the member table
-        $sql_intro = "SELECT * FROM member WHERE primary_email = '$introduced_by'";
+        $sql_intro = "SELECT member_id FROM member WHERE primary_email = '$introduced_by'";
         $result_intro = mysqli_query($conn, $sql_intro);
             
         if ($result_intro) {
             // If no rows returned, introducer does NOT exist
             if (mysqli_num_rows($result_intro) == 0) {                    
                 $errors[] = "Introduced By email does not exist in the member list.";
+            } else {
+                // fetch the introducer's member_id
+                $row_intro = mysqli_fetch_assoc($result_intro);
+                $introduced_by_id = (int)$row_intro['member_id'];
             }
         } else {                
             $errors[] = "Database error while checking Introduced By email.";
@@ -149,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 VALUES
                 ('$name', '$organization', '$primary_email', '$recovery_email', '$password_hash', '$join_date', '$status',
                 '$street', '$city', '$state', '$country', '$postal_code',
-                '$introduced_by', '$pseudonym',
+                '$introduced_by_id', '$pseudonym',
                 '$verification_matrix', '$matrix_expiry_date')";
 
         if (mysqli_query($conn, $sql)) {
@@ -160,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // If ORCID was provided, then also insert into AUTHOR table
             if($orcid != "") {
                 $sql_author = "INSERT INTO author (member_id, orcid)
-                               VALUES ($member_id, $orcid)";
+                               VALUES ($member_id, '$orcid')";
                 mysqli_query($conn, $sql_author);
             }
 
