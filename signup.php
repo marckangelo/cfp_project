@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Password must be at least 6 characters long.";
     }
 
-    // 3. If no validation errors so far, check if email already exists
+    // 3. If no validation errors so far, check if primary email already exists
     if (count($errors) == 0) {
 
       // Check if primary email already exists
@@ -101,6 +101,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             $errors[] = "Database error while checking email.";
+        }
+    }
+
+    // If the user typed an introduced_by email, check if it exists in the member table
+    if ($introduced_by != "") {
+        $sql_intro = "SELECT * FROM member WHERE primary_email = '$introduced_by'";
+        $result_intro = mysqli_query($conn, $sql_intro);
+            if ($result_intro) {
+                // If no rows returned, introducer does NOT exist
+                if (mysqli_num_rows($result_intro) == 0) {
+                    $errors[] = "Introduced By email does not exist in the member list.";
+                }
+        } else {                
+            $errors[] = "Database error while checking Introduced By email.";
         }
     }
 
@@ -126,20 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Expiry date: 30 days from now (can still be changed --> **30 days only FOR NOW**)
         $matrix_expiry_date = date("Y-m-d", strtotime("+30 days"));
 
-        // If the user typed an introduced_by email, check if it exists in the member table
-        if ($introduced_by != "") {
-            $sql_intro = "SELECT * FROM member WHERE primary_email = '$introduced_by'";
-            $result_intro = mysqli_query($conn, $sql_intro);
-
-            if ($result_intro) {
-                // If no rows returned, introducer does NOT exist
-                if (mysqli_num_rows($result_intro) == 0) {
-                    $errors[] = "Introduced By email does not exist in the member list.";
-                }
-            } else {
-                $errors[] = "Database error while checking Introduced By email.";
-            }
-        }
 
         $sql = "INSERT INTO member
                 (name, organization, primary_email, recovery_email, password_hash, join_date, status,
