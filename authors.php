@@ -15,9 +15,9 @@ while ($row = mysqli_fetch_assoc($result)) {
   <a href='author.php?id=" . $author['id'] . "'>" . 
     htmlspecialchars($row['name']) . 
     "</a> (ORCID: " . 
-    htmlspecialchars($row['orcid'] / ")
+    htmlspecialchars($row['orcid']) / ")
     </li>";
 }
 echo "</ul>";
 
-<?php include 'footer.php'; ?>
+include 'footer.php'; ?>
