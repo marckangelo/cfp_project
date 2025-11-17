@@ -33,6 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Name is required.";
     }
 
+    // Organization required (spec says so)
+    if ($organization == "") {
+        $errors[] = "Organization is required.";
+    }
+
+    // Basic address required (you can refine later if needed)
+    if ($street == "" || $city == "" || $country == "" || $postal_code == "") {
+        $errors[] = "Address is required (street, city, country and postal code).";
+    }
+
+
     // Primary email required
     if ($primary_email == "") {
         $errors[] = "Primary email is required.";
@@ -48,17 +59,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // }
     }
 
-    // Optional recovery email: if provided, do the same simple check
+    // Recovery email required
     // super basic email check: must contain format like alphanumeric@domain.com
-     if ($recovery_email != "") {
+    if ($recovery_email == "") {
+    $errors[] = "Recovery email is required.";
+    } else {
+        // Same simple regex as primary email check
         if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $recovery_email)) {
-            $errors[] = "Primary email is not valid. Use format like: alphanumeric@domain.com (example: user@cs.concordia.ca).";
+            $errors[] = "Recovery email is not valid. Use format like: alphanumeric@domain.com (example: user@cs.concordia.ca).";
         }
         elseif ($recovery_email == $primary_email) {
             $errors[] = "Recovery Email cannot be the same as the Primary email.";
         }
     }
-        
+
+    // Introduced By email required by spec (must be an existing member)
+    if ($introduced_by == "") {
+        $errors[] = "Introduced By email is required.";
+    } else {
+        // Use same simple regex
+        if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $introduced_by)) {
+            $errors[] = "Introduced By email is not valid. Use format like: alphanumeric@domain.com.";
+        }
+    }
 
     // Password length check (basic)
     if (strlen($password) < 6) {
