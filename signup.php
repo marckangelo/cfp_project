@@ -28,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($primary_email == "") {
         $errors[] = "Primary email is required.";
     } else {
-        // super basic email check: must contain "@"
-        if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.(com|ca)$/", $primary_email)) {
-            $errors[] = "Primary email is not valid. Use format like: name123@domain.com";
+        // super basic email check: must contain format like alphanumeric@domain.com
+        if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $primary_email)) {
+            $errors[] = "Primary email is not valid. Use format like: alphanumeric@domain.com (example: user@cs.concordia.ca).";
         }
 
         // other version of email check (checks for common domains like gmail, yahoo or outlook):
@@ -40,9 +40,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Optional recovery email: if provided, do the same simple check
-    if ($recovery_email != "" && strpos($recovery_email, "@") === false) {
-        $errors[] = "Recovery email looks invalid (missing @).";
+    // super basic email check: must contain format like alphanumeric@domain.com
+     if ($recovery_email != "") {
+        if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $recovery_email)) {
+            $errors[] = "Primary email is not valid. Use format like: alphanumeric@domain.com (example: user@cs.concordia.ca).";
+        }
+        elseif ($recovery_email == $primary_email) {
+            $errors[] = "Recovery Email cannot be the same as the Primary email.";
+        }
     }
+        
 
     // Password length check (basic)
     if (strlen($password) < 6) {
