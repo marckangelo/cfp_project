@@ -11,11 +11,20 @@ $success = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 1. Get values from the form
-    $name           = $_POST['name'];
-    $organization   = $_POST['organization'];
-    $primary_email  = $_POST['primary_email'];
+    $name = $_POST['name'];
+    $organization = $_POST['organization'];
+    $primary_email = $_POST['primary_email'];
     $recovery_email = $_POST['recovery_email'];
-    $password       = $_POST['password'];
+    $password = $_POST['password'];
+
+    $street = $_POST['street'];
+    $city = $_POST['city'];
+    $state = $_POST['state'];
+    $country = $_POST['country'];
+    $postal_code = $_POST['postal_code'];
+
+    $introduced_by = $_POST['introduced_by'];
+    $pseudonym = $_POST['pseudonym'];
 
     // 2. Basic validation (very simple)
 
@@ -91,11 +100,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $join_date = date("Y-m-d");
         $status = "active";
 
-        //
+        // Verification matrix: random 16-character string
+        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $verification_matrix = "";
+        
+        // loop where it concatenates 1 random character 16 times to create the  verification_matrix
+        for ($i = 0; $i < 16; $i++) {
+            $verification_matrix .= $chars[rand(0, strlen($chars) - 1)];
+        }
+
+        // Expiry date: 30 days from now (can still be changed --> **30 days only FOR NOW**)
+        $matrix_expiry_date = date("Y-m-d", strtotime("+30 days"));
+
         $sql = "INSERT INTO member
-                (name, organization, primary_email, recovery_email, password_hash, join_date, status)
+                (name, organization, primary_email, recovery_email, password_hash, join_date, status,
+                street, city, state, country, postal_code,
+                introduced_by, pseudonym,
+                verification_matrix, matrix_expiry_date)
                 VALUES
-                ('$name', '$organization', '$primary_email', '$recovery_email', '$password_hash', '$join_date', '$status')";
+                ('$name', '$organization', '$primary_email', '$recovery_email', '$password_hash', '$join_date', '$status',
+                '$street', '$city', '$state', '$country', '$postal_code',
+                '$introduced_by', '$pseudonym',
+                '$verification_matrix', '$matrix_expiry_date')";
 
         if (mysqli_query($conn, $sql)) {
             $_SESSION['signup_success'] = "Account created successfully!";
@@ -131,6 +157,34 @@ if ($success != "") {
 
     <label>Organization:
         <input type="text" name="organization">
+    </label><br>
+
+    <label>Street:
+        <input type="text" name="street">
+    </label><br>
+
+    <label>City:
+        <input type="text" name="city">
+    </label><br>
+
+    <label>State / Province:
+        <input type="text" name="state">
+    </label><br>
+
+    <label>Country:
+        <input type="text" name="country">
+    </label><br>
+
+    <label>Postal Code:
+        <input type="text" name="postal_code">
+    </label><br>
+
+    <label>Introduced By (Member ID or Email):
+        <input type="text" name="introduced_by">
+    </label><br>
+
+    <label>Pseudonym (display name):
+        <input type="text" name="pseudonym">
     </label><br>
 
     <label>Primary Email:
