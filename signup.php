@@ -68,21 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 3. If no validation errors so far, check if email already exists
     if (count($errors) == 0) {
 
-        // get all emails and compare in PHP
-        $sql = "SELECT primary_email FROM member";
-        $result = mysqli_query($conn, $sql);
+      // Check if primary email already exists
+        $sql_check = "SELECT * FROM member WHERE primary_email = '$primary_email'";
+        $result_check = mysqli_query($conn, $sql_check);
 
-        if ($result) {
-            $email_exists = false;
-
-            while ($row = mysqli_fetch_assoc($result)) {
-                if ($row['primary_email'] == $primary_email) {
-                    $email_exists = true;
-                    break;
-                }
-            }
-
-            if ($email_exists) {
+        if ($result_check) {
+            if (mysqli_num_rows($result_check) > 0) {
                 $errors[] = "This email is already registered.";
             }
         } else {
