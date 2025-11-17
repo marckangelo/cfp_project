@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Verification matrix: random 16-character string
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $verification_matrix = "";
-        
+
         // loop where it concatenates 1 random character 16 times to create the  verification_matrix
         for ($i = 0; $i < 16; $i++) {
             $verification_matrix .= $chars[rand(0, strlen($chars) - 1)];
@@ -179,7 +179,7 @@ if ($success != "") {
         <input type="text" name="postal_code">
     </label><br>
 
-    <label>Introduced By (Member ID or Email):
+    <label>Introduced By (Email):
         <input type="text" name="introduced_by">
     </label><br>
 
