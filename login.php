@@ -15,8 +15,8 @@ $errors = array();
 // Only run when user submits the login form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $primary_email = $_POST['primary_email'];
-    $password      = $_POST['password'];
+    $primary_email = trim($_POST['primary_email']);
+    $password      = trim($_POST['password']);
 
     // Basic validation
     if ($primary_email == "") {
