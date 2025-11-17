@@ -64,7 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['is_author'] = true;
                     $_SESSION['orcid'] = $author_row['orcid'];
                 } else {
-                    $_SESSION['orcid'] = false;
+                    $_SESSION['is_author'] = false;
+                    $_SESSION['orcid'] = null;
                 }
 
                 // Redirect to index.php (FOR NOW) **** SHOULD BE FIXED ****
