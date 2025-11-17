@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Password is required.";
     }
 
-    // If no errors so far → check login
+    // If no errors so far --> check login
     if (count($errors) == 0) {
 
         // query to get 1 user by email
@@ -45,9 +45,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Verify password (In PHP, password_verify is the only way to check the password_hash)
             if (password_verify($password, $row['password_hash'])) {
 
-                // SUCCESS → start session data
+                // SUCCESS --> start session data
                 $_SESSION['member_id'] = $row['member_id'];
                 $_SESSION['name']      = $row['name'];
+
+                $member_id = $row['member_id'];
+
+                // Is the member an Author?
+                $sql_author = "SELECT orcid 
+                               FROM author
+                               WHERE member_id = $member_id
+                               LIMIT 1";
+
+                $result_author = mysqli_query($conn, $sql_author);
+
+                if ($result_author && mysqli_num_rows == 1) {
+                    $author_row = mysqli_fetch_assoc($result_author);
+                    $_SESSION['is_author'] = true;
+                    $_SESSION['orcid'] = $author_row['orcid'];
+                } else {
+                    $_SESSION['orcid'] = false;
+                }
 
                 // Redirect to index.php (FOR NOW) **** SHOULD BE FIXED ****
                 header("Location: index.php");
