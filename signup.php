@@ -112,6 +112,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Expiry date: 30 days from now (can still be changed --> **30 days only FOR NOW**)
         $matrix_expiry_date = date("Y-m-d", strtotime("+30 days"));
 
+        // If the user typed an introduced_by email, check if it exists in the member table
+        if ($introduced_by != "") {
+            $sql_intro = "SELECT * FROM member WHERE primary_email = '$introduced_by'";
+            $result_intro = mysqli_query($conn, $sql_intro);
+
+            if ($result_intro) {
+                // If no rows returned, introducer does NOT exist
+                if (mysqli_num_rows($result_intro) == 0) {
+                    $errors[] = "Introduced By email does not exist in the member list.";
+                }
+            } else {
+                $errors[] = "Database error while checking Introduced By email.";
+            }
+        }
+
         $sql = "INSERT INTO member
                 (name, organization, primary_email, recovery_email, password_hash, join_date, status,
                 street, city, state, country, postal_code,
