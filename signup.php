@@ -179,12 +179,13 @@ if ($success != "") {
 ?>
 
 <form method="post" action="signup.php">
+
     <label>Name:
         <input type="text" name="name" required>
     </label><br>
 
     <label>Organization:
-    <input type="text" name="organization" required>
+        <input type="text" name="organization" required>
     </label><br>
 
     <label>Street:
@@ -193,6 +194,10 @@ if ($success != "") {
 
     <label>City:
         <input type="text" name="city" required>
+    </label><br>
+
+    <label>State / Province:
+        <input type="text" name="state">
     </label><br>
 
     <label>Country:
@@ -204,7 +209,15 @@ if ($success != "") {
     </label><br>
 
     <label>Introduced By (Email):
-        <input type="text" name="introduced_by" required>
+        <input type="email" name="introduced_by" required>
+    </label><br>
+
+    <label>Pseudonym (display name):
+        <input type="text" name="pseudonym">
+    </label><br>
+
+    <label>Primary Email:
+        <input type="email" name="primary_email" required>
     </label><br>
 
     <label>Recovery Email:
@@ -216,6 +229,7 @@ if ($success != "") {
     </label><br><br>
 
     <button type="submit">Create Account</button>
+
 </form>
 
 <?php include 'footer.php'; ?>
