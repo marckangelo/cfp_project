@@ -7,10 +7,16 @@ include 'header.php';
 
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
-    //DISPLAY MEMBER DETAILS
-    $sql_member_details = "SELECT * FROM member";
-
+    // DISPLAY MEMBER DETAILS
+    $sql_member_details = "SELECT * 
+                           FROM member
+                           WHERE member_id = " . $_SESSION['member_id'];
+    
+    // Run the query
     $result_member_details = mysqli_query($conn, $sql_member_details);
+
+    // Fetch the data
+    $row = mysqli_fetch_assoc($result_member_details);
 
     // Table header
     echo '
@@ -26,7 +32,6 @@ if (isset($_SESSION['member_id'])) {
     ';
     
     //Table rows
-    while ($row = mysqli_fetch_assoc($result_member_details)) {
         echo '
             <tr>
                 <td>' . htmlspecialchars($row['name']) . '</td>
@@ -40,7 +45,6 @@ if (isset($_SESSION['member_id'])) {
                 '</td>    
             </tr>
         ';
-    }
     echo '</table>';
 
 } else {
