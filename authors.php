@@ -4,7 +4,7 @@ require 'db.php';
 include 'header.php';
 
 //gets the data from the sql table AUTHOR
-$query = "SELECT id, name, orcid FROM authors";
+$query = "SELECT member_id, name, orcid FROM author";
 $result = mysqli_query($conn, $query);
 
 echo "<h2>Authors</h2>";
