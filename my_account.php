@@ -12,9 +12,9 @@ if (isset($_SESSION['member_id'])) {
 
     $result_member_details = mysqli_query($conn, $sql_member_details);
 
-    // Table header --- **** INCOMPLETE STILL ****
+    // Table header
     echo '
-    <h4> Member Details
+    <h4>Member Details</h4>
 
         <table border="1">
             <tr>
@@ -25,6 +25,7 @@ if (isset($_SESSION['member_id'])) {
             </tr>
     ';
     
+    //Table rows
     while ($row = mysqli_fetch_assoc($result_member_details)) {
         echo '
             <tr>
@@ -40,7 +41,6 @@ if (isset($_SESSION['member_id'])) {
             </tr>
         ';
     }
-
     echo '</table>';
 
 } else {
