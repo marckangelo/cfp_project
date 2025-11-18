@@ -33,6 +33,7 @@ if ($result_committee_details) {
 
             // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
             echo '
+            
                 <tr>
                     <td>' . htmlspecialchars($row['name']) . '</td>
                     <td>' . htmlspecialchars($row['purpose']) . '</td>
@@ -40,7 +41,10 @@ if ($result_committee_details) {
                     <td>' . htmlspecialchars($row['formation_date']) . '</td>
                     <td>' . htmlspecialchars($row['status']) . '</td> 
                     <td>' . htmlspecialchars($row['member_count']) . '</td> 
-                    <td><button type="submit">Delete</button></td> 
+                    <td>
+                        <form method="post" action="admin_committees.php"> 
+                            <button type="submit" name="delete_committee">Delete</button></td> 
+                        </form>
                 </tr>
             ';
         }
