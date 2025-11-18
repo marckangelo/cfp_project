@@ -12,11 +12,11 @@ echo "<p>";
 //TODO: Implement donation form (amount and allocation to charity/CFP/author);
 
 // Check if user is logged in
-if ($_SESSION['member_id'] == "") {
-    echo "You must be logged in to make a donation.";
-    include 'footer.php';
-    exit();
-}
+// if (isset($_SESSION['member_id']) == false) {
+//     echo "You must be logged in to make a donation.";
+//     include 'footer.php';
+//     exit();
+// }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //retreive from data
@@ -28,9 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currency = trim($_POST['currency']);
     $payment_method = trim($_POST['payment_method']);
     $transaction_id = trim($_POST['transaction_id']);
-    $charity_pct = trim($_POST['charity_pct']);
-    $cfp_pct = trim($_POST['cfp_pct']);
-    $author_pct = trim($_POST['author_pct']);
 
     // Basic validation
     if ($text_id == "" || !is_numeric($text_id)) {
@@ -53,9 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currency = ($currency == "") ? "NULL" : $currency;
     $payment_method = ($payment_method == "") ? "" : $payment_method;
     $transaction_id = ($transaction_id == "") ? "" : $transaction_id;
-    $charity_pct = ($charity_pct == "") ? NULL : intval($charity_pct);
-    $cfp_pct = ($cfp_pct == "") ? NULL : intval($cfp_pct);
-    $author_pct = ($author_pct == "") ? NULL : intval($author_pct);
 
     //if no errors, insert donation
     if (count($errors) == 0) {
@@ -106,18 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <label>Transaction ID:
         <input type="text" name="transaction_id">
-    </label><br>
-
-    <label>Charity Percentage:
-        <input type="text" name="charity_pct">
-    </label><br>
-
-    <label>CFP Percentage:
-        <input type="text" name="cfp_pct">
-    </label><br>
-
-    <label>Author Percentage:
-        <input type="text" name="author_pct">
     </label><br>
 
     <input type="submit" value="Donate">
