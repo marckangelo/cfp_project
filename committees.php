@@ -31,7 +31,7 @@ if ($result_committee_details) {
         // Table rows
         while ($row = mysqli_fetch_assoc($result_committee_details)) {
 
-            // *** THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
+            // *** THE JOIN BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
             echo '
                 <tr>
                     <td>' . htmlspecialchars($row['name']) . '</td>
