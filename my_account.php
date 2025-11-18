@@ -28,6 +28,8 @@ if (isset($_SESSION['member_id'])) {
                 <th>organization</th>
                 <th>Pseudonym</th>
                 <th>Address</th>
+                <th>Primary Email</th>
+                <th>Recovery Email</th>
             </tr>
     ';
     
@@ -43,6 +45,8 @@ if (isset($_SESSION['member_id'])) {
                     htmlspecialchars($row['country']) . ', ' . 
                     htmlspecialchars($row['postal_code']) . 
                 '</td>    
+                <td>' . htmlspecialchars($row['primary_email']) . '</td>
+                <td>' . htmlspecialchars($row['recovery_email']) . '</td>
             </tr>
         ';
     echo '</table>';
