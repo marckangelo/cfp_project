@@ -7,14 +7,20 @@ include 'header.php';
 
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
-    //DISPLAY MEMBER DETAILS
-    $sql_member_details = "SELECT * FROM member";
-
+    // DISPLAY MEMBER DETAILS
+    $sql_member_details = "SELECT * 
+                           FROM member
+                           WHERE member_id = " . $_SESSION['member_id'];
+    
+    // Run the query
     $result_member_details = mysqli_query($conn, $sql_member_details);
 
-    // Table header --- **** INCOMPLETE STILL ****
+    // Fetch the data
+    $row = mysqli_fetch_assoc($result_member_details);
+
+    // Table header
     echo '
-    <h4> Member Details
+    <h4>Member Details</h4>
 
         <table border="1">
             <tr>
@@ -22,10 +28,12 @@ if (isset($_SESSION['member_id'])) {
                 <th>organization</th>
                 <th>Pseudonym</th>
                 <th>Address</th>
+                <th>Primary Email</th>
+                <th>Recovery Email</th>
             </tr>
     ';
     
-    while ($row = mysqli_fetch_assoc($result_member_details)) {
+    //Table rows
         echo '
             <tr>
                 <td>' . htmlspecialchars($row['name']) . '</td>
@@ -37,10 +45,10 @@ if (isset($_SESSION['member_id'])) {
                     htmlspecialchars($row['country']) . ', ' . 
                     htmlspecialchars($row['postal_code']) . 
                 '</td>    
+                <td>' . htmlspecialchars($row['primary_email']) . '</td>
+                <td>' . htmlspecialchars($row['recovery_email']) . '</td>
             </tr>
         ';
-    }
-
     echo '</table>';
 
 } else {
