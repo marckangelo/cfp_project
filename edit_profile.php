@@ -3,6 +3,7 @@ session_start();
 require 'db.php';
 include 'header.php';
 
+// Temporary title of this page
 echo    '<h2>Edit Profile</h2>
         <p>TODO: Implement profile edit form.</p>';
 
@@ -82,63 +83,5 @@ if (isset($_SESSION['member_id'])) {
 }
 
 ?>
-
-<!-- <form method="post" action="signup.php">
-
-    <label>Name:
-        <input type="text" name="name" required>
-    </label><br>
-
-    <label>Organization:
-        <input type="text" name="organization" required>
-    </label><br>
-
-    <label>Street:
-        <input type="text" name="street" required>
-    </label><br>
-
-    <label>City:
-        <input type="text" name="city" required>
-    </label><br>
-
-    <label>State / Province:
-        <input type="text" name="state">
-    </label><br>
-
-    <label>Country:
-        <input type="text" name="country" required>
-    </label><br>
-
-    <label>Postal Code:
-        <input type="text" name="postal_code" required>
-    </label><br>
-
-    <label>Introduced By (Email):
-        <input type="email" name="introduced_by" required>
-    </label><br>
-
-    <label>Pseudonym (display name):
-        <input type="text" name="pseudonym">
-    </label><br>
-
-     <label>ORCID (optional, for Authors):
-        <input type="text" name="orcid">
-    </label><br>
-
-    <label>Primary Email:
-        <input type="email" name="primary_email" required>
-    </label><br>
-
-    <label>Recovery Email:
-        <input type="email" name="recovery_email" required>
-    </label><br>
-
-    <label>Password:
-        <input type="password" name="password" required>
-    </label><br><br>
-
-    <button type="submit">Create Account</button>
-
-</form> -->
 
 <?php include 'footer.php'; ?>
