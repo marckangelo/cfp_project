@@ -6,7 +6,7 @@ include 'header.php';
 
 echo "<h2>Committees</h2>";
 //retreiving data
-$query = "SELECT id, name, description FROM committee";
+$query = "SELECT committee_id, name, description FROM committee";
 $commity = mysqli_query($conn, $query);
 
 //checks if there are any committees present 
