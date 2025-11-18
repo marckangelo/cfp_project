@@ -11,6 +11,13 @@ echo "<h2>Donate</h2>";
 echo "<p>";
 //TODO: Implement donation form (amount and allocation to charity/CFP/author);
 
+// Check if user is logged in
+if ($_SESSION['member_id'] == "") {
+    echo "You must be logged in to make a donation.";
+    include 'footer.php';
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //retreive from data
     $member_id = $_SESSION['member_id'];
@@ -26,19 +33,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $author_pct = trim($_POST['author_pct']);
 
     // Basic validation
+    if ($text_id == "" || !is_numeric($text_id)) {
+        $errors[] = "Text ID must be a number if provided.";
+    }
+
+    if ($charity_id == "" || !is_numeric($charity_id)) {
+        $errors[] = "Charity ID must be a number if provided.";
+    }
+
     if ($amount == "" || !is_numeric($amount) || $amount <= 0) {
         $errors[] = "An amount is required and must be a positive number.";
     }
 
-    $text_id = ($text_id == "") ? "NULL" : $text_id;
-    $charity_id = ($charity_id == "") ? "NULL" : $charity_id;
-    $date = ($date == "") ? date('Y-m-d') : $date;
-    $currency = ($currency == "") ? "CAD" : $currency;
-    $payment_method = ($payment_method == "") ? "unknown" : $payment_method;
-    $transaction_id = ($transaction_id == "") ? "unknown" : $transaction_id;
-    $charity_pct = ($charity_pct == "") ? 0 : $charity_pct;
-    $cfp_pct = ($cfp_pct == "") ? 0 : $cfp_pct;
-    $author_pct = ($author_pct == "") ? 0 : $author_pct;
+    // Set date to today if not provided
+    if ($date  == "") {
+        $date = date('Y-m-d');
+    }
+
+    $currency = ($currency == "") ? "NULL" : $currency;
+    $payment_method = ($payment_method == "") ? "" : $payment_method;
+    $transaction_id = ($transaction_id == "") ? "" : $transaction_id;
+    $charity_pct = ($charity_pct == "") ? NULL : intval($charity_pct);
+    $cfp_pct = ($cfp_pct == "") ? NULL : intval($cfp_pct);
+    $author_pct = ($author_pct == "") ? NULL : intval($author_pct);
 
     //if no errors, insert donation
     if (count($errors) == 0) {
@@ -63,23 +80,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <form method="post" action="donate.php">
 
-    <label>Text ID (optional):
-        <input type="text" name="text_id">
+    <label>Text ID (required):
+        <input type="text" name="text_id" required>
     </label><br>
 
-    <label>Charity ID (optional):
-        <input type="text" name="charity_id">
+    <label>Charity ID (required):
+        <input type="text" name="charity_id" required>
     </label><br>
 
-    <label>Amount:
+    <label>Amount (required):
         <input type="text" name="amount" required>
     </label><br>
 
-    <label>Date (YYYY-MM-DD, optional):
+    <label>Date (YYYY-MM-DD, default today):
         <input type="text" name="date">
     </label><br>
 
-    <label>Currency (default CAD):
+    <label>Currency:
         <input type="text" name="currency">
     </label><br>
 
