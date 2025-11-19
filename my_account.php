@@ -30,6 +30,7 @@ if (isset($_SESSION['member_id'])) {
                 <th>Address</th>
                 <th>Primary Email</th>
                 <th>Recovery Email</th>
+                <th>Download Limit</th>
             </tr>
     ';
     
@@ -47,6 +48,7 @@ if (isset($_SESSION['member_id'])) {
                 '</td>    
                 <td>' . htmlspecialchars($row['primary_email']) . '</td>
                 <td>' . htmlspecialchars($row['recovery_email']) . '</td>
+                <td>' . htmlspecialchars($row['download_limit']) . '</td>
             </tr>
         ';
     echo '</table>';
