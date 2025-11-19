@@ -36,10 +36,10 @@ if (isset($_SESSION['member_id'])) {
     $download_limit_row = mysqli_fetch_assoc($result_download_limit);
     $download_limit = $download_limit_row['download_limit'];
 
-    if (downlad_limit > 0) {
-        // Downloading the text item
+    if ($download_limit > 0) {
+
         $sql_download = "INSERT INTO download (member_id, text_id, download_date, ip_address, user_agent, country)
-                        VALUES ($member_id, $text_id, date('Y-m-d'), '$ip_address', '$user_agent', '$country')";
+                        VALUES ($member_id, $text_id, NOW(), '$ip_address', '$user_agent', '$country')";
 
         $result_download = mysqli_query($conn, $sql_download);
     } else {
@@ -48,6 +48,7 @@ if (isset($_SESSION['member_id'])) {
 
         // Head back to list of items/texts and display error message
         header("Location: my_account.php");
+        exit;
     }
 
     // *** MUST UPDATE THE DOWNLOAD LIMIT HERE (DECREMENT BY 1 FOR EACH DOWNLOAD) ***
@@ -58,15 +59,18 @@ if (isset($_SESSION['member_id'])) {
 
         // UPDATE member's download_limit be decrementing by 1
         $sql_update_download_limit = "UPDATE member
-                                  SET download_limit = download_limi - 1
+                                  SET download_limit = download_limit - 1
                                   WHERE member_id = $member_id";
+        
         $result_update_download_limit = mysqli_query($conn, $sql_update_download_limit);
     }
 
     // Head to the my_account.php page after successful download to see list of downloads
     header("Location: my_account.php");
+    exit;
 
 } else {
     header("Location: login.php");
+    exit;
 }
 ?>
