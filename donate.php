@@ -72,37 +72,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } ?>
 
-<form method="post" action="donate.php">
+<h2>Donate for: <?php echo htmlspecialchars($text['title']); ?></h2>
 
-    <label>Text ID (required):
-        <input type="text" name="text_id" required>
-    </label><br>
+<form action="donate_process.php" method="post">
+    <!-- hidden context -->
+    <input type="hidden" name="text_id" value="<?php echo $text_id; ?>">
 
-    <label>Charity ID (required):
-        <input type="text" name="charity_id" required>
-    </label><br>
+    <label>Amount ($):</label>
+    <input type="number" name="amount" min="1" step="0.01" required><br>
 
-    <label>Amount (required):
-        <input type="text" name="amount" required>
-    </label><br>
+    <label>Currency ($):</label>
+    <select name="payment_method">
+        <option value="CAD">CAD (simulated)</option>
+        <option value="USD">USD (simulated)</option>
+        <option value="EUR">EUR (simulated)</option>
+    </select><br>
 
-    <label>Date (YYYY-MM-DD, default today):
-        <input type="text" name="date">
-    </label><br>
+    <label>Charity:</label>
+    <select name="charity_id" required>
+        <?php foreach ($charities as $c): ?>
+            <option value="<?php echo $c['charity_id']; ?>">
+                <?php echo htmlspecialchars($c['name']); ?>
+            </option>
+        <?php endforeach; ?>
+    </select><br>
 
-    <label>Currency:
-        <input type="text" name="currency">
-    </label><br>
+    <label>Charity % (min 60):</label>
+    <input type="number" name="charity_pct" min="60" max="100" required><br>
 
-    <label>Payment Method:
-        <input type="text" name="payment_method">
-    </label><br>
+    <label>CFP %:</label>
+    <input type="number" name="cfp_pct" min="0" max="40" required>
 
-    <label>Transaction ID:
-        <input type="text" name="transaction_id">
-    </label><br>
+    <label>Author %:</label>
+    <input type="number" name="author_pct" min="0" max="40" required><br>
 
-    <input type="submit" value="Donate">
+    <!-- optional: payment method, currency -->
+    <label>Payment method:</label>
+    <select name="payment_method">
+        <option value="card">Credit Card (simulated)</option>
+        <option value="paypal">PayPal (simulated)</option>
+    </select><br>
+
+    <button type="submit">Donate</button>
+</form>
 
 <?php
 include 'footer.php';
