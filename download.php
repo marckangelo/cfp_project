@@ -36,6 +36,12 @@ if (isset($_SESSION['member_id'])) {
     $download_limit_row = mysqli_fetch_assoc($result_download_limit);
     $download_limit = $download_limit_row['download_limit'];
 
+
+    /*
+    
+    ****        MUST ADD in if statement below:       ****
+        Time restriction of non-donors --> Max 1 text download per week
+    */
     if ($download_limit > 0) {
 
         $sql_download = "INSERT INTO download (member_id, text_id, download_date, ip_address, user_agent, country)
