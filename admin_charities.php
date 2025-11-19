@@ -16,7 +16,7 @@ if (isset($_SESSION['member_id'])) {
 
     // Table header
     echo '
-    <h4>Member Details</h4>
+    <h4>Charity Details</h4>
 
         <table border="1">
             <tr>
