@@ -12,33 +12,36 @@ echo "<h2>Donate</h2>";
 echo "<p>";
 
 // Check data
-if (!isset($_GET['text_id'])) {
+if (!isset($_POST['text_id'])) {
     $errors[] = "text_id is missing from GET";
+    echo "$errors[0]";
 }
 
 // DISPLAY TEXT DETAILS (the one receiving the donation)
-$text_id = (int) $_GET['text_id'];
+$text_id = (int) $_POST['text_id'];
 
 // Build SQL
 $sql_text_title = "SELECT title 
                    FROM text
                    WHERE text_id = $text_id";
 
-$sql_charity = "SELECT name 
-                FROM charity";
+$sql_charity = "SELECT charity_id, name 
+                FROM charity
+                WHERE status = 'active'";
 
 // Run query
 $result_text_title = mysqli_query($conn, $sql_text_title);
 
-$result_charity = mysqli_query($conn, $sql_charity);
+$result_charities = mysqli_query($conn, $sql_charity);
+
+
+while($c = mysqli_fetch_assoc($result_charities)) {
+    $charities[] = $c;
+};
 
 // Fetch the data
 if ($result_text_title) {
     $row = mysqli_fetch_assoc($result_text_title);
-}
-
-if ($result_charity) {
-    $row_charity = mysqli_fetch_assoc($result_charity);
 }
 
 echo "<h2>Donate for: " . $row['title'] . "</h2>";
@@ -52,7 +55,7 @@ echo "<h2>Donate for: " . $row['title'] . "</h2>";
     <input type="number" name="amount" min="1" step="0.01" required><br>
 
     <label>Currency ($):</label>
-    <select name="payment_method">
+    <select name="currency">
         <option value="CAD">CAD (simulated)</option>
         <option value="USD">USD (simulated)</option>
         <option value="EUR">EUR (simulated)</option>
