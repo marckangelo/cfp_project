@@ -51,6 +51,8 @@ if (isset($_SESSION['member_id'])) {
             </tr>';
     }
     echo '</table>';
+} else {
+    header("Location: login.php");
 }
 
 ?>

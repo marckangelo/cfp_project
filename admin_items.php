@@ -11,55 +11,58 @@ $sql_text_details = "SELECT * FROM text";
 
 $result_text_details = mysqli_query($conn, $sql_text_details);
 
-if ($result_text_details) {
-    if (mysqli_num_rows($result_text_details) > 0) {
+if(isset($_SESSION['member_id'])) {
+    if ($result_text_details) {
+        if (mysqli_num_rows($result_text_details) > 0) {
 
-        // Table header
-        echo '
-        <h4>List of Items (Texts) </h4>
-
-            <table border="1">
-                <tr>
-                    <th>Title</th>
-                    <th>Abstract</th>
-                    <th>Topic</th>
-                    <th>Version</th>
-                    <th>Upload Date</th>
-                    <th>Status</th>
-                    <th>Download Count</th>
-                    <th>Total Donations ($)</th>
-                    <th>Average Rating</th>
-                    <th>Action</th>
-                </tr>
-        ';
-
-        // Table rows
-        while ($row = mysqli_fetch_assoc($result_text_details)) {
-
-            // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
+            // Table header
             echo '
-            
-                <tr>
-                    <td>' . htmlspecialchars($row['title']) . '</td>
-                    <td>' . htmlspecialchars($row['abstract']) . '</td>
-                    <td>' . htmlspecialchars($row['topic']) . '</td>
-                    <td>' . htmlspecialchars($row['version']) . '</td>
-                    <td>' . htmlspecialchars($row['upload_date']) . '</td>
-                    <td>' . htmlspecialchars($row['status']) . '</td> 
-                    <td>' . htmlspecialchars($row['download_count']) . '</td> 
-                    <td>' . htmlspecialchars($row['total_donations']) . '</td>
-                    <td>' . htmlspecialchars($row['avg_rating']) . '</td>
-                    <td>
-                        <form method="post" action="admin_committees.php"> 
-                            <button type="submit" name="delete_committee">Change Status</button></td> 
-                        </form>
-                </tr>
-            ';
-        }
-        echo '</table>'; // List of Committees table closer tag
-    }
-}
+            <h4>List of Items (Texts) </h4>
 
+                <table border="1">
+                    <tr>
+                        <th>Title</th>
+                        <th>Abstract</th>
+                        <th>Topic</th>
+                        <th>Version</th>
+                        <th>Upload Date</th>
+                        <th>Status</th>
+                        <th>Download Count</th>
+                        <th>Total Donations ($)</th>
+                        <th>Average Rating</th>
+                        <th>Action</th>
+                    </tr>
+            ';
+
+            // Table rows
+            while ($row = mysqli_fetch_assoc($result_text_details)) {
+
+                // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
+                echo '
+                
+                    <tr>
+                        <td>' . htmlspecialchars($row['title']) . '</td>
+                        <td>' . htmlspecialchars($row['abstract']) . '</td>
+                        <td>' . htmlspecialchars($row['topic']) . '</td>
+                        <td>' . htmlspecialchars($row['version']) . '</td>
+                        <td>' . htmlspecialchars($row['upload_date']) . '</td>
+                        <td>' . htmlspecialchars($row['status']) . '</td> 
+                        <td>' . htmlspecialchars($row['download_count']) . '</td> 
+                        <td>' . htmlspecialchars($row['total_donations']) . '</td>
+                        <td>' . htmlspecialchars($row['avg_rating']) . '</td>
+                        <td>
+                            <form method="post" action="admin_committees.php"> 
+                                <button type="submit" name="delete_committee">Change Status</button></td> 
+                            </form>
+                    </tr>
+                ';
+            }
+            echo '</table>'; // List of Committees table closer tag
+        }
+    }
+} else {
+    header("Location: login.php");
+}
 ?>
 <h2>Admin - Items</h2>
 <p>TODO: List and manage items.</p>
