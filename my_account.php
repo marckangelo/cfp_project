@@ -51,6 +51,13 @@ if (isset($_SESSION['member_id'])) {
         ';
     echo '</table>';
 
+    echo'
+        <form method="post" action="edit_profile.php">
+            <input type="hidden" name="member_id" value="'. $row['member_id'] . '">
+            <button type="submit" name="edit_profile">Edit</button>
+        </form>
+    ';
+
 } else {
     header("Location: login.php");
 }
