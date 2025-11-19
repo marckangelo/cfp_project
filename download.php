@@ -18,10 +18,20 @@ if (isset($_SESSION['member_id'])) {
     $country_row = mysqli_fetch_assoc($result_country);
     $country = $country_row['country'];
 
+    // *** MUST CHECK FOR DOWNLOAD LIMIT HERE BEFORE INSERT ***
+    /*
+    Logic: If download limit > 0 --> ok to download
+           if download limit = 0 --> stop here, send SESSION data saying download limit reached and redirect to item.php or my_account.php
+
+           (Done by fetching info using SQL queries)
+    */
+
     $sql_download = "INSERT INTO download (member_id, text_id, download_date, ip_address, user_agent, country)
                     VALUES ($member_id, $text_id, NOW(), '$ip_address', '$user_agent', '$country')";
 
     $result_download = mysqli_query($conn, $sql_download);
+
+    // *** MUST UPDATE THE DOWNLOAD LIMIT HERE (DECREMENT BY 1 FOR EACH DOWNLOAD) ***
 
     if ($result_download) {
         $_SESSION['download_success'] = "Text Successfully Downloaded!";
