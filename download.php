@@ -55,6 +55,12 @@ if (isset($_SESSION['member_id'])) {
     // If INSERT to download table was successful, save success message into SESSION
     if ($result_download) {
         $_SESSION['download_success'] = "Text Successfully Downloaded!";
+
+        // UPDATE member's download_limit be decrementing by 1
+        $sql_update_download_limit = "UPDATE member
+                                  SET download_limit = download_limi - 1
+                                  WHERE member_id = $member_id";
+        $result_update_download_limit = mysqli_query($conn, $sql_update_download_limit);
     }
 
     // Head to the my_account.php page after successful download to see list of downloads
