@@ -3,12 +3,31 @@ session_start();
 require 'db.php';
 include 'header.php';
 
+$errors = array();
+$success = "";
+
 // TODO: On POST, validate allocation and insert donation
 
 echo "<h2>Donate</h2>";
 echo "<p>";
 
-echo "<h2>Donate for: <?php echo htmlspecialchars(" . $text['title'] . "); ?></h2>";
+// Check data
+if (!isset($_GET['text_id'])) {
+    $errors[] = "text_id is missing from GET";
+}
+
+// DISPLAY TEXT DETAILS (the one receiving the donation)
+    $sql_text_details = "SELECT title 
+                         FROM text
+                         WHERE text_id = " . (int) $_GET['text_id'];
+    
+    // Run the query
+    $result_text_title = mysqli_query($conn, $sql_text_details);
+
+    // Fetch the data
+    $row = mysqli_fetch_assoc($result_text_title);
+
+echo "<h2>Donate for: " . $row['title'] . "</h2>";
 ?>
 
 <form action="donate_process.php" method="post">
