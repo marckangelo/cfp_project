@@ -17,15 +17,20 @@ if (!isset($_GET['text_id'])) {
 }
 
 // DISPLAY TEXT DETAILS (the one receiving the donation)
-    $sql_text_details = "SELECT title 
-                         FROM text
-                         WHERE text_id = " . (int) $_GET['text_id'];
-    
-    // Run the query
-    $result_text_title = mysqli_query($conn, $sql_text_details);
+$text_id = (int) $_GET['text_id'];
 
-    // Fetch the data
+// Build SQL
+$sql_text_title = "SELECT title 
+                   FROM text
+                   WHERE text_id = $text_id";
+
+// Run query
+$result_text_title = mysqli_query($conn, $sql_text_title);
+
+// Fetch the data
+if ($result_text_title) {
     $row = mysqli_fetch_assoc($result_text_title);
+}
 
 echo "<h2>Donate for: " . $row['title'] . "</h2>";
 ?>
