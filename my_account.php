@@ -5,6 +5,18 @@ include 'header.php';
 
 // TODO: Ensure user is logged in, then load member profile, download history, donation history
 
+// Show download success message, if any
+if(isset($_SESSION['download_success'])) {
+    echo '<div style="color:green;">' . $_SESSION['download_success'] . '</div>';
+    unset($_SESSION['download_success']);
+}
+
+// Show download error message, if any
+if(isset($_SESSION['download_failure'])) {
+    echo '<div style="color:red;">' . $_SESSION['download_failure'] . '</div>';
+    unset($_SESSION['download_failure']);
+}
+
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
     // ================ DISPLAY MEMBER DETAILS =================

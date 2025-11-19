@@ -5,7 +5,7 @@ include 'header.php';
 
 // TODO: Get item_id from GET and load item details, comments, and download button
 
-//LIST OF ITEMS (TEXTS)
+// LIST OF ITEMS (TEXTS)
 
 $sql_text_details = "SELECT * FROM text";
 
