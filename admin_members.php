@@ -5,7 +5,7 @@ include 'header.php';
 
 // TODO: Admin-only member management (view, change status, etc.)
 
-// Checking if signed in
+// Checking if signed in as member **** SHOULD BE CHECKING IF SIGNED IN AS ADMIN ****
 if (isset($_SESSION['member_id'])) {
     // DISPLAY MEMBER DETAILS
     $sql_member_details = "SELECT * 
