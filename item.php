@@ -51,9 +51,11 @@ if(isset($_SESSION['member_id'])) {
                         <td>' . htmlspecialchars($row['total_donations']) . '</td>
                         <td>' . htmlspecialchars($row['avg_rating']) . '</td>
                         <td>
-                            <form method="post" action="admin_committees.php"> 
-                                <button type="submit" name="download">Download</button></td> 
+                            <form method="post" action="download.php">
+                                <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
+                                <button type="submit" name="download">Download</button>
                             </form>
+                        </td> 
                     </tr>
                 ';
             }
