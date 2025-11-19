@@ -55,6 +55,10 @@ if(isset($_SESSION['member_id'])) {
                                 <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
                                 <button type="submit" name="download">Download</button>
                             </form>
+                            <form method="post" action="donate.php">
+                                <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
+                                <button type="submit" name="donate">Donate</button>
+                            </form>
                         </td> 
                     </tr>
                 ';
