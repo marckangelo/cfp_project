@@ -7,9 +7,9 @@ include 'header.php';
 
 echo "<h2>Donate</h2>";
 echo "<p>";
-?>
 
-<h2>Donate for: <?php echo htmlspecialchars($text['title']); ?></h2>
+echo "<h2>Donate for: <?php echo htmlspecialchars(" . $text['title'] . "); ?></h2>";
+?>
 
 <form action="donate_process.php" method="post">
     <!-- hidden context -->
