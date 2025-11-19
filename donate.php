@@ -24,12 +24,21 @@ $sql_text_title = "SELECT title
                    FROM text
                    WHERE text_id = $text_id";
 
+$sql_charity = "SELECT name 
+                FROM charity";
+
 // Run query
 $result_text_title = mysqli_query($conn, $sql_text_title);
+
+$result_charity = mysqli_query($conn, $sql_charity);
 
 // Fetch the data
 if ($result_text_title) {
     $row = mysqli_fetch_assoc($result_text_title);
+}
+
+if ($result_charity) {
+    $row_charity = mysqli_fetch_assoc($result_charity);
 }
 
 echo "<h2>Donate for: " . $row['title'] . "</h2>";
