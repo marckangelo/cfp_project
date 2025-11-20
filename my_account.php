@@ -113,6 +113,7 @@ if (isset($_SESSION['member_id'])) {
                 <th>Version</th>
                 <th>Status</th>
                 <th>Author</th>
+                <th>Action</th>
             </tr>
     ';
     
@@ -126,7 +127,12 @@ if (isset($_SESSION['member_id'])) {
                 <td>' . htmlspecialchars($row_download['version']) . '</td>
                 <td>' . htmlspecialchars($row_download['status']) . '</td>
                 <td>' . htmlspecialchars($row_download['author_name']) . '</td>
-                <td><button>Change Status<button></th>
+                <td>
+                    <form method="post" action="comment.php">
+                        <input type="hidden" name="member_id" value="'. $row['member_id'] . '">
+                        <button type="submit" name="comment">Add a Comment</button>
+                    </form>
+                </td>
             </tr>';
     }
     echo '</table>';

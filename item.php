@@ -30,6 +30,7 @@ if(isset($_SESSION['member_id'])) {
                         <th>Download Count</th>
                         <th>Total Donations ($)</th>
                         <th>Average Rating</th>
+                        <th>Comments</th>
                         <th>Action</th>
                     </tr>
             ';
@@ -50,6 +51,14 @@ if(isset($_SESSION['member_id'])) {
                         <td>' . htmlspecialchars($row['download_count']) . '</td> 
                         <td>' . htmlspecialchars($row['total_donations']) . '</td>
                         <td>' . htmlspecialchars($row['avg_rating']) . '</td>
+                        <td>
+                            <p>** TO BE IMPLEMENTED **</p>
+
+                            <p>Format:</p>
+                            
+                            <div> Comment: <...> </div>
+                            <p> Posted by [username]</p>
+                        </td>
                         <td>
                             <form method="post" action="download.php">
                                 <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
