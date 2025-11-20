@@ -128,7 +128,7 @@ if (isset($_SESSION['member_id'])) {
                 <td>' . htmlspecialchars($row_download['status']) . '</td>
                 <td>' . htmlspecialchars($row_download['author_name']) . '</td>
                 <td>
-                    <form method="post" action="comment.php">
+                    <form method="post" action="comment_add.php">
                         <input type="hidden" name="member_id" value="'. $row['member_id'] . '">
                         <button type="submit" name="comment">Add a Comment</button>
                     </form>
