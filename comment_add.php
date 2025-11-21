@@ -38,9 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Comment text cannot be empty.";
     }
 
-    if ($rating < 1 || $rating > 5) {
-        $errors[] = "Rating must be between 1 and 5.";
-    }
     // Check if member has downloaded the text before allowing comment
     $has_downloaded = false;
     foreach ($downloads_by_member as $download) {
@@ -73,3 +70,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 ?>
+
+<form action="comment_add.php method="post">
+    <label for="comment_text">Select Text:</label><br>
+    <select name="text_id" id="text_id" required>
+        <?php
+        $texts_sql = "SELECT text_id, title FROM text";
+        $texts_result = mysqli_query($conn, $texts_sql);
+        if ($texts_result) {
+            while ($text = mysqli_fetch_assoc($texts_result)) {
+                echo "<option value=\"" . $text['text_id'] . "\">" . htmlspecialchars($text['title']) . "</option>";
+            }
+        }
+        ?>
+    </select><br>
+
+    <?php if (isset($_GET['ReplyTo'])): ?>
+        <input type="hidden" name="parent_comment_id" value="<?php echo intval($_GET['ReplyTo']); ?>">
+    <?php endif; ?>
+
+    <label for="comment_text">Comment:</label><br>
+    <textarea name="comment_text" id="comment_text" rows="4" cols="50" required></textarea><br>
+
+    <label for="rating">Rating (1-5):</label>
+    <input type="number" name="rating" id="rating" required>
+    <option value="1 - Poor">1</option>
+    <option value="2 - Adequate">2</option>
+    <option value="3 - Decent">3</option>
+    <option value="4 - Good">4</option>
+    <option value="5 - Excellent">5</option>
+    </select><br>
+
+    <label for="is_public">Make comment public:</label>
+    <input type="checkbox" name="is_public" id="is_public" checked><br>
+
+    <input type="submit" value="Add Comment">
+</form>
+    
