@@ -7,6 +7,12 @@ include 'header.php';
 
 // LIST OF ITEMS (TEXTS)
 
+// If any successful uploads, show message
+if (isset($_SESSION['successful_upload'])) {
+    echo '<div style="color: green;">' . $_SESSION['successful_upload'] . '</div>';
+    unset($_SESSION['successful_upload']);
+}
+
 $sql_text_details = "SELECT * FROM text";
 
 $result_text_details = mysqli_query($conn, $sql_text_details);
