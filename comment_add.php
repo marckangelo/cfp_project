@@ -23,9 +23,9 @@ if ($downloads_by_member_result) {
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $text_id = isset($_POST['text_id']);
-    $content = trim($_POST['comment_text']);
+    $content = isset($_POST['comment_text']);
     $date = date('Y-m-d');
-    $rating = intval($_POST['rating']);
+    $rating = isset($_POST['rating']);
     $is_public = isset($_POST['is_public']) ? 1 : 0;
 
     if (isset($_POST['parent_comment_id'])) {
