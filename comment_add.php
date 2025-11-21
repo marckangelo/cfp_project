@@ -22,11 +22,16 @@ if ($downloads_by_member_result) {
 }
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $text_id = $_POST['text_id'];
+    $text_id = isset($_POST['text_id']);
     $content = trim($_POST['comment_text']);
     $date = date('Y-m-d');
     $rating = intval($_POST['rating']);
     $is_public = isset($_POST['is_public']) ? 1 : 0;
+
+    if (isset($_POST['parent_comment_id'])) {
+        $parent_comment_id = intval($_POST['parent_comment_id']);
+    }
+
 
     // Validate comment text
     if (empty($content)) {
@@ -52,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $comment_added = htmlspecialchars($content);
 
-        $sql_insert_comment = "INSERT INTO comment (member_id, text_id, content, date, rating, is_public)
-                               VALUES ($member_id, $text_id, '$comment_added', '$date', $rating, $is_public)";
+        $sql_insert_comment = "INSERT INTO comment (member_id, text_id, parent_comment_id content, date, rating, is_public)
+                               VALUES ($member_id, $text_id, $parent_comment_id, '$comment_added', '$date', $rating, $is_public)";
                         
         $result_insert_comment = mysqli_query($conn, $sql_insert_comment);
         // Redirect back to item page after successful comment
