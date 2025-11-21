@@ -32,6 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $parent_comment_id = intval($_POST['parent_comment_id']);
     }
 
+    if ($rating < 1 || $rating > 5) {
+        $errors[] = "Rating must be between 1 and 5.";
+    }
 
     // Validate comment text
     if (empty($content)) {
@@ -92,14 +95,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label for="comment_text">Comment:</label><br>
     <textarea name="comment_text" id="comment_text" rows="4" cols="50" required></textarea><br>
 
-    <label for="rating">Rating (1-5):</label>
-    <input type="number" name="rating" id="rating" required>
-    <option value="1 - Poor">1</option>
-    <option value="2 - Adequate">2</option>
-    <option value="3 - Decent">3</option>
-    <option value="4 - Good">4</option>
-    <option value="5 - Excellent">5</option>
-    </select><br>
+    <label for="rating">Rating (1-5):</label><br>
+    <label>
+        <input type="radio" name="rating" value="1" required>1 - Poor
+    </label><br>
+
+    <label>
+        <input type="radio" name="rating" value="2">2 - Adequate
+    </label><br>
+
+    <label>
+        <input type="radio" name="rating" value="3">3 - Decent
+    </label><br>
+
+    <label>
+        <input type="radio" name="rating" value="4">4 - Good
+    </label><br>
+
+    <label>
+        <input type="radio" name="rating" value="5">5 - Excellent
+    </label><br><br>
 
     <label for="is_public">Make comment public:</label>
     <input type="checkbox" name="is_public" id="is_public" checked><br>
