@@ -2,13 +2,12 @@
 session_start();
 require 'db.php';
 
-// TODO: Insert a new comment for an item by the logged-in member
 
 if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
-$member_id = $_SESSION['member_id'];
+$member_id = (int) $_SESSION['member_id'];
 $errors = [];
 
 $downloads_by_member = [];
@@ -22,14 +21,18 @@ if ($downloads_by_member_result) {
 }
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $text_id = isset($_POST['text_id']);
-    $content = isset($_POST['comment_text']);
+    $text_id = isset($_POST['text_id']) ? intval($_POST['text_id']) : 0;
+    $content = isset($_POST['comment_text']) ? $_POST['comment_text'] : '';
     $date = date('Y-m-d');
-    $rating = isset($_POST['rating']);
+    $rating = isset($_POST['rating']) ? intval($_POST['rating']) : 0;
     $is_public = isset($_POST['is_public']) ? 1 : 0;
 
-    if (isset($_POST['parent_comment_id'])) {
+    if (isset($_POST['parent_comment_id']) && !empty($_POST['parent_comment_id'])) {
         $parent_comment_id = intval($_POST['parent_comment_id']);
+        $parent_comment_id_value = $parent_comment_id;
+    }
+    else {
+        $parent_comment_id_value = 'NULL';
     }
 
     if ($rating < 1 || $rating > 5) {
@@ -55,10 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     // If no errors, insert the comment
     if (empty($errors)) {
-        $comment_added = htmlspecialchars($content);
+        $comment_added = addslashes($content);
 
-        $sql_insert_comment = "INSERT INTO comment (member_id, text_id, parent_comment_id content, date, rating, is_public)
-                               VALUES ($member_id, $text_id, $parent_comment_id, '$comment_added', '$date', $rating, $is_public)";
+        $sql_insert_comment = "INSERT INTO comment (member_id, text_id, parent_comment_id, content, date, rating, is_public)
+                               VALUES ($member_id, $text_id, $parent_comment_id_value, '$comment_added', '$date', $rating, $is_public)";
                         
         $result_insert_comment = mysqli_query($conn, $sql_insert_comment);
         // Redirect back to item page after successful comment
@@ -74,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<form action="comment_add.php method="post">
+<form action="comment_add.php" method="post">
     <label for="comment_text">Select Text:</label><br>
     <select name="text_id" id="text_id" required>
         <?php
