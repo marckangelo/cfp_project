@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result_insert_comment = mysqli_query($conn, $sql_insert_comment);
         // Redirect back to item page after successful comment
         if ($result_insert_comment) {
-            header("Location: item.php?text_id=$text_id");
+            header("Location: my_account.php");
             exit;
         // display error if insertion fails
         } else {
