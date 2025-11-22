@@ -11,20 +11,16 @@ if (isset($_SESSION['member_id'])) {
     $term_end_date = date('Y-m-d', strtotime('+1 year'));
 
     // Insert the join request into the committee_members table
-    $sql_request = "INSERT INTO committee_members 
-                    (member_id, 
-                    committee_id, 
-                    join_date, 
-                    role, 
-                    status, 
-                    term_end_date)
-             VALUES (
+   $sql_request = "INSERT INTO committee_membership 
+                (member_id, committee_id, join_date, role, status, term_end_date)
+                VALUES (
                     $member_id,
                     $committee_id,
                     '$join_date',
                     '$role',
                     '$status',
-                    '$term_end_date')";
+                    '$term_end_date'
+                )";
     
     $result_request = mysqli_query($conn, $sql_request);
     // Redirect based on success or failure
