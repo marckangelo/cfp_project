@@ -74,6 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Diplay errors if any (in red)
+    if (!empty($errors)) {
+        echo 
+            '<ul>';
+                foreach ($errors as $e) {
+                    echo '<li><div style="color:red;">' . $e . '</div></li>';
+                }
+            echo '</ul>';
+        echo '<br>';
+    }
 }
 ?>
 

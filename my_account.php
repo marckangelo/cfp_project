@@ -17,6 +17,12 @@ if(isset($_SESSION['download_failure'])) {
     unset($_SESSION['download_failure']);
 }
 
+// Show comment error message, if any
+if(isset($_SESSION['download_failure'])) {
+    echo '<div style="color:red;">' . $_SESSION['download_failure'] . '</div>';
+    unset($_SESSION['download_failure']);
+}
+
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
     // ================ DISPLAY MEMBER DETAILS =================
@@ -119,21 +125,20 @@ if (isset($_SESSION['member_id'])) {
     
     //Table rows (Fetching each row from member detail using while loop)
     while ($row_download = mysqli_fetch_assoc($result_download_details)) {
-        echo '
-            <tr>
-                <td>' . htmlspecialchars($row_download['download_date']) . '</td>
-                <td>' . htmlspecialchars($row_download['title']) . '</td>
-                <td>' . htmlspecialchars($row_download['topic']) . '</td>
-                <td>' . htmlspecialchars($row_download['version']) . '</td>
-                <td>' . htmlspecialchars($row_download['status']) . '</td>
-                <td>' . htmlspecialchars($row_download['author_name']) . '</td>
-                <td>
-                    <form method="post" action="comment_add.php">
-                        <input type="hidden" name="member_id" value="'. $row['member_id'] . '">
-                        <button type="submit" name="comment">Add a Comment</button>
-                    </form>
-                </td>
-            </tr>';
+    echo '
+        <tr>
+            <td>' . htmlspecialchars($row_download['download_date']) . '</td>
+            <td>' . htmlspecialchars($row_download['title']) . '</td>
+            <td>' . htmlspecialchars($row_download['topic']) . '</td>
+            <td>' . htmlspecialchars($row_download['version']) . '</td>
+            <td>' . htmlspecialchars($row_download['status']) . '</td>
+            <td>' . htmlspecialchars($row_download['author_name']) . '</td>
+            <td>
+                <a href="comment_add.php?text_id=' . $row_download['text_id'] . '">
+                    <button type="button">Add a Comment</button>
+                </a>
+            </td>
+        </tr>';
     }
     echo '</table>';
 
