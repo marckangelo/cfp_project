@@ -227,58 +227,53 @@ if (isset($_SESSION['member_id'])) {
     echo '</table>';
 
 
-    // ============= DISPLAY LIST OF COMMITTEES ================
+    // ============= DISPLAY LIST OF COMMITTEES JOINED ================
+
+    $sql_committee_details = "
+                            SELECT 
+                                c.name,
+                                c.purpose,
+                                c.scope,
+                                c.formation_date,
+                                c.member_count,
+                                c.status AS committee_status,
+                                cm.status AS membership_status
+                            FROM committee_membership cm
+                            JOIN committee c
+                                ON cm.committee_id = c.committee_id
+                            WHERE cm.member_id = $member_id
+                            ";
 
     // Run the query
-    $result_donation_details = mysqli_query($conn, $sql_donation_details);
+    $result_committee_details = mysqli_query($conn, $sql_committee_details);
 
     // Table header
     echo '
-    <h4>Donation Details</h4>
+    <h4>Committee(s) Joined Details</h4>
 
         <table border="1">
             <tr>
-                <th>Donation Date</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Payment Method</th>
-                <th>TransactionID</th>
-                <th>Charity (%)</th>
-                <th>CFP (%)</th>
-                <th>Author (%)</th>
-                
-                <th>Title</th>
-                <th>Topic</th>
-                <th>Text Version</th>
-
-                <th>Charity Name</th>
-                <th>Charity Country</th>
-                <th>Charity Description</th>
-                <th>Charity Mission</th>
+                <th>Name</th>
+                <th>Purpose</th>
+                <th>Scope</th>
+                <th>Formation Date</th>
+                <th>Committee Status</th>
+                <th>Membership Status</th>
+                <th># of Member</th>
             </tr>
     ';
     
     //Table rows (Fetching each row from member detail using while loop)
-    while ($row_donation = mysqli_fetch_assoc($result_donation_details)) {
+    while ($row_committee = mysqli_fetch_assoc($result_committee_details)) {
         echo '
             <tr>
-                <td>' . htmlspecialchars($row_donation['date']) . '</td>
-                <td>' . htmlspecialchars($row_donation['amount']) . '</td>
-                <td>' . htmlspecialchars($row_donation['currency']) . '</td>
-                <td>' . htmlspecialchars($row_donation['payment_method']) . '</td>
-                <td>' . htmlspecialchars($row_donation['transaction_id']) . '</td>
-                <td>' . htmlspecialchars($row_donation['charity_pct']) . '</td>
-                <td>' . htmlspecialchars($row_donation['cfp_pct']) . '</td>
-                <td>' . htmlspecialchars($row_donation['author_pct']) . '</td>
-                
-                <td>' . htmlspecialchars($row_donation['text_title']) . '</td>
-                <td>' . htmlspecialchars($row_donation['text_topic']) . '</td>
-                <td>' . htmlspecialchars($row_donation['text_version']) . '</td>
-                
-                <td>' . htmlspecialchars($row_donation['charity_name']) . '</td>
-                <td>' . htmlspecialchars($row_donation['charity_country']) . '</td>
-                <td>' . htmlspecialchars($row_donation['charity_description']) . '</td>
-                <td>' . htmlspecialchars($row_donation['charity_mission']) . '</td>
+                <td>' . htmlspecialchars($row_committee['name']) . '</td>
+                <td>' . htmlspecialchars($row_committee['purpose']) . '</td>
+                <td>' . htmlspecialchars($row_committee['scope']) . '</td>
+                <td>' . htmlspecialchars($row_committee['formation_date']) . '</td>
+                <td>' . htmlspecialchars($row_committee['committee_status']) . '</td>
+                <td>' . htmlspecialchars($row_committee['membership_status']) . '</td>
+                <td>' . htmlspecialchars($row_committee['member_count']) . '</td>
             </tr>';
     }
     echo '</table>';
