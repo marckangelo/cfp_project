@@ -100,6 +100,14 @@ if(isset($_SESSION['member_id'])) {
                                 <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
                                 <button type="submit" name="donate">Donate</button>
                             </form>
+                            <form method="post" action="author_item_edit.php">
+                                <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
+                                <input type="hidden" name="text_id" value="'. $row['title'] . '">
+                                <input type="hidden" name="text_id" value="'. $row['abstract'] . '">
+                                <input type="hidden" name="text_id" value="'. $row['topic'] . '">
+                                <input type="hidden" name="text_id" value="'. $row['keyword'] . '">
+                                <button type="submit" name="edit">Edit</button>
+                            </form>
                         </td> 
                     </tr>
                 ';
