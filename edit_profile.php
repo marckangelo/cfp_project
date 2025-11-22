@@ -9,6 +9,50 @@ echo    '<h2>Edit Profile</h2>
 
 // TODO: Load existing member data and update on POST
 
+// Process the form
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Extract form values
+    $name = trim($_POST['name']);
+    $organization = trim($_POST['organization']);
+    $pseudonym = trim($_POST['pseudonym']);
+    $street = trim($_POST['street']);
+    $city = trim($_POST['city']);
+    $postal_code = trim($_POST['postal_code']);
+    $primary_email = trim($_POST['primary_email']);
+    $recovery_email = trim($_POST['recovery_email']);
+
+    $member_id = (int) $_SESSION['member_id'];
+
+     // Build UPDATE query
+    $sql_update = "
+        UPDATE member
+        SET
+            name = '$name',
+            organization = '$organization',
+            pseudonym = '$pseudonym',
+            street = '$street',
+            city = '$city',
+            postal_code = '$postal_code',
+            primary_email = '$primary_email',
+            recovery_email = '$recovery_email'
+        WHERE member_id = $member_id
+    ";
+
+    // Run update query
+    $result_update = mysqli_query($conn, $sql_update);
+
+    if ($result_update) {
+        // Save success message in session
+        $_SESSION['profile_success'] = "Profile successfully updated!";
+        // Redirect back to my_account.php
+        header("Location: my_account.php");
+        exit;
+    } else {
+        echo "<div style='color:red;'>Error updating profile. Try again.</div>";
+    }
+}
+
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
     // DISPLAY MEMBER DETAILS
@@ -77,6 +121,8 @@ if (isset($_SESSION['member_id'])) {
     echo '</table><br>';
 
     echo '<button type="submit">Save Changes</button>';
+    echo '<a href="my_account.php"><button type="button">Cancel</button></a>';
+    echo '</form>';
 
 } else {
     header("Location: login.php");
