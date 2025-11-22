@@ -36,6 +36,7 @@ if(isset($_SESSION['member_id'])) {
                         <th>Title</th>
                         <th>Abstract</th>
                         <th>Topic</th>
+                        <th>Keywords</th>
                         <th>Version</th>
                         <th>Upload Date</th>
                         <th>Status</th>
@@ -50,6 +51,24 @@ if(isset($_SESSION['member_id'])) {
             // Table rows
             while ($row = mysqli_fetch_assoc($result_text_details)) {
 
+                // Fetch keywords for this text
+                $keywords = array();
+
+                $text_id = $row['text_id'];
+
+                $sql_text_keywords = "SELECT keyword 
+                                    FROM text_keyword 
+                                    WHERE text_id = $text_id";
+
+                $result_text_keywords = mysqli_query($conn, $sql_text_keywords);
+
+                while ($row_kw = mysqli_fetch_assoc($result_text_keywords)) {
+                    $keywords[] = $row_kw['keyword'];
+                }
+
+                $keywords_string = implode(", ", $keywords);
+
+
                 // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
                 echo '
                 
@@ -57,6 +76,7 @@ if(isset($_SESSION['member_id'])) {
                         <td>' . htmlspecialchars($row['title']) . '</td>
                         <td>' . htmlspecialchars($row['abstract']) . '</td>
                         <td>' . htmlspecialchars($row['topic']) . '</td>
+                        <td>' . htmlspecialchars($keywords_string) . '</td>
                         <td>' . htmlspecialchars($row['version']) . '</td>
                         <td>' . htmlspecialchars($row['upload_date']) . '</td>
                         <td>' . htmlspecialchars($row['status']) . '</td> 
@@ -84,7 +104,7 @@ if(isset($_SESSION['member_id'])) {
                     </tr>
                 ';
             }
-            echo '</table>'; // List of Committees table closer tag
+            echo '</table>'; // List of texts table closer tag
         }
     }
 } else {
