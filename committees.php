@@ -42,7 +42,7 @@ if ($result_committee_details) {
                     <td>' . htmlspecialchars($row['member_count']) . '</td> 
                     <td>
                         <form action="committee_request.php" method="POST">
-                             <input type="hidden" name="committee_id" value="<?php echo $row['committee_id']; ?>">
+                            <input type="hidden" name="committee_id" value="' . $row['committee_id'] . '">
                             <button type="submit">Join</button>
                         </form>
                     </td>
