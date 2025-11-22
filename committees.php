@@ -40,7 +40,11 @@ if ($result_committee_details) {
                     <td>' . htmlspecialchars($row['formation_date']) . '</td>
                     <td>' . htmlspecialchars($row['status']) . '</td> 
                     <td>' . htmlspecialchars($row['member_count']) . '</td> 
-                    <td><button type="submit">Join</button></td> 
+                    <td>
+                        <form action="committee_request.php" method="POST">
+                            <button type="submit">Join</button>
+                        </form>
+                    </td>
                 </tr>
             ';
         }
