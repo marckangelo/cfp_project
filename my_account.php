@@ -28,6 +28,7 @@ $member_id = $_SESSION['member_id'];
 
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
+    
     // ================ DISPLAY MEMBER DETAILS =================
     $sql_member_details = "SELECT * 
                            FROM member
