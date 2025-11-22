@@ -43,6 +43,7 @@ if ($result_committee_details) {
                     <td>
                         <form action="committee_request.php" method="POST">
                             <input type="hidden" name="committee_id" value="' . $row['committee_id'] . '">
+                            <input type="hidden" name="status" value="' . $row['status'] . '">
                             <button type="submit">Join</button>
                         </form>
                     </td>
