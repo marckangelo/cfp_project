@@ -17,6 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $abstract = trim($_POST['abstract']);
         $topic = trim($_POST['topic']);
 
+        // Escape any character that needs escaping '\' like apostrophe or single and double quotes, etc...
+        $title    = mysqli_real_escape_string($conn, $title);
+        $abstract = mysqli_real_escape_string($conn, $abstract);
+        $topic    = mysqli_real_escape_string($conn, $topic);
+
+
         // INSERT into table text
 
         // Build query
@@ -64,8 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Check queries execution
-        If ($result_text && $is_valid_keywords) {
+        if ($result_text && $is_valid_keywords) {
             $_SESSION['successful_upload'] = "Text was successfully uploaded!";
+            header("Location: item.php");
+            exit;
+        }
+        else {
+            $_SESSION['failed_upload'] = "Text failed to upload!";
             header("Location: item.php");
             exit;
         }
@@ -96,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </label><br>
 
     <label>Keyword(s) -- (Must be comma separated):
-        <br><textarea type="text" name="keywbord" required></textarea>
+        <br><textarea type="text" name="keyword" required></textarea>
     </label><br><br>
   
     <button type="submit">UPLOAD</button>
