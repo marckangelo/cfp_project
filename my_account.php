@@ -23,12 +23,15 @@ if(isset($_SESSION['download_failure'])) {
     unset($_SESSION['download_failure']);
 }
 
+// Extract member_id of member logged in
+$member_id = $_SESSION['member_id'];
+
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
     // ================ DISPLAY MEMBER DETAILS =================
     $sql_member_details = "SELECT * 
                            FROM member
-                           WHERE member_id = " . $_SESSION['member_id'];
+                           WHERE member_id = $member_id";
     
     // Run the query
     $result_member_details = mysqli_query($conn, $sql_member_details);
@@ -78,11 +81,9 @@ if (isset($_SESSION['member_id'])) {
     ';
 
 
-
     // ============= DISPLAY LIST OF DOWNLOADS ================
 
     // DISPLAY MEMBER DETAILS
-    $member_id = $_SESSION['member_id'];
 
     $sql_download_details = "SELECT 
                                 d.download_date,
@@ -145,8 +146,6 @@ if (isset($_SESSION['member_id'])) {
     // ============= DISPLAY LIST OF DONATIONS ================
 
     // DISPLAY DONATION DETAILS
-    $member_id = $_SESSION['member_id'];
-
     $sql_donation_details = "SELECT d.date,
                                     d.amount,
                                     d.currency,
@@ -173,6 +172,63 @@ if (isset($_SESSION['member_id'])) {
                              ORDER BY d.date DESC";
 
     
+    // Run the query
+    $result_donation_details = mysqli_query($conn, $sql_donation_details);
+
+    // Table header
+    echo '
+    <h4>Donation Details</h4>
+
+        <table border="1">
+            <tr>
+                <th>Donation Date</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Payment Method</th>
+                <th>TransactionID</th>
+                <th>Charity (%)</th>
+                <th>CFP (%)</th>
+                <th>Author (%)</th>
+                
+                <th>Title</th>
+                <th>Topic</th>
+                <th>Text Version</th>
+
+                <th>Charity Name</th>
+                <th>Charity Country</th>
+                <th>Charity Description</th>
+                <th>Charity Mission</th>
+            </tr>
+    ';
+    
+    //Table rows (Fetching each row from member detail using while loop)
+    while ($row_donation = mysqli_fetch_assoc($result_donation_details)) {
+        echo '
+            <tr>
+                <td>' . htmlspecialchars($row_donation['date']) . '</td>
+                <td>' . htmlspecialchars($row_donation['amount']) . '</td>
+                <td>' . htmlspecialchars($row_donation['currency']) . '</td>
+                <td>' . htmlspecialchars($row_donation['payment_method']) . '</td>
+                <td>' . htmlspecialchars($row_donation['transaction_id']) . '</td>
+                <td>' . htmlspecialchars($row_donation['charity_pct']) . '</td>
+                <td>' . htmlspecialchars($row_donation['cfp_pct']) . '</td>
+                <td>' . htmlspecialchars($row_donation['author_pct']) . '</td>
+                
+                <td>' . htmlspecialchars($row_donation['text_title']) . '</td>
+                <td>' . htmlspecialchars($row_donation['text_topic']) . '</td>
+                <td>' . htmlspecialchars($row_donation['text_version']) . '</td>
+                
+                <td>' . htmlspecialchars($row_donation['charity_name']) . '</td>
+                <td>' . htmlspecialchars($row_donation['charity_country']) . '</td>
+                <td>' . htmlspecialchars($row_donation['charity_description']) . '</td>
+                <td>' . htmlspecialchars($row_donation['charity_mission']) . '</td>
+            </tr>';
+    }
+    echo '</table>';
+
+
+    // ============= DISPLAY LIST OF COMMITTEES ================
+
     // Run the query
     $result_donation_details = mysqli_query($conn, $sql_donation_details);
 
