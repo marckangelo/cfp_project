@@ -62,6 +62,8 @@ if(isset($_SESSION['member_id'])) {
 
                 $text_id = $row['text_id'];
 
+
+                // Retrieving all keywords for this text
                 $sql_text_keywords = "SELECT keyword 
                                     FROM text_keyword 
                                     WHERE text_id = $text_id";
@@ -75,6 +77,29 @@ if(isset($_SESSION['member_id'])) {
                 $keywords_string = implode(", ", $keywords);
 
 
+                // Retrieving all comments for this text (shows name of member and their comment)
+                $comments = array();
+
+                $sql_text_comments = "SELECT member_id, content 
+                                    FROM comment 
+                                    WHERE text_id = $text_id";
+                $result_text_comments = mysqli_query($conn, $sql_text_comments);
+                
+
+                while ($row_comments = mysqli_fetch_assoc($result_text_comments)) {
+                    $comment = $row_comments['content'];
+                    $sql_member_name = "SELECT name 
+                                    FROM member
+                                    WHERE member_id = " . $row_comments['member_id'];
+                    $result_member_name = mysqli_query($conn, $sql_member_name);
+                    $row_member_name = mysqli_fetch_assoc($result_member_name);
+                    $member_name = $row_member_name['name'];
+
+                    $comments[] = htmlspecialchars("$comment\n\n" . "Posted by [$member_name]");
+                }
+
+                $keywords_string = implode(", ", $keywords);
+                
 
                 // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
                 echo '
@@ -90,14 +115,28 @@ if(isset($_SESSION['member_id'])) {
                         <td>' . htmlspecialchars($row['download_count']) . '</td> 
                         <td>' . htmlspecialchars($row['total_donations']) . '</td>
                         <td>' . htmlspecialchars($row['avg_rating']) . '</td>
-                        <td>
-                            <p>** TO BE IMPLEMENTED **</p>
+                        
+                        <td>';
 
-                            <p>Format:</p>
+                        // Display the comments
+                        
+                        foreach ($comments as $c) {
+                            echo '' . htmlspecialchars($c);
+
+                            /* 
+                            Here you woud add the 'REPLY' button if the current member 
+                            seeing this comment, is the author of this current text.
+
+                            How to implement 'REPLY' button to comments:
+                            1. through variable $text_id, get the text_id.
+                            2. Check if current orcid of this text_id is the same as the $SESSION['orcid'].
+                            3. If yes to previous step, reveal the 'REPLY button'
+                            4. Possible solution: Clicking 'REPLY' would redirect you to a reply_comment.php form, along with POST data of the comment_id
                             
-                            <div> Comment: <...> </div>
-                            <p> Posted by [username]</p>
-                        </td>
+                            */
+                        }    
+                        
+                echo   '</td>
                         <td>
                             <form method="post" action="download.php">
                                 <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
