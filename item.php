@@ -102,11 +102,14 @@ if(isset($_SESSION['member_id'])) {
                                 <button type="submit" name="donate">Donate</button>
                             </form>
                             <form method="post" action="author_item_edit.php">
-                                <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
-                                <input type="hidden" name="title" value="'. $row['title'] . '">
-                                <input type="hidden" name="abstract" value="'. $row['abstract'] . '">
-                                <input type="hidden" name="abstract" value="'. $row['topic'] . '">
-                                <input type="hidden" name="keywords_string" value="'. $keywords_string . '">
+                                <input type="hidden" name="text_id" value="'. htmlspecialchars($row['text_id']) . '">
+                                
+                                <input type="hidden" name="title" value="'. htmlspecialchars($row['title']) . '">
+                                <input type="hidden" name="abstract" value="'. htmlspecialchars($row['abstract']) . '">
+                                
+                                <input type="hidden" name="topic" value="'. htmlspecialchars($row['topic']) . '">
+                                
+                                <input type="hidden" name="keywords_string" value="'. htmlspecialchars($keywords_string) . '">
                                 <button type="submit" name="edit">Edit</button>
                             </form>
                         </td> 
