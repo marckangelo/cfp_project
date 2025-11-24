@@ -69,6 +69,7 @@ if(isset($_SESSION['member_id'])) {
                 $keywords_string = implode(", ", $keywords);
 
 
+
                 // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
                 echo '
                 
@@ -105,7 +106,7 @@ if(isset($_SESSION['member_id'])) {
                                 <input type="hidden" name="text_id" value="'. $row['title'] . '">
                                 <input type="hidden" name="text_id" value="'. $row['abstract'] . '">
                                 <input type="hidden" name="text_id" value="'. $row['topic'] . '">
-                                <input type="hidden" name="text_id" value="'. $row['keyword'] . '">
+                                <input type="hidden" name="text_id" value="'. $keywords_string . '">
                                 <button type="submit" name="edit">Edit</button>
                             </form>
                         </td> 
