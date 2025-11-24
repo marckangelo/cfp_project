@@ -8,16 +8,17 @@ include 'header.php';
 
 // =========== Processing form ==============
 
-$text_id = intval($_POST['text_id']);
 
 // Only run this if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
+    isset($_POST['text_id']) &&
     isset($_POST['title']) &&
     isset($_POST['abstract']) &&
     isset($_POST['topic']) &&
     isset($_POST['keyword'])) {
     // Extract values from form
 
+    $text_id = intval($_POST['text_id']);
     $title    = trim($_POST['title']);
     $abstract = trim($_POST['abstract']);
     $topic    = trim($_POST['topic']);
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
     $keywords = explode(",", $keyword_string);
 
     $all_keywords_ok = true;
-
+    
     foreach ($keywords as $k) {
 
         $k = trim($k);
@@ -60,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
             continue; // skip empty bits
         }
 
+        // Function that escapes characters that need escaping within a string
         $k_sql = mysqli_real_escape_string($conn, $k);
 
         $sql_insert_keyword = "
@@ -74,10 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
             break;
         }
     }
+
+
+    // When reached, update was successful, so go back to item.php page
+    $_SESSION['successful_update'] = "'$title' was successfully Updated";
+    header("Location: item.php");
+    exit;
 }
 
 
-// =========== Extracting Form Values ==============
+// =========== Extracting Form Values (Info of the text before editing them) ==============
 
 // Extract current values of author text
 $text_id = intval($_POST['text_id']);
@@ -130,6 +138,7 @@ $keyword_string = trim(implode(", ", $keywords));
         <br><textarea name="keyword" required><?php echo $keyword_string;?></textarea>
     </label><br><br>
   
+    <input type="hidden" name="text_id" value="<?php echo $text_id;?>">
     <button type="submit">Save Changes</button>
 </form>
 

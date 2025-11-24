@@ -19,6 +19,12 @@ if (isset($_SESSION['failed_upload'])) {
     unset($_SESSION['failed_upload']);
 }
 
+// If any successful updates, show message
+if (isset($_SESSION['successful_update'])) {
+    echo '<div style="color: green;">' . $_SESSION['successful_update'] . '</div>';
+    unset($_SESSION['successful_update']);
+}
+
 $sql_text_details = "SELECT * FROM text";
 
 $result_text_details = mysqli_query($conn, $sql_text_details);
