@@ -10,7 +10,7 @@ include 'header.php';
 
 <ul>
     <li><a href="author_item_new.php">Add a new item</a></li>
-    <li><a href="author_item_edit.php">Edit an item</a></li>
+    <li><a href="item.php">Edit an item</a></li>
 </ul>
 
 <?php include 'footer.php'; ?>
