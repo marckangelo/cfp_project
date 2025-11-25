@@ -14,7 +14,9 @@ WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.mem
 $query_result_top_authors = mysqli_query($conn, $query_top_authors);
 
 //annual usage statistics
-$query_annual_usage = "SELECT YEAR(download_date) as year, count(*) as download_count FROM download  GROUP BY year ORDER BY year DESC";
+$query_annual_usage = "SELECT YEAR(download_date) as year, count(*) as download_count FROM download
+WHERE download_date IS NOT NULL  AND YEAR(download_date) > 0
+GROUP BY year ORDER BY year DESC";
 $query_result_annual_usage = mysqli_query($conn, $query_annual_usage);
 
 //annual access by country
