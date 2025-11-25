@@ -18,11 +18,11 @@ $query_annual_usage = "SELECT YEAR(download_date) as year, count(*) as download_
 $query_result_annual_usage = mysqli_query($conn, $query_annual_usage);
 
 //annual access by country
-$query_access_by_country = "SELECT d.country, count(*) as download_count FROM download GROUP BY country ORDER BY download_count DESC LIMIT 5";
+$query_access_by_country = "SELECT d.country, count(*) as download_count FROM download d GROUP BY country ORDER BY download_count DESC LIMIT 5";
 $query_result_access_by_country = mysqli_query($conn, $query_access_by_country);
 
 //growth over time (uploads)
-$query_growth_over_time = "SELECT YEAR(upload_date) as year, count(*) as upload_count FROM titles GROUP BY year ORDER BY year DESC";
+$query_growth_over_time = "SELECT YEAR(upload_date) as year, count(*) as upload_count FROM text GROUP BY year ORDER BY year DESC";
 $query_result_growth_over_time = mysqli_query($conn, $query_growth_over_time);
 
 //annual downloads for a specific author
