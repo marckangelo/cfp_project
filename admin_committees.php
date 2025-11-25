@@ -18,13 +18,6 @@ if (isset($_SESSION['failed_committee_add'])) {
     unset($_SESSION['failed_committee_add']);
 }
 
-// =============== Processing the Form ===================
-
-
-
-
-
-
 // =============== Committees Table with Action Buttons Display ==================
 
 $sql_committee_details = "SELECT * FROM committee";
