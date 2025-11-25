@@ -3,14 +3,14 @@ session_start();
 require 'db.php';
 include 'header.php';
 //top 5 most downloaded titles
-$query_top_titles = "SELECT title, count(*) as download_count FROM download d, text t 
+$query_top_titles = "SELECT t.title, count(*) as download_count FROM download d, text t 
 WHERE d.text_id = t.text_id GROUP BY d.text_id ORDER BY download_count DESC LIMIT 5";
 $query_result_top_titles = mysqli_query($conn, $query_top_titles);
 
 
 //top 5 most downloaded authors
-$query_top_authors = "SELECT a.name, count(*) as download_count FROM download d, author a, text t 
-WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid GROUP BY a.name ORDER BY download_count DESC LIMIT 5";
+$query_top_authors = "SELECT m.name, count(*) as download_count FROM download d, author a, text t, member m
+WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.member_id GROUP BY m.name ORDER BY download_count DESC LIMIT 5";
 $query_result_top_authors = mysqli_query($conn, $query_top_authors);
 
 //annual usage statistics
@@ -18,7 +18,7 @@ $query_annual_usage = "SELECT YEAR(download_date) as year, count(*) as download_
 $query_result_annual_usage = mysqli_query($conn, $query_annual_usage);
 
 //annual access by country
-$query_access_by_country = "SELECT country, count(*) as download_count FROM download GROUP BY country ORDER BY download_count DESC LIMIT 5";
+$query_access_by_country = "SELECT d.country, count(*) as download_count FROM download GROUP BY country ORDER BY download_count DESC LIMIT 5";
 $query_result_access_by_country = mysqli_query($conn, $query_access_by_country);
 
 //growth over time (uploads)
