@@ -15,12 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $committee_id   = (int) $_POST['committee_id'];
 
     // Extact values from form submitted
-    $name           = mysqli_real_escape_string($conn, $_POST['name']);
-    $purpose        = mysqli_real_escape_string($conn, $_POST['purpose']);
-    $scope          = mysqli_real_escape_string($conn, $_POST['scope']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $purpose = mysqli_real_escape_string($conn, $_POST['purpose']);
+    $scope = mysqli_real_escape_string($conn, $_POST['scope']);
     $formation_date = mysqli_real_escape_string($conn, $_POST['formation_date']);
-    $status         = mysqli_real_escape_string($conn, $_POST['status']);
-    $member_count   = (int) $_POST['member_count'];
+    $status = mysqli_real_escape_string($conn, $_POST['status']);
+    $member_count = (int) $_POST['member_count'];
 
     // Build the MySql UPDATE query
     $sql_update = "

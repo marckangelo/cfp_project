@@ -15,12 +15,12 @@ include 'header.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Extract values from form submitted
-    $name               = mysqli_real_escape_string($conn, $_POST['name']);
-    $description        = mysqli_real_escape_string($conn, $_POST['description']);
-    $mission            = mysqli_real_escape_string($conn, $_POST['mission']);
-    $country            = mysqli_real_escape_string($conn, $_POST['country']);
-    $registration_number= mysqli_real_escape_string($conn, $_POST['registration_number']);
-    $status             = mysqli_real_escape_string($conn, $_POST['status']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $mission = mysqli_real_escape_string($conn, $_POST['mission']);
+    $country = mysqli_real_escape_string($conn, $_POST['country']);
+    $registration_number = mysqli_real_escape_string($conn, $_POST['registration_number']);
+    $status = mysqli_real_escape_string($conn, $_POST['status']);
 
     // total_received starts at 0
     $sql_insert = "
