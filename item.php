@@ -25,6 +25,25 @@ if (isset($_SESSION['successful_update'])) {
     unset($_SESSION['successful_update']);
 }
 
+// If any failed updates, show message
+if (isset($_SESSION['failed_update'])) {
+    echo '<div style="color: red;">' . $_SESSION['failed_update'] . '</div>';
+    unset($_SESSION['failed_update']);
+}
+
+// If any successful donations, show message
+if (isset($_SESSION['successful_donation'])) {
+    echo '<div style="color: green;">' . $_SESSION['successful_donation'] . '</div>';
+    unset($_SESSION['successful_donation']);
+}
+
+// If any failed donation, show message
+if (isset($_SESSION['failed_donation'])) {
+    echo '<div style="color: red;">' . $_SESSION['failed_donation'] . '</div>';
+    unset($_SESSION['failed_donation']);
+}
+   
+
 $sql_text_details = "SELECT * FROM text";
 
 $result_text_details = mysqli_query($conn, $sql_text_details);
@@ -143,7 +162,7 @@ if(isset($_SESSION['member_id'])) {
                                 <button type="submit" name="download">Download</button>
                             </form>
                             <form method="post" action="donate.php">
-                                <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
+                                <input type="hidden" name="text_id" value="'. htmlspecialchars($row['text_id']) . '">
                                 <button type="submit" name="donate">Donate</button>
                             </form>
                             <form method="post" action="author_item_edit.php">

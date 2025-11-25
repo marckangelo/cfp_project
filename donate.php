@@ -105,7 +105,8 @@ echo "<h2>Donate for: " . $row['title'] . "</h2>";
         <option value="card">Credit Card (simulated)</option>
         <option value="paypal">PayPal (simulated)</option>
     </select><br>
-
+    
+    <input type="hidden" name="title" value="<?php echo htmlspecialchars($row['title']);?>">
     <button type="submit">Donate</button>
 </form>
 
