@@ -110,7 +110,6 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <tr>
         <th>Year</th>
         <th>Author Name</th>
-        <th>ORCID</th>
         <th>Download Count</th>
     </tr>
     <?php while ($row = mysqli_fetch_assoc($query_result_annual_for_author)) { ?>
