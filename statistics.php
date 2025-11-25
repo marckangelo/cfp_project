@@ -117,7 +117,6 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <tr>
         <td><?php echo htmlspecialchars($row['year']); ?></td>
         <td><?php echo htmlspecialchars($row['name']); ?></td>
-        <td><?php echo htmlspecialchars($row['orcid']); ?></td>
         <td><?php echo htmlspecialchars($row['download_count']); ?></td>
     </tr>
     <?php } ?>
