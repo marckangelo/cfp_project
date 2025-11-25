@@ -26,8 +26,9 @@ $query_growth_over_time = "SELECT YEAR(upload_date) as year, count(*) as upload_
 $query_result_growth_over_time = mysqli_query($conn, $query_growth_over_time);
 
 //annual downloads for a specific author
-$query_annual_for_author = "SELECT YEAR(d.download_date) as year, a.name, a.orcid, count(*) as download_count FROM download d, text t, author a 
-WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid GROUP BY year, a.orcid ORDER BY year DESC, download_count DESC";
+$query_annual_for_author = "SELECT YEAR(d.download_date) as year, m.name, a.orcid, count(*) as download_count FROM download d, text t, author a, member m 
+WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.member_id
+GROUP BY year, a.orcid ORDER BY year DESC, download_count DESC";
 $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
 
 ?>
