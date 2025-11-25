@@ -4,13 +4,14 @@ require 'db.php';
 include 'header.php';
 //top 5 most downloaded titles
 $query_top_titles = "SELECT title, count(*) as download_count FROM download d, text t 
-WHERE d.title_id = t.title_id GROUP BY d.title_id ORDER BY download_count DESC LIMIT 5";
-$query_result_top_titles = mysqli_query($conn, $query_result_top_titles);
+WHERE d.text_id = t.text_id GROUP BY d.text_id ORDER BY download_count DESC LIMIT 5";
+$query_result_top_titles = mysqli_query($conn, $query_top_titles);
+
 
 //top 5 most downloaded authors
 $query_top_authors = "SELECT a.name, count(*) as download_count FROM download d, authors a, text t 
-WHERE d.title_id = t.title_id AND t.author_orcid = a.orcid GROUP BY a.name ORDER_BY download_count DESC LIMIT 5";
-$query_result_top_authors = mysqli_query($conn, $query_result_top_authors);
+WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid GROUP BY a.name ORDER BY download_count DESC LIMIT 5";
+$query_result_top_authors = mysqli_query($conn, $query_top_authors);
 
 //annual usage statistics
 $query_annual_usage = "SELECT YEAR(download_date) as year, count(*) as download_count FROM download  GROUP BY year ORDER BY year DESC";
@@ -22,7 +23,7 @@ $query_result_access_by_country = mysqli_query($conn, $query_access_by_country);
 
 //growth over time (uploads)
 $query_growth_over_time = "SELECT YEAR(upload_date) as year, count(*) as upload_count FROM titles GROUP BY year ORDER BY year DESC";
-$query_result_growth_over_time = mysqli_query($conn, $query_result_growth_over_time);
+$query_result_growth_over_time = mysqli_query($conn, $query_growth_over_time);
 
 //annual downloads for a specific author
 $query_annual_for_author = "SELECT YEAR(d.download_date), a.name, a.orcid, count(*) as download_count FROM download d, text t, authors a 
@@ -111,7 +112,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     </tr>
     <?php while ($row = mysqli_fetch_assoc($query_result_annual_for_author)) { ?>
     <tr>
-        <td><?php echo htmlspecialchars($row['YEAR(d.download_date)']); ?></td>
+        <td><?php echo htmlspecialchars($row['year']); ?></td>
         <td><?php echo htmlspecialchars($row['name']); ?></td>
         <td><?php echo htmlspecialchars($row['orcid']); ?></td>
         <td><?php echo htmlspecialchars($row['download_count']); ?></td>
