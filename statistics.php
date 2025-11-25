@@ -9,7 +9,7 @@ $query_result_top_titles = mysqli_query($conn, $query_top_titles);
 
 
 //top 5 most downloaded authors
-$query_top_authors = "SELECT a.name, count(*) as download_count FROM download d, authors a, text t 
+$query_top_authors = "SELECT a.name, count(*) as download_count FROM download d, author a, text t 
 WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid GROUP BY a.name ORDER BY download_count DESC LIMIT 5";
 $query_result_top_authors = mysqli_query($conn, $query_top_authors);
 
@@ -26,7 +26,7 @@ $query_growth_over_time = "SELECT YEAR(upload_date) as year, count(*) as upload_
 $query_result_growth_over_time = mysqli_query($conn, $query_growth_over_time);
 
 //annual downloads for a specific author
-$query_annual_for_author = "SELECT YEAR(d.download_date), a.name, a.orcid, count(*) as download_count FROM download d, text t, authors a 
+$query_annual_for_author = "SELECT YEAR(d.download_date), a.name, a.orcid, count(*) as download_count FROM download d, text t, author a 
 WHERE d.text_id = t.text_id AND t.author_orcid = a.orcid GROUP BY year, a.orcid ORDER BY year DESC, download_count DESC";
 $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
 
