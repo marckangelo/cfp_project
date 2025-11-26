@@ -9,7 +9,7 @@ if (isset($_GET['search'])) {
     $search = $_GET['search'];
 }
 
-$query_search = "SELECT t.topic, k.keyboard, m.name FROM text t, text_keyword k, author a, member m
+$query_search = "SELECT t.topic, k.keyword, m.name FROM text t, text_keyword k, author a, member m
 WHERE k.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.member_id AND t.status != 'draft'";
 
 if (!empty($search)) {
