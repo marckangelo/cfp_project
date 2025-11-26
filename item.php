@@ -73,7 +73,7 @@ if(isset($_SESSION['member_id'])) {
     if ($result_plag_committee && mysqli_num_rows($result_plag_committee) > 0) {
         $row_plag = mysqli_fetch_assoc($result_plag_committee);
         $is_plag_committee_member = true;
-        $committee_id_for_user    = (int)$row_plag['committee_id'];
+        $committee_id_for_user = (int)$row_plag['committee_id'];
     }
 
     if ($result_text_details) {
@@ -124,9 +124,8 @@ if(isset($_SESSION['member_id'])) {
 
 
                 // Retrieving all comments for this text (shows name of member and their comment)
-                // Retrieving all comments for this text (shows name of member and their comment)
-                $comments       = array();
-                $comment_ids    = array();
+                $comments = array();
+                $comment_ids = array();
 
                 $sql_text_comments = "SELECT comment_id, member_id, content 
                                     FROM comment 
@@ -142,8 +141,8 @@ if(isset($_SESSION['member_id'])) {
                                         FROM member
                                         WHERE member_id = " . (int)$row_comments['member_id'];
                     $result_member_name = mysqli_query($conn, $sql_member_name);
-                    $row_member_name    = mysqli_fetch_assoc($result_member_name);
-                    $member_name        = $row_member_name['name'];
+                    $row_member_name = mysqli_fetch_assoc($result_member_name);
+                    $member_name = $row_member_name['name'];
 
                     // Save raw text. Escape + add the <br> later
                     $comments[]    = $comment . "\n\n" . "Posted by [$member_name]";
