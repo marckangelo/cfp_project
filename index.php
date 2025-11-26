@@ -19,7 +19,7 @@ $query_all_authors = "SELECT m.name FROM author a, member m WHERE a.member_id = 
 $query_result_all_authors = mysqli_query($conn, $query_all_authors);
 
 //keywords and topics for browsing
-$query_keywords = "SELECT DISTINCT keyword FROM text_keywords";
+$query_keywords = "SELECT DISTINCT keyword FROM text_keyword";
 $query_result_keywords = mysqli_query($conn, $query_keywords);
 
 $query_topics = "SELECT DISTINCT topic FROM text";
