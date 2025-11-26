@@ -32,7 +32,6 @@ else {
 }
 ?>
 
-?>
 <h2>Authors</h2>
 <table border="1">
     <tr>
