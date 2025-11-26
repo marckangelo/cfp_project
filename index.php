@@ -16,6 +16,7 @@ if (!empty($search)) {
     $search_escaped = mysqli_real_escape_string($conn, $search);
     $query_search .= " AND (t.topic LIKE '%$search_escaped%' OR k.keyboard LIKE '%$search_escaped%' OR m.name LIKE '%$search_escaped%')";
 }
+$result_search = mysqli_query($conn, $query_search);
 
 //popular items (most downloaded)
 $query_popular_items = "SELECT t.title, count(*) as download_count FROM download d, text t 
