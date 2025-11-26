@@ -52,6 +52,27 @@ $query_result_topics = mysqli_query($conn, $query_topics);
     <input type="text" name="search" placeholder="Search by topic, keyword or author" value="<?php echo htmlspecialchars($search); ?>">
     <button type="submit">Search</button>
 </form>
+<?php if (!empty($search)) { ?>
+    <h4>Search Results for "<?php echo htmlspecialchars($search); ?>"</h4>
+    <?php if (mysqli_num_rows($result_search) > 0) { ?>
+        <table border="1">
+            <tr>
+                <th>Topic</th>
+                <th>Keyword</th>
+                <th>Author Name</th>
+            </tr>
+            <?php while ($row = mysqli_fetch_assoc($result_search)) { ?>
+            <tr>
+                <td><?php echo htmlspecialchars($row['topic']); ?></td>
+                <td><?php echo htmlspecialchars($row['keyword']); ?></td>
+                <td><?php echo htmlspecialchars($row['name']); ?></td>
+            </tr>
+            <?php } ?>
+        </table>
+    <?php } else { ?>
+        <p>No results found.</p>
+    <?php } ?>
+<?php } ?>
 
 <h3>Popular Items</h3>
 <table border="1">
