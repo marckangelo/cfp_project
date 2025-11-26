@@ -17,7 +17,8 @@ if (isset($_SESSION['member_id'])) {
                           a.h_index,
                           a.total_downloads
                           FROM author a
-                          JOIN member m ON a.member_id = m.member_id;
+                          JOIN member m ON a.member_id = m.member_id
+                          ORDER BY m.name ASC
                           ";
 
     // Run the query
