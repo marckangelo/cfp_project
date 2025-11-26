@@ -25,7 +25,6 @@ $sql_inbox = "
 
 // Run query
 $result_inbox = mysqli_query($conn, $sql_inbox);
-
 ?>
 
 <h2>Inbox</h2>
@@ -45,12 +44,14 @@ if ($result_inbox && mysqli_num_rows($result_inbox) > 0) {
                 <th>Subject</th>
                 <th>Sent At</th>
                 <th>Status</th>
+                <th>Action</th>
             </tr>
     ';
 
     while ($row = mysqli_fetch_assoc($result_inbox)) {
 
         $status_label = ($row['is_read'] == 1) ? 'Read' : 'Unread';
+        $message_id   = (int)$row['message_id'];
 
         echo '
             <tr>
@@ -58,6 +59,12 @@ if ($result_inbox && mysqli_num_rows($result_inbox) > 0) {
                 <td>' . htmlspecialchars($row['subject']) . '</td>
                 <td>' . htmlspecialchars($row['sent_at']) . '</td>
                 <td>' . htmlspecialchars($status_label) . '</td>
+                <td>
+                    <form method="get" action="message_view.php">
+                        <input type="hidden" name="message_id" value="' . $message_id . '">
+                        <button type="submit">View</button>
+                    </form>
+                </td>
             </tr>
         ';
     }
