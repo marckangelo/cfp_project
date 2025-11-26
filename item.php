@@ -49,6 +49,33 @@ $sql_text_details = "SELECT * FROM text";
 $result_text_details = mysqli_query($conn, $sql_text_details);
 
 if(isset($_SESSION['member_id'])) {
+
+    // Check if the logged-in member is part of an active plagiarism committee
+    $is_plag_committee_member = false;
+    $committee_id_for_user    = null;
+
+    $member_id = (int) $_SESSION['member_id'];
+
+    $sql_plag_committee = "
+        SELECT c.committee_id
+        FROM committee_membership cm
+        JOIN committee c
+            ON cm.committee_id = c.committee_id
+        WHERE cm.member_id = $member_id
+          AND cm.status = 'active'
+          AND c.status = 'active'
+          AND c.scope = 'plagiarism'
+        LIMIT 1
+    ";
+
+    $result_plag_committee = mysqli_query($conn, $sql_plag_committee);
+
+    if ($result_plag_committee && mysqli_num_rows($result_plag_committee) > 0) {
+        $row_plag = mysqli_fetch_assoc($result_plag_committee);
+        $is_plag_committee_member = true;
+        $committee_id_for_user    = (int)$row_plag['committee_id'];
+    }
+
     if ($result_text_details) {
         if (mysqli_num_rows($result_text_details) > 0) {
 
@@ -187,6 +214,21 @@ if(isset($_SESSION['member_id'])) {
                                 <input type="hidden" name="keywords_string" value="'. htmlspecialchars($keywords_string) . '">
                                 <button type="submit" name="edit">Edit</button>
                             </form>
+                ';
+
+                        // If the logged-in member is in an active plagiarism committee,
+                        // show a button to open a plagiarism case for this text
+                        if ($is_plag_committee_member && $committee_id_for_user !== null) {
+                            echo '
+                            <form method="get" action="plagiarism_case_open.php">
+                                <input type="hidden" name="text_id" value="'. (int)$row['text_id'] . '">
+                                <input type="hidden" name="committee_id" value="'. (int)$committee_id_for_user . '">
+                                <button type="submit" name="open_plagiarism_case">Open Plagiarism Case</button>
+                            </form>
+                            ';
+                        }
+
+                        echo '
                         </td> 
                     </tr>
                 ';
