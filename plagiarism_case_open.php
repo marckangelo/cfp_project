@@ -82,9 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($result_insert_case) {
                     $success_msg = "Plagiarism case opened successfully.";
 
-                    // **** NOTE: Maybe redirect to a list of cases later: ****
-                    // header("Location: plagiarism_cases.php");
-                    // exit;
+                    header("Location: plagiarism_cases.php");
+                    exit;
                 } else {
                     $error_msg = "Failed to open plagiarism case. Please try again.";
                 }
