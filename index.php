@@ -9,8 +9,10 @@ if (isset($_GET['search'])) {
     $search = $_GET['search'];
 }
 
-$query_search = "SELECT t.topic, k.keyword, m.name FROM text t, text_keyword k, author a, member m
-WHERE k.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.member_id";
+$query_search = "SELECT t.topic, k.keyword, m.name FROM text t 
+JOIN author a ON t.author_orcid = a.orcid
+JOIN member m ON a.member_id = m.member_id
+LEFT JOIN text_keyword k ON k.text_id = t.text_id";
 
 if (!empty($search)) {
     $search_escaped = mysqli_real_escape_string($conn, $search);
