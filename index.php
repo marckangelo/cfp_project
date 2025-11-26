@@ -5,6 +5,18 @@ include 'header.php';
 //search term
 $search = '';
 
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
+}
+
+$query_search = "SELECT t.topic, k.keyboard, m.name FROM text t, text_keyboard k, author a, member m
+WHERE k.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.member_id AND t.status != 'draft'";
+
+if (!empty($search)) {
+    $search_escaped = mysqli_real_escape_string($conn, $search);
+    $query_search .= " AND (t.topic LIKE '%$search_escaped%' OR k.keyboard LIKE '%$search_escaped%' OR m.name LIKE '%$search_escaped%')";
+}
+
 //popular items (most downloaded)
 $query_popular_items = "SELECT t.title, count(*) as download_count FROM download d, text t 
 WHERE d.text_id = t.text_id GROUP BY d.text_id ORDER BY download_count DESC LIMIT 5";
