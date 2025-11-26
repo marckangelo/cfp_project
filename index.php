@@ -13,7 +13,7 @@ $query_search = "SELECT DISTINCT t.topic, k.keyword, m.name FROM text t
 JOIN author a ON t.author_orcid = a.orcid
 JOIN member m ON a.member_id = m.member_id
 LEFT JOIN text_keyword k ON k.text_id = t.text_id
-WHERE 1=1";
+WHERE t.status = 'published' ";
 
 if (!empty($search)) {
     $search_escaped = mysqli_real_escape_string($conn, $search);
