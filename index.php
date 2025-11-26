@@ -11,7 +11,7 @@ WHERE d.text_id = t.text_id GROUP BY d.text_id ORDER BY download_count DESC LIMI
 $query_result_popular_items = mysqli_query($conn, $query_popular_items);
 
 //new items (recent uploads)
-$query_new_items = "SELECT t.title, t.upload_date FROM text t ORDER BY t.upload_date DESC LIMIT 5 WHERE t.status != 'draft'";
+$query_new_items = "SELECT t.title, t.upload_date FROM text t ORDER BY t.upload_date DESC LIMIT 5 WHERE t.status != draft ";
 $query_result_new_items = mysqli_query($conn, $query_new_items);
 
 //all authors
