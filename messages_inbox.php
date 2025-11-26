@@ -30,6 +30,11 @@ $result_inbox = mysqli_query($conn, $sql_inbox);
 
 <h2>Inbox</h2>
 
+<a href="message_send.php">
+    <button type="button">Send New Message</button>
+</a>
+<br><br>
+
 <?php
 if ($result_inbox && mysqli_num_rows($result_inbox) > 0) {
 

@@ -19,6 +19,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="authors.php">Authors</a> |
             <a href="statistics.php">Statistics</a> |
             <a href="about.php">About</a> |
+            <a href="messages_inbox.php">Inbox</a> |
 
         
             <?php if (!empty($_SESSION['orcid'])): ?>
