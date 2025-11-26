@@ -20,17 +20,11 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="statistics.php">Statistics</a> |
             <a href="about.php">About</a> |
             <a href="messages_inbox.php">Inbox</a> |
-
-        
-            <?php if (!empty($_SESSION['orcid'])): ?>
-                <a href="author_dashboard.php">Author Dashboard</a> |
-                <a href="logout.php">Logout</a> |
-            <?php else: ?>
-                <a href="login.php">Login</a> |
-                <a href="signup.php">Sign Up</a> |
-            <?php endif; ?>
             
             <?php if (!empty($_SESSION['member_id'])): ?>
+                <?php if (!empty($_SESSION['orcid'])): ?>
+                <a href="author_dashboard.php">Author Dashboard</a> |
+                <?php endif; ?>
                 <a href="my_account.php">My Account</a> |
                 <a href="logout.php">Logout</a> |
             <?php else: ?>
