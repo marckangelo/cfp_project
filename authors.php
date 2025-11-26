@@ -17,17 +17,21 @@ if (isset($_SESSION['member_id'])) {
                           a.h_index,
                           a.total_downloads
                           FROM author a
-                          JOIN member m ON a.member_id = m.member_id;
+                          JOIN member m ON a.member_id = m.member_id
+                          ORDER BY m.name ASC
                           ";
 
     // Run the query
     $result_author_details = mysqli_query($conn, $sql_author_details);
-
-
+}
+else {
+    // Redirect to login page if not signed in
+    echo "<p> You must be signed in to view author details. Redirecting to login page...</p>";
+    header("Location: login.php");
+    exit();
 }
 ?>
 
-?>
 <h2>Authors</h2>
 <table border="1">
     <tr>
