@@ -16,44 +16,69 @@ $error_msg = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Extract values from form
-    $recipient_id = (int) $_POST['recipient_id'];
-    $subject      = trim($_POST['subject']);
-    $body         = trim($_POST['body']);
+    $recipient_email = trim($_POST['recipient_email']);
+    $subject         = trim($_POST['subject']);
+    $body            = trim($_POST['body']);
 
     // Basic validation
-    if ($recipient_id <= 0 || $recipient_id == $member_id) {
-        $error_msg = "Please select a valid recipient.";
+    if ($recipient_email === "") {
+        $error_msg = "Recipient email cannot be empty.";
+    } else if (!filter_var($recipient_email, FILTER_VALIDATE_EMAIL)) {
+        $error_msg = "Please enter a valid email address.";
     } else if ($subject === "") {
         $error_msg = "Subject cannot be empty.";
     } else if ($body === "") {
         $error_msg = "Message body cannot be empty.";
     } else {
-        // Escape for SQL
-        $subject_sql = mysqli_real_escape_string($conn, $subject);
-        $body_sql    = mysqli_real_escape_string($conn, $body);
 
-        // Build INSERT query
-        $sql_insert = "
-            INSERT INTO message (sender_id, recipient_id, subject, body, sent_at, is_read)
-            VALUES ($member_id, $recipient_id, '$subject_sql', '$body_sql', NOW(), 0)
+        // Escape email for SQL
+        $recipient_email_sql = mysqli_real_escape_string($conn, $recipient_email);
+
+        // Look up recipient in the member table by email
+        $sql_find_recipient = "
+            SELECT member_id, primary_email
+            FROM member
+            WHERE primary_email = '$recipient_email_sql'
+            LIMIT 1
         ";
 
-        // Run query
-        $result_insert = mysqli_query($conn, $sql_insert);
+        $result_recipient = mysqli_query($conn, $sql_find_recipient);
 
-        if ($result_insert) {
-            $_SESSION['message_sent_success'] = "Message sent successfully.";
-            header("Location: messages_inbox.php");
-            exit;
+        if (!$result_recipient || mysqli_num_rows($result_recipient) === 0) {
+            // No member with this email
+            $error_msg = "No member found with that email address.";
         } else {
-            $error_msg = "Failed to send message. Please try again.";
+            $row_recipient = mysqli_fetch_assoc($result_recipient);
+            $recipient_id  = (int) $row_recipient['member_id'];
+
+            // Make sure user is not messaging themselves
+            if ($recipient_id === $member_id) {
+                $error_msg = "You cannot send a message to yourself.";
+            } else {
+                // Escape subject and body for SQL
+                $subject_sql = mysqli_real_escape_string($conn, $subject);
+                $body_sql    = mysqli_real_escape_string($conn, $body);
+
+                // Build INSERT query
+                $sql_insert = "
+                    INSERT INTO message (sender_id, recipient_id, subject, body, sent_at, is_read)
+                    VALUES ($member_id, $recipient_id, '$subject_sql', '$body_sql', NOW(), 0)
+                ";
+
+                // Run query
+                $result_insert = mysqli_query($conn, $sql_insert);
+
+                if ($result_insert) {
+                    $_SESSION['message_sent_success'] = "Message sent successfully.";
+                    header("Location: messages_inbox.php");
+                    exit;
+                } else {
+                    $error_msg = "Failed to send message. Please try again.";
+                }
+            }
         }
     }
 }
-
-// ============= LOAD LIST OF POSSIBLE RECIPIENTS =============
-$sql_members = "SELECT member_id, name FROM member ORDER BY name";
-$result_members = mysqli_query($conn, $sql_members);
 ?>
 
 <h2>Send Message</h2>
@@ -67,24 +92,8 @@ if ($error_msg !== "") {
 
 <form method="post" action="message_send.php">
 
-    <label for="recipient_id">To (member):</label><br>
-    <select id="recipient_id" name="recipient_id" required>
-        <option value="">-- Select Recipient --</option>
-        <?php
-        if ($result_members) {
-            while ($row = mysqli_fetch_assoc($result_members)) {
-                // Do not allow sending to self
-                if ((int)$row['member_id'] === $member_id) {
-                    continue;
-                }
-
-                echo '<option value="' . (int)$row['member_id'] . '">'
-                    . htmlspecialchars($row['name']) .
-                    '</option>';
-            }
-        }
-        ?>
-    </select><br><br>
+    <label for="recipient_email">To (recipient email):</label><br>
+    <input type="email" id="recipient_email" name="recipient_email" required><br><br>
 
     <label for="subject">Subject:</label><br>
     <input type="text" id="subject" name="subject" required><br><br>
