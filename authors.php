@@ -23,8 +23,12 @@ if (isset($_SESSION['member_id'])) {
 
     // Run the query
     $result_author_details = mysqli_query($conn, $sql_author_details);
-
-
+}
+else {
+    // Redirect to login page if not signed in
+    echo "<p> You must be signed in to view author details. Redirecting to login page...</p>";
+    header("Location: login.php");
+    exit();
 }
 ?>
 
