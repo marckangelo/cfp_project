@@ -39,11 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             FROM committee_membership cm
             JOIN committee c
                 ON cm.committee_id = c.committee_id
-            WHERE cm.member_id   = $member_id
+            WHERE cm.member_id = $member_id
               AND cm.committee_id = $committee_id
-              AND cm.status      = 'active'
-              AND c.status       = 'active'
-              AND c.scope        = 'plagiarism'
+              AND cm.status = 'active'
+              AND c.status = 'active'
+              AND c.scope = 'plagiarism'
             LIMIT 1
         ";
 
