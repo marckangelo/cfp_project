@@ -19,7 +19,7 @@ $query_all_authors = "SELECT m.name, a.bio FROM author a, member m WHERE a.membe
 $query_result_all_authors = mysqli_query($conn, $query_all_authors);
 
 //top 5 popular topics
-$query_topics = "SELECT topic, count(*) as topic_count FROM text GROUP BY topic ORDER BY topic_count DESC";
+$query_topics = "SELECT topic, count(*) as topic_count FROM text WHERE topic IS NOT NULL GROUP BY topic ORDER BY topic_count DESC";
 $query_result_topics = mysqli_query($conn, $query_topics);
 
 ?>
