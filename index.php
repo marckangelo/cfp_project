@@ -14,7 +14,7 @@ WHERE k.text_id = t.text_id AND t.author_orcid = a.orcid AND a.member_id = m.mem
 
 if (!empty($search)) {
     $search_escaped = mysqli_real_escape_string($conn, $search);
-    $query_search .= " AND (t.topic LIKE '%$search_escaped%' OR k.keyboard LIKE '%$search_escaped%' OR m.name LIKE '%$search_escaped%')";
+    $query_search .= " AND (t.topic LIKE '%$search_escaped%' OR k.keyword LIKE '%$search_escaped%' OR m.name LIKE '%$search_escaped%')";
 }
 $result_search = mysqli_query($conn, $query_search);
 
