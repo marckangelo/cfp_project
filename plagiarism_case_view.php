@@ -9,6 +9,7 @@ if (!isset($_SESSION['member_id'])) {
     exit;
 }
 
+// Storing the role of the current user (easier checks using these variables in if-statements)
 $member_id = (int) $_SESSION['member_id'];
 $is_admin  = isset($_SESSION['admin_id']);
 
@@ -97,11 +98,10 @@ if ($error_msg === "" && $case_row !== null) {
 
 // ================== LOAD VOTES FOR THIS CASE (FOR DISPLAY) ==================
 $votes = array();
-$vote_counts = array(
-    'plagiarized' => 0,
-    'not_plagiarized'=> 0,
-    'abstain' => 0
-);
+$vote_counts = array();
+$vote_counts['plagiarized'] = 0;
+$vote_counts['not_plagiarized'] = 0;
+$vote_counts['abstain'] = 0;
 
 if ($error_msg === "" && $authorized) {
 
