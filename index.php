@@ -15,14 +15,11 @@ $query_new_items = "SELECT t.title, t.upload_date FROM text t ORDER BY t.upload_
 $query_result_new_items = mysqli_query($conn, $query_new_items);
 
 //all authors
-$query_all_authors = "SELECT m.name FROM author a, member m WHERE a.member_id = m.member_id";
+$query_all_authors = "SELECT m.name, a.bio FROM author a, member m WHERE a.member_id = m.member_id";
 $query_result_all_authors = mysqli_query($conn, $query_all_authors);
 
-//keywords and topics for browsing
-$query_keywords = "SELECT DISTINCT keyword FROM text_keyword";
-$query_result_keywords = mysqli_query($conn, $query_keywords);
-
-$query_topics = "SELECT DISTINCT topic FROM text";
+//top 5 popular topics
+$query_topics = "SELECT topic, count(*) as topic_count FROM text ORDER BY topic_count DESC";
 $query_result_topics = mysqli_query($conn, $query_topics);
 
 ?>
@@ -39,7 +36,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 
 <h3>Search</h3>
 <form method="GET" action="index.php">
-    <input type="text" name="search" placeholder="Search by topic, author or keyword" value="<?php echo htmlspecialchars($search); ?>">
+    <input type="text" name="search" placeholder="Search by topic, keyword or author" value="<?php echo htmlspecialchars($search); ?>">
     <button type="submit">Search</button>
 </form>
 
@@ -75,28 +72,34 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 <table border="1">
     <tr>
         <th>Author Name</th>
+        <th>Bio</th>
     </tr>
     <?php while ($row = mysqli_fetch_assoc($query_result_all_authors)) { ?>
     <tr>
         <td><?php echo htmlspecialchars($row['name']); ?></td>
+        <td><?php echo htmlspecialchars($row['bio']); ?></td>
     </tr>
     <?php } ?>
 </table>
 
-<h3>Browse by Keyword</h3>
-<ul>
-    <?php while ($row = mysqli_fetch_assoc($query_result_keywords)) { ?>
-    <li><?php echo htmlspecialchars($row['keyword']); ?></li>
+<h3>Top 5 Popular Topics</h3>
+<table border="1">
+    <tr>
+        <th>Topic</th>
+        <th>Count</th>
+    </tr>
+    <?php 
+    $count = 0;
+    while ($row = mysqli_fetch_assoc($query_result_topics)) { 
+        if ($count >= 5) break;
+        $count++;
+    ?>
+    <tr>
+        <td><?php echo htmlspecialchars($row['topic']); ?></td>
+        <td><?php echo htmlspecialchars($row['topic_count']); ?></td>
+    </tr>
     <?php } ?>
-</ul>
-
-<h3>Browse by Topics</h3>
-<ul>
-    <?php while ($row = mysqli_fetch_assoc($query_result_topics)) { ?>
-    <li><?php echo htmlspecialchars($row['topic']); ?></li>
-    <?php } ?>
-</ul>
-
+</table>
 
 <h3>View our Statistics</h3>
 <p>
