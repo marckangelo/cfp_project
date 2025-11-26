@@ -97,25 +97,32 @@ if(isset($_SESSION['member_id'])) {
 
 
                 // Retrieving all comments for this text (shows name of member and their comment)
-                $comments = array();
+                // Retrieving all comments for this text (shows name of member and their comment)
+                $comments       = array();
+                $comment_ids    = array();
 
-                $sql_text_comments = "SELECT member_id, content 
+                $sql_text_comments = "SELECT comment_id, member_id, content 
                                     FROM comment 
                                     WHERE text_id = $text_id";
                 $result_text_comments = mysqli_query($conn, $sql_text_comments);
-                
 
                 while ($row_comments = mysqli_fetch_assoc($result_text_comments)) {
-                    $comment = $row_comments['content'];
-                    $sql_member_name = "SELECT name 
-                                    FROM member
-                                    WHERE member_id = " . $row_comments['member_id'];
-                    $result_member_name = mysqli_query($conn, $sql_member_name);
-                    $row_member_name = mysqli_fetch_assoc($result_member_name);
-                    $member_name = $row_member_name['name'];
 
-                    $comments[] = htmlspecialchars("$comment\n\n" . "Posted by [$member_name]");
+                    $comment = $row_comments['content'];
+
+                    // Get member name
+                    $sql_member_name = "SELECT name 
+                                        FROM member
+                                        WHERE member_id = " . (int)$row_comments['member_id'];
+                    $result_member_name = mysqli_query($conn, $sql_member_name);
+                    $row_member_name    = mysqli_fetch_assoc($result_member_name);
+                    $member_name        = $row_member_name['name'];
+
+                    // Save raw text. Escape + add the <br> later
+                    $comments[]    = $comment . "\n\n" . "Posted by [$member_name]";
+                    $comment_ids[] = (int)$row_comments['comment_id'];
                 }
+
 
                 $keywords_string = implode(", ", $keywords);
                 
@@ -137,25 +144,29 @@ if(isset($_SESSION['member_id'])) {
                         
                         <td>';
 
-                        // Display the comments
-                        
-                        foreach ($comments as $c) {
-                            echo '' . htmlspecialchars($c);
+                        // Display the comments + reply button (only for the author of this text)
+                        for ($i = 0; $i < count($comments); $i++) {
 
-                            /* 
-                            Here you woud add the 'REPLY' button if the current member 
-                            seeing this comment, is the author of this current text.
+                            // Show comment text with line breaks
+                            echo nl2br(htmlspecialchars($comments[$i])) . '<br>';
 
-                            How to implement 'REPLY' button to comments:
-                            1. through variable $text_id, get the text_id.
-                            2. Check if current orcid of this text_id is the same as the $SESSION['orcid'].
-                            3. If yes to previous step, reveal the 'REPLY button'
-                            4. Possible solution: Clicking 'REPLY' would redirect you to a reply_comment.php form, along with POST data of the comment_id
-                            
-                            */
-                        }    
-                        
-                echo   '</td>
+                            // If author is logged in AND they are the author of this text, show Reply button
+                            if (isset($_SESSION['orcid']) &&
+                                isset($row['author_orcid']) &&
+                                $_SESSION['orcid'] === $row['author_orcid']) {
+
+                                echo '
+                                    <form method="get" action="comment_reply.php" style="display:inline;">
+                                        <input type="hidden" name="comment_id" value="' . (int)$comment_ids[$i] . '">
+                                        <button type="submit">Reply</button>
+                                    </form>
+                                ';
+                            }
+
+                            echo '<hr>';
+                        }
+
+                        echo   '</td>
                         <td>
                             <form method="post" action="download.php">
                                 <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
