@@ -2,7 +2,7 @@
 session_start();
 require 'db.php';
 include 'header.php';
-//search term
+// search term
 $search = '';
 
 if (isset($_GET['search'])) {
@@ -21,20 +21,20 @@ if (!empty($search)) {
 }
 $result_search = mysqli_query($conn, $query_search);
 
-//popular items (most downloaded)
+// popular items (most downloaded)
 $query_popular_items = "SELECT t.title, count(*) as download_count FROM download d, text t 
 WHERE d.text_id = t.text_id GROUP BY d.text_id ORDER BY download_count DESC LIMIT 5";
 $query_result_popular_items = mysqli_query($conn, $query_popular_items);
 
-//new items (recent uploads)
+// new items (recent uploads)
 $query_new_items = "SELECT t.title, t.upload_date FROM text t WHERE t.status != 'draft' ORDER BY t.upload_date DESC LIMIT 5 ";
 $query_result_new_items = mysqli_query($conn, $query_new_items);
 
-//all authors
+// all authors
 $query_all_authors = "SELECT m.name, a.bio FROM author a, member m WHERE a.member_id = m.member_id";
 $query_result_all_authors = mysqli_query($conn, $query_all_authors);
 
-//top 5 popular topics
+// top 5 popular topics
 $query_topics = "SELECT topic, count(*) as topic_count FROM text WHERE topic IS NOT NULL AND topic <> '' GROUP BY topic ORDER BY topic_count DESC";
 $query_result_topics = mysqli_query($conn, $query_topics);
 
@@ -52,7 +52,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 
 <h3>Search</h3>
 <form method="GET" action="index.php">
-    <input type="text" name="search" placeholder="Search by topic, keyword or author" value="<?php echo htmlspecialchars($search); ?>">
+    <input type="text" name="search" placeholder="Search by topic, keyword or author" value="<?php echo htmlspecialchars($search); ?>" style="width: 300px;">
     <button type="submit">Search</button>
 </form>
 <?php if (!empty($search)) { ?>
