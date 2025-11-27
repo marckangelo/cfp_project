@@ -16,6 +16,7 @@ $amount = $_POST['amount'];
 $currency = $_POST['currency'];
 $payment_method = $_POST['payment_method'];
 $transaction_id = generate_transaction_id();
+
 $charity_pct = $_POST['charity_pct'];
 $cfp_pct = $_POST['cfp_pct'];
 $author_pct = $_POST['author_pct'];

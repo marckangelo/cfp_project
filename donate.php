@@ -13,8 +13,9 @@ echo "<p>";
 
 // Check data
 if (!isset($_POST['text_id'])) {
-    $errors[] = "text_id is missing from GET";
-    echo "$errors[0]";
+    echo "<p style='color:red;'>Missing text reference for donation.</p>";
+    include 'footer.php';
+    exit;
 }
 // DISPLAY TEXT DETAILS (the one receiving the donation)
 $text_id = (int) $_POST['text_id'];
@@ -51,6 +52,12 @@ $sql_charity = "SELECT charity_id, name
 
 // Run query
 $result_text_title = mysqli_query($conn, $sql_text_title);
+// Check results
+if (!$result_text_title || mysqli_num_rows($result_text_title) === 0) {
+    echo "<p style='color:red;'>Text not found.</p>";
+    include 'footer.php';
+    exit;
+}
 
 $result_charities = mysqli_query($conn, $sql_charity);
 
