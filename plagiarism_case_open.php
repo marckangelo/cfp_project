@@ -9,8 +9,8 @@ if (!isset($_SESSION['member_id'])) {
     exit;
 }
 
-$member_id   = (int) $_SESSION['member_id'];
-$error_msg   = "";
+$member_id = (int) $_SESSION['member_id'];
+$error_msg = "";
 $success_msg = "";
 
 // Initialize for both GET and POST so they exist for the form
@@ -55,12 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Optional: check if an active case already exists for this text
             $sql_existing_case = "
-                SELECT case_id
-                FROM plagiarism_case
-                WHERE text_id = $text_id
-                  AND status IN ('open', 'under_review', 'voting')
-                LIMIT 1
-            ";
+                                SELECT case_id
+                                FROM plagiarism_case
+                                WHERE text_id = $text_id
+                                AND status IN ('open', 'under_review', 'voting')
+                                LIMIT 1
+                                ";
 
             $result_existing_case = mysqli_query($conn, $sql_existing_case);
 
@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $description_sql = mysqli_real_escape_string($conn, $description);
 
                 $sql_insert_case = "
-                    INSERT INTO plagiarism_case
-                        (committee_id, text_id, opened_date, description, status, resolution)
-                    VALUES
-                        ($committee_id, $text_id, CURDATE(), '$description_sql', 'open', NULL)
-                ";
+                                    INSERT INTO plagiarism_case
+                                        (committee_id, text_id, opened_date, description, status, resolution)
+                                    VALUES
+                                        ($committee_id, $text_id, CURDATE(), '$description_sql', 'open', NULL)
+                                    ";
 
                 $result_insert_case = mysqli_query($conn, $sql_insert_case);
 
