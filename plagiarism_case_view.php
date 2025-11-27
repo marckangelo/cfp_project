@@ -162,8 +162,115 @@ if ($error_msg === "" && $authorized && $case_row !== null && $can_manage_case_s
         $result_update_case = mysqli_query($conn, $sql_update_case);
 
         if ($result_update_case) {
-            $_SESSION['case_status_msg'] = "Case status updated successfully.";
+
+            // Base message
+            $extra_msg = "";
+
+            // ================== APPLY 2/3 RULE WHEN CLOSING AS PLAGIARIZED ==================
+            if ($case_action === 'close_plagiarized') {
+
+                // 1) Get vote totals for this case
+                $sql_vote_totals = "
+                    SELECT
+                        SUM(CASE WHEN vote = 'plagiarized' THEN 1 ELSE 0 END) AS plag_cnt,
+                        SUM(CASE WHEN vote = 'not_plagiarized' THEN 1 ELSE 0 END) AS not_plag_cnt,
+                        SUM(CASE WHEN vote = 'abstain' THEN 1 ELSE 0 END) AS abstain_cnt
+                    FROM vote
+                    WHERE case_id = $case_id
+                ";
+
+                $result_vote_totals = mysqli_query($conn, $sql_vote_totals);
+
+                if ($result_vote_totals && ($row_totals = mysqli_fetch_assoc($result_vote_totals))) {
+
+                    $plag_cnt    = (int)$row_totals['plag_cnt'];
+                    $not_plag_cnt = (int)$row_totals['not_plag_cnt'];
+                    $abstain_cnt = (int)$row_totals['abstain_cnt'];
+
+                    // Here all votes count, total count of votes have every type of vote (including abstain)
+                    $total_votes = $plag_cnt + $not_plag_cnt + $abstain_cnt;
+
+                    if ($total_votes > 0) {
+                        $fraction_plag = $plag_cnt / $total_votes;
+
+                        if ($fraction_plag >= (2.0 / 3.0)) {
+                            // 2) Blacklist/remove THIS text: use 'archiv' as "removed/blacklisted" (*** TO DOUBLE CHECK ***)
+                            $text_id_for_case = (int)$case_row['text_id'];
+
+                            $sql_blacklist_text = "
+                                UPDATE text
+                                SET status = 'archiv'
+                                WHERE text_id = $text_id_for_case
+                            ";
+                            mysqli_query($conn, $sql_blacklist_text);
+
+                            $extra_msg .= " Text has been archived (blacklisted) based on the 2/3 plagiarism vote rule.";
+
+                            // 3) Count plagiarized cases for this author
+                            $author_orcid = mysqli_real_escape_string($conn, $case_row['text_author_orcid']);
+
+                            $sql_plag_text_count = "
+                                SELECT COUNT(*) AS plag_texts
+                                FROM plagiarism_case pc
+                                JOIN text t ON pc.text_id = t.text_id
+                                WHERE pc.resolution = 'plagiarized'
+                                  AND t.author_orcid = '$author_orcid'
+                            ";
+
+                            $result_plag_text_count = mysqli_query($conn, $sql_plag_text_count);
+
+                            if ($result_plag_text_count && ($row_cnt = mysqli_fetch_assoc($result_plag_text_count))) {
+
+                                $plag_texts_for_author = (int)$row_cnt['plag_texts'];
+
+                                if ($plag_texts_for_author >= 3) {
+                                    // 4) Find the member_id for this author (via AUTHOR table)
+                                    $sql_author_member = "
+                                        SELECT member_id
+                                        FROM author
+                                        WHERE orcid = '$author_orcid'
+                                        LIMIT 1
+                                    ";
+
+                                    $result_author_member = mysqli_query($conn, $sql_author_member);
+
+                                    if ($result_author_member && mysqli_num_rows($result_author_member) > 0) {
+
+                                        $row_author = mysqli_fetch_assoc($result_author_member);
+                                        $author_member_id = (int)$row_author['member_id'];
+
+                                        // 5) Blacklist the author as a member
+                                        $sql_blacklist_member = "
+                                            UPDATE member
+                                            SET status = 'blacklisted'
+                                            WHERE member_id = $author_member_id
+                                        ";
+                                        mysqli_query($conn, $sql_blacklist_member);
+
+                                        // 6) Suspend/archive ALL their texts since they are blacklisted
+                                        $sql_suspend_texts = "
+                                            UPDATE text
+                                            SET status = 'archiv'
+                                            WHERE author_orcid = '$author_orcid'
+                                        ";
+                                        mysqli_query($conn, $sql_suspend_texts);
+
+                                        $extra_msg .= " Author has 3+ plagiarized texts and has been blacklisted; all their works have been archived.";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // ================== END OF 2/3 RULE HANDLING ==================
+
+
+            // Set any success messages needed to be displayed
+            $_SESSION['case_status_msg'] = "Case status updated successfully." . $extra_msg;
+
         } else {
+            // Set any fail messages needed to be displayed
             $_SESSION['case_status_msg'] = "Failed to update case status.";
         }
 
@@ -171,6 +278,7 @@ if ($error_msg === "" && $authorized && $case_row !== null && $can_manage_case_s
         exit;
     }
 }
+
 
 // ================== HANDLE VOTING ELIGIBILITY AND SUBMISSION ==================
 $vote_error_msg = "";
@@ -222,8 +330,8 @@ if ($error_msg === "" && $authorized && $case_row !== null) {
         $has_already_voted = true;
     }
 
-    // Final eligibility to vote:
-    // - case must be in 'voting' status
+    // Final eligibility conditions to be able to vote:
+    // - case must be in 'voting' status (Set by committee chair)
     // - member downloaded the text
     // - within 14 days of case opening
     // - has not voted yet
@@ -231,7 +339,7 @@ if ($error_msg === "" && $authorized && $case_row !== null) {
         $can_vote = true;
     }
 
-    // Handle vote submission (POST)
+    // Handle vote if form for voting is submitted (POST)
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_vote'])) {
 
         if (!$can_vote) {
@@ -435,6 +543,7 @@ if ($total_votes > 0) {
 
 <?php
 // Show vote messages and voting form (if user is eligible to vote)
+// Eligible if you have downloaded the text & if you are committee member for the committee handling plagiarism
 if ($authorized) {
 
     if ($vote_error_msg !== "") {
@@ -519,10 +628,5 @@ if ($authorized && $can_manage_case_status) {
     }
 }
 ?>
-
-<!--
-    TODO (later):
-    - Also add logic on closing to apply the 2/3 rule for blacklisting the text/author.
--->
 
 <?php include 'footer.php'; ?>
