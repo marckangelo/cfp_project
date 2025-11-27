@@ -94,6 +94,7 @@ if(isset($_SESSION['member_id'])) {
                 <table border="1">
                     <tr>
                         <th>Title</th>
+                        <th>Author</th>
                         <th>Abstract</th>
                         <th>Topic</th>
                         <th>Keywords</th>
@@ -115,6 +116,30 @@ if(isset($_SESSION['member_id'])) {
                 $keywords = array();
 
                 $text_id = $row['text_id'];
+
+                // ---------- Fetch author name ----------
+                $author_name = "-";
+                if (!empty($row['author_orcid'])) {
+
+                    $author_orcid_sql = mysqli_real_escape_string($conn, $row['author_orcid']);
+
+                    $sql_author_name = "
+                        SELECT m.name
+                        FROM author a
+                        JOIN member m
+                            ON a.member_id = m.member_id
+                        WHERE a.orcid = '$author_orcid_sql'
+                        LIMIT 1
+                    ";
+
+                    $result_author_name = mysqli_query($conn, $sql_author_name);
+
+                    if ($result_author_name && mysqli_num_rows($result_author_name) > 0) {
+                        $row_author_name = mysqli_fetch_assoc($result_author_name);
+                        $author_name = $row_author_name['name'];
+                    }
+                }
+                // --------------------------------------
 
 
                 // Retrieving all keywords for this text
@@ -166,6 +191,7 @@ if(isset($_SESSION['member_id'])) {
                 
                     <tr>
                         <td>' . htmlspecialchars($row['title']) . '</td>
+                        <td>' . htmlspecialchars($author_name) . '</td>
                         <td>' . htmlspecialchars($row['abstract']) . '</td>
                         <td>' . htmlspecialchars($row['topic']) . '</td>
                         <td>' . htmlspecialchars($keywords_string) . '</td>
