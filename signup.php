@@ -84,11 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ORCID format check --> Must be like: 0000-0000-0000-0000
-    if (!preg_match("/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/", $orcid)) {
-    $errors[] = "ORCID is not valid. Use format like: 0000-0000-0000-0000.";
-    }
-
     // Password length check (basic)
     if (strlen($password) < 6) {
         $errors[] = "Password must be at least 6 characters long.";
@@ -168,11 +163,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // If ORCID was provided, then also insert into AUTHOR table
             if($orcid != "") {
-                $sql_author = "INSERT INTO author (member_id, orcid)
+                // ORCID format check --> Must be like: 0000-0000-0000-0000
+                if (!preg_match("/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/", $orcid)) {
+                    $errors[] = "ORCID is not valid. Use format like: 0000-0000-0000-0000.";
+                } else {
+                    $sql_author = "INSERT INTO author (member_id, orcid)
                                VALUES ($member_id, '$orcid')";
-                mysqli_query($conn, $sql_author);
+                    mysqli_query($conn, $sql_author);
+                }
             }
-
+            
             $_SESSION['signup_success'] = "Account created successfully!";
             header("Location: login.php");
             exit;

@@ -29,7 +29,8 @@ $query = "SELECT
             m.name
           FROM text t, member m, author a
           WHERE t.author_orcid = a.orcid 
-            AND a.member_id = m.member_id";
+            AND a.member_id = m.member_id
+            AND t.status = 'published' ";
 // Filter by author if provided
 if ($search != '') {
     $searched_prompt = addslashes($search);

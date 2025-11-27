@@ -47,7 +47,7 @@ if (isset($_SESSION['member_id'])) {
                 <td>' . htmlspecialchars($row['primary_email']) . '</td>
                 <td>' . htmlspecialchars($row['recovery_email']) . '</td>
                 <td>' . htmlspecialchars($row['status']) . '</td>
-                <td><button>Change Status<button></th>
+                <td><button>Change Status</button></td>
             </tr>';
     }
     echo '</table>';

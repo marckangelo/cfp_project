@@ -47,8 +47,8 @@ if ($result_committee_details) {
         while ($row = mysqli_fetch_assoc($result_committee_details)) {
 
             // Get this row's committee_id that is being sent through POST to the form pages
-            $committee_id = (int)$row['committee_id'];
-            
+            $committee_id = (int) $row['committee_id'];
+
 
             // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
             echo '
@@ -60,7 +60,6 @@ if ($result_committee_details) {
                     <td>' . htmlspecialchars($row['status']) . '</td> 
                     <td>' . htmlspecialchars($row['member_count']) . '</td> 
                     <td>
-                        <td>
                             <form method="get" action="admin_committees_edit.php">
                                 <input type="hidden" name="committee_id" value="' . $committee_id . '">
                                 <button type="submit" name="edit_committee">Edit</button>
@@ -70,7 +69,6 @@ if ($result_committee_details) {
                                 <input type="hidden" name="committee_id" value="' . $committee_id . '">
                                 <button type="submit" name="delete_committee">Delete</button>
                             </form>
-                        </td>
 
                     </td>
                 </tr>

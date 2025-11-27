@@ -68,6 +68,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['orcid'] = null;
                 }
 
+                // Is the member an Admin?
+                $sql_admin = "SELECT admin_id 
+                            FROM admin
+                            WHERE admin_id = $member_id
+                            LIMIT 1";
+
+                $result_admin = mysqli_query($conn, $sql_admin);
+
+                if ($result_admin && mysqli_num_rows($result_admin) == 1) {
+                    $admin_row = mysqli_fetch_assoc($result_admin);
+                    $_SESSION['is_admin'] = true;
+                    $_SESSION['admin_id'] = $admin_row['admin_id'];
+                } else {
+                    $_SESSION['is_admin'] = false;
+                    $_SESSION['admin_id'] = null;
+                }
+
                 // Redirect to index.php (FOR NOW) **** SHOULD BE FIXED ****
                 header("Location: index.php");
                 exit;
