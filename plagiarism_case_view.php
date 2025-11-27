@@ -14,6 +14,14 @@ $member_id = (int) $_SESSION['member_id'];
 $is_admin  = isset($_SESSION['admin_id']);
 
 $error_msg = "";
+$case_status_msg = "";
+$committee_role_for_case = "";
+
+// If any case status messages, show them once
+if (isset($_SESSION['case_status_msg'])) {
+    $case_status_msg = $_SESSION['case_status_msg'];
+    unset($_SESSION['case_status_msg']);
+}
 
 // ================== GET CASE ID FROM URL ==================
 if (!isset($_GET['case_id'])) {
@@ -76,7 +84,7 @@ if ($error_msg === "" && $case_row !== null) {
     } else {
         // Check if this member is an active member of the committee for this case
         $sql_check_member = "
-            SELECT cm.membership_id
+            SELECT cm.membership_id, cm.role
             FROM committee_membership cm
             WHERE cm.member_id = $member_id
               AND cm.committee_id = $committee_id_for_case
@@ -87,12 +95,80 @@ if ($error_msg === "" && $case_row !== null) {
         $result_check_member = mysqli_query($conn, $sql_check_member);
 
         if ($result_check_member && mysqli_num_rows($result_check_member) > 0) {
+            $row_check_member = mysqli_fetch_assoc($result_check_member);
             $authorized = true;
+            $committee_role_for_case = $row_check_member['role'];
         }
     }
 
     if (!$authorized) {
         $error_msg = "You are not authorized to view this plagiarism case.";
+    }
+}
+
+// ================== DETERMINE WHO CAN MANAGE CASE STATUS (ADMIN OR CHAIR) ==================
+$is_chair_for_case = false;
+$can_manage_case_status = false;
+
+if ($error_msg === "" && $case_row !== null && $authorized) {
+
+    if ($is_admin) {
+        $can_manage_case_status = true;
+    } else {
+        if ($committee_role_for_case === 'chair') {
+            $is_chair_for_case = true;
+            $can_manage_case_status = true;
+        }
+    }
+}
+
+// ================== HANDLE CASE STATUS MANAGEMENT (ADMIN OR COMMITTEE CHAIR) ==================
+if ($error_msg === "" && $authorized && $case_row !== null && $can_manage_case_status &&
+    $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['case_action'])) {
+
+    $case_action = $_POST['case_action'];
+    $sql_update_case = "";
+
+    if ($case_action === 'start_voting') {
+
+        $sql_update_case = "
+            UPDATE plagiarism_case
+            SET status = 'voting'
+            WHERE case_id = $case_id
+        ";
+
+    } else if ($case_action === 'close_plagiarized') {
+
+        $sql_update_case = "
+            UPDATE plagiarism_case
+            SET status = 'closed',
+                resolution = 'plagiarized',
+                closed_date = CURDATE()
+            WHERE case_id = $case_id
+        ";
+
+    } else if ($case_action === 'close_not_plagiarized') {
+
+        $sql_update_case = "
+            UPDATE plagiarism_case
+            SET status = 'closed',
+                resolution = 'not_plagiarized',
+                closed_date = CURDATE()
+            WHERE case_id = $case_id
+        ";
+    }
+
+    if ($sql_update_case !== "") {
+        $result_update_case = mysqli_query($conn, $sql_update_case);
+
+        if ($result_update_case) {
+            $_SESSION['case_status_msg'] = "Case status updated successfully.";
+        } else {
+            $_SESSION['case_status_msg'] = "Failed to update case status.";
+        }
+
+        header("Location: plagiarism_case_view.php?case_id=" . $case_id);
+        exit;
     }
 }
 
@@ -238,6 +314,11 @@ if ($error_msg !== "") {
     echo '<div style="color: red;">' . htmlspecialchars($error_msg) . '</div>';
     include 'footer.php';
     exit;
+}
+
+// Case status message (if any)
+if ($case_status_msg !== "") {
+    echo '<div style="color: green;">' . htmlspecialchars($case_status_msg) . '</div>';
 }
 ?>
 
@@ -396,21 +477,52 @@ if ($authorized) {
         echo '<p>You have already voted on this case.</p>';
 
     } else if ($vote_success_msg === "" && !$has_already_voted) {
-        // Not eligible to vote (e.g., did not download, outside 14-day window, or case not in "voting")
-        // You can keep this silent or uncomment the line below for a generic message:
-        // echo '<p>You are currently not eligible to vote on this case.</p>';
+        // Not eligible to vote (if e.g.: did not download, outside 14-day window, or case not in "voting")
+        echo '<p>You are currently not eligible to vote on this case.</p>';
+    }
+}
+?>
+
+<br>
+
+<?php
+// Case management section: admin or committee chair can change status
+if ($authorized && $can_manage_case_status) {
+
+    echo '<h3>Case Management</h3>';
+
+    if ($status === 'open' || $status === 'under_review') {
+
+        echo '
+        <form method="post" action="plagiarism_case_view.php?case_id=' . $case_id . '">
+            <input type="hidden" name="case_action" value="start_voting">
+            <button type="submit">Set Status to "voting"</button>
+        </form>
+        ';
+    }
+
+    if ($status === 'voting') {
+
+        echo '
+        <form method="post" action="plagiarism_case_view.php?case_id=' . $case_id . '">
+            <input type="hidden" name="case_action" value="close_plagiarized">
+            <button type="submit">Close as "plagiarized"</button>
+        </form>
+        ';
+
+        echo '
+        <form method="post" action="plagiarism_case_view.php?case_id=' . $case_id . '">
+            <input type="hidden" name="case_action" value="close_not_plagiarized">
+            <button type="submit">Close as "not plagiarized"</button>
+        </form>
+        ';
     }
 }
 ?>
 
 <!--
     TODO (later):
-    - Add voting form here, restricted to members who:
-      * downloaded this text, AND
-      * are within the 14-day voting window, AND
-      * have not already voted on this case.
-    - Also add admin/committee controls to move case status
-      (e.g., from "under_review" -> "voting" -> "closed").
+    - Also add logic on closing to apply the 2/3 rule for blacklisting the text/author.
 -->
 
 <?php include 'footer.php'; ?>
