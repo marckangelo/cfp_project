@@ -280,5 +280,4 @@ if(isset($_SESSION['member_id'])) {
 }
 
 ?>
-<p>TODO: Display item details, comments, download button, and donation link.</p>
 <?php include 'footer.php'; ?>
