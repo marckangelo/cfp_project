@@ -65,7 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result_insert) {
             $_SESSION['comment_reply_success'] = "Reply posted successfully.";
             // You can redirect to item.php or wherever you show the comments
-            header("Location: item.php");
+            $text_id = (int)$_POST['text_id']; 
+            header("Location: item.php?id=" . $text_id);
             exit;
         } else {
             $errors[] = "Failed to save reply. Please try again.";

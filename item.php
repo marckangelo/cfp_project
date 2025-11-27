@@ -218,6 +218,7 @@ if(isset($_SESSION['member_id'])) {
                                 echo '
                                     <form method="get" action="comment_reply.php" style="display:inline;">
                                         <input type="hidden" name="comment_id" value="' . (int)$comment_ids[$i] . '">
+                                        <input type="hidden" name="text_id" value="' . (int)$text_id . '">
                                         <button type="submit">Reply</button>
                                     </form>
                                 ';
