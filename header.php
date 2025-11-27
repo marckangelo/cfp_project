@@ -2,6 +2,10 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+$is_logged_in = !empty($_SESSION['member_id']);
+$is_author    = !empty($_SESSION['orcid']);
+$is_admin     = !empty($_SESSION['admin_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,12 +23,19 @@ if (session_status() === PHP_SESSION_NONE) {
             <a href="authors.php">Authors</a> |
             <a href="statistics.php">Statistics</a> |
             <a href="about.php">About</a> |
-            <a href="messages_inbox.php">Inbox</a> |
-            
-            <?php if (!empty($_SESSION['member_id'])): ?>
-                <?php if (!empty($_SESSION['orcid'])): ?>
-                <a href="author_dashboard.php">Author Dashboard</a> |
+
+            <?php if ($is_logged_in): ?>
+                <a href="messages_inbox.php">Inbox</a> |
+
+                <?php if ($is_author): ?>
+                    <a href="author_dashboard.php">Author Dashboard</a> |
                 <?php endif; ?>
+
+                <?php if ($is_admin): ?>
+                    <!-- Dev mode: admin can see this; later you restrict admin_*.php internally -->
+                    <a href="admin_dashboard.php">Admin Dashboard</a> |
+                <?php endif; ?>
+
                 <a href="my_account.php">My Account</a> |
                 <a href="logout.php">Logout</a> |
             <?php else: ?>
