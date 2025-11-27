@@ -43,8 +43,16 @@ if (isset($_SESSION['failed_donation'])) {
     unset($_SESSION['failed_donation']);
 }
    
+// Check for a specific text_id coming from browse.php
+if (!isset($_GET['id'])) {
+    echo "<p style='color:red;'>No text selected.</p>";
+    include 'footer.php';
+    exit;
+}
 
-$sql_text_details = "SELECT * FROM text";
+$text_id = (int) $_GET['id'];
+
+$sql_text_details = "SELECT * FROM text WHERE text_id = $text_id";
 
 $result_text_details = mysqli_query($conn, $sql_text_details);
 
@@ -81,7 +89,7 @@ if(isset($_SESSION['member_id'])) {
 
             // Table header
             echo '
-            <h4>List of Items (Texts) </h4>
+            <h2>Item Details</h2>
 
                 <table border="1">
                     <tr>
@@ -202,7 +210,10 @@ if(isset($_SESSION['member_id'])) {
                                 <input type="hidden" name="text_id" value="'. htmlspecialchars($row['text_id']) . '">
                                 <button type="submit" name="donate">Donate</button>
                             </form>
-                            <form method="post" action="author_item_edit.php">
+                        ';
+                            
+                    if (!empty($_SESSION['orcid']) && $_SESSION['orcid'] === $row['author_orcid']) {
+                      echo '<form method="post" action="author_item_edit.php">
                                 <input type="hidden" name="text_id" value="'. htmlspecialchars($row['text_id']) . '">
                                 
                                 <input type="hidden" name="title" value="'. htmlspecialchars($row['title']) . '">
@@ -213,7 +224,8 @@ if(isset($_SESSION['member_id'])) {
                                 <input type="hidden" name="keywords_string" value="'. htmlspecialchars($keywords_string) . '">
                                 <button type="submit" name="edit">Edit</button>
                             </form>
-                ';
+                        ';
+                    }
 
                         // If the logged-in member is in an active plagiarism committee,
                         // show a button to open a plagiarism case for this text
@@ -241,6 +253,5 @@ if(isset($_SESSION['member_id'])) {
 }
 
 ?>
-<h2>Item Details</h2>
 <p>TODO: Display item details, comments, download button, and donation link.</p>
 <?php include 'footer.php'; ?>
