@@ -9,32 +9,53 @@ if (isset($_SESSION['member_id'])) {
 // CODE 
 
 // Extract data to insert into database
-$member_id = $_SESSION['member_id'];
-$text_id = $_POST['text_id'];
-$charity_id = $_POST['charity_id'];
-$amount = $_POST['amount'];
+$member_id = (int) $_SESSION['member_id'];
+$text_id = (int) $_POST['text_id'];
+$charity_id = (int) $_POST['charity_id'];
+$amount = (float) $_POST['amount'];
 $currency = $_POST['currency'];
 $payment_method = $_POST['payment_method'];
 $transaction_id = generate_transaction_id();
 
-$charity_pct = $_POST['charity_pct'];
-$cfp_pct = $_POST['cfp_pct'];
-$author_pct = $_POST['author_pct'];
+$charity_pct = (int) $_POST['charity_pct'];
+$cfp_pct = (int) $_POST['cfp_pct'];
+$author_pct = (int) $_POST['author_pct'];
 
 // Get title of the text you are donating to through POST
 $text_title = $_POST['title'];
 
-//Validate the % data
+//Validate the % data and amount
 
-$total_pct = (float)($charity_pct + $cfp_pct + $author_pct);
+// Amount must be > 0
+if ($amount <= 0) {
+    $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Donation amount must be greater than 0.");
+    header("Location: item.php");
+    exit;
+}
+
+// Charity must be at least 60%
+if ($charity_pct < 60) {
+    $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Charity percentage must be at least 60%.");
+    header("Location: item.php");
+    exit;
+}
+
+// CFP and Author between 0 and 40 (to match the HTML constraints)
+if ($cfp_pct < 0 || $cfp_pct > 40 || $author_pct < 0 || $author_pct > 40) {
+    $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! CFP and Author percentages must be between 0% and 40%.");
+    header("Location: item.php");
+    exit;
+}
+
+$total_pct = $charity_pct + $cfp_pct + $author_pct;
 
 /*  charity_pct is already validated through html requirements (60% <= charity_pct <= 100%) in donate.php file
     
     Just needs to validate whether all 3 percentage values add up to 100%, if not, go back to item.php 
     where you can click on the 'Donate' buttton again
 */
-if ($total_pct != 100.0) {
-    $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Charity, Author and CFP percentages must add up to 100%"); 
+if ($total_pct !== 100) {
+    $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Charity, Author and CFP percentages must add up to 100% (you have $total_pct%)."); 
     header("Location: item.php");
     exit;
 }
