@@ -20,26 +20,11 @@ if (!isset($_POST['text_id'])) {
 // DISPLAY TEXT DETAILS (the one receiving the donation)
 $text_id = (int) $_POST['text_id'];
 
-// Percentage validation
-if (isset($_POST['charity_pct'], $_POST['cfp_pct'], $_POST['author_pct'])) {
-    $charity_pct = (int)$_POST['charity_pct'];
-    $cfp_pct = (int)$_POST['cfp_pct'];
-    $author_pct = (int)$_POST['author_pct'];
-    $total_pct = (int)$_POST['charity_pct'] + (int)$_POST['cfp_pct'] + (int)$_POST['author_pct'];
-    //min charity pct 60%
-    if ($charity_pct < 60) {
-        $errors[] = "Charity percentage must be at least 60%.";
-        echo $errors[count($errors)-1];
-    }
-    //total must be 100%
-    if ($total_pct !== 100) {
-        $errors[] = "The total percentage allocation must equal 100%. Currently it equals $total_pct%.";
-        echo $errors[count($errors)-1];
-    }
-} else {
-    $errors[] = "Percentage allocations are missing.";
-    echo $errors[count($errors)-1];
-}
+/* Percentages will be entered in this form by the user
+   and fully validated in donate_process.php, not here.
+
+   (Check for if the three % values add up to 100% in donate_process.php)
+*/ 
 
 // Build SQL
 $sql_text_title = "SELECT title 
