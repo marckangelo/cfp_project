@@ -75,7 +75,7 @@ $result = mysqli_query($conn, $query);
     </tr>
     <?php while ($row = mysqli_fetch_assoc($result)) { ?>
     <tr>
-        <td><a href="view_text.php?id=<?php echo $row['text_id']; ?>"><?php echo htmlspecialchars($row['title']); ?></a></td>
+        <td><a href="item.php?id=<?php echo $row['text_id']; ?>"><?php echo htmlspecialchars($row['title']); ?></a></td>
         <td><a href="author_profile.php?orcid=<?php echo $row['orcid']; ?>"><?php echo htmlspecialchars($row['name']); ?></a></td>
         <td><?php echo htmlspecialchars($row['upload_date']); ?></td>
         <td><?php echo htmlspecialchars($row['avg_rating']); ?></td>
