@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // loop where it concatenates 1 random character 16 times to create the  verification_matrix
         for ($i = 0; $i < 16; $i++) {
-            $verification_matrix .= $chars[rand(0, strlen($chars) - 1)];
+            $verification_matrix .= $chars[rand(0, strlen($chars) - 1)]; // This is what will be saved into DB
         }
 
         // Expiry date: 30 days from now (can still be changed --> **30 days only FOR NOW**)
@@ -172,7 +172,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_query($conn, $sql_author);
                 }
             }
+
+            // Save matrix and its expiry date in session so we can show it once on login page
+            $_SESSION['new_verification_matrix'] = $verification_matrix;
+            $_SESSION['matrix_expiry_date'] = $matrix_expiry_date;
             
+            // If this is reached, signup was successful -> head to login page
             $_SESSION['signup_success'] = "Account created successfully!";
             header("Location: login.php");
             exit;
