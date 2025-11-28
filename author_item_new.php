@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Check queries execution
         if ($result_text && $is_valid_keywords) {
             $_SESSION['successful_upload'] = "Text was successfully uploaded!";
-            header("Location: item.php");
+            header("Location: item.php?text_id=" . $text_id);
             exit;
         }
         else {

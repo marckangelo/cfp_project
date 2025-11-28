@@ -44,13 +44,13 @@ if (isset($_SESSION['failed_donation'])) {
 }
    
 // Check for a specific text_id coming from browse.php
-if (!isset($_GET['id'])) {
+if (!isset($_GET['text_id'])) {
     echo "<p style='color:red;'>No text selected.</p>";
     include 'footer.php';
     exit;
 }
 
-$text_id = (int) $_GET['id'];
+$text_id = (int) $_GET['text_id'];
 
 $sql_text_details = "SELECT * FROM text WHERE text_id = $text_id";
 

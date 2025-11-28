@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     } else if ($item_action === 'under_review') {
         $new_status = 'under_review';
     } else if ($item_action === 'blacklist') {
-        $new_status = 'blacklisted';
+        // In schema, "archived" status represents blacklisted/removed texts
+        $new_status = 'archived';
     }
 
     if ($new_status !== '') {
@@ -154,7 +155,7 @@ function display_items_table($conn, $status_filter, $title_label) {
                         </form>
                 ';
             } else {
-                // Fallback for any other status (e.g., blacklisted)
+                // Fallback for any other status (e.g., archived = blacklisted)
                 echo '
                         <em>No actions available.</em>
                 ';
@@ -176,13 +177,14 @@ function display_items_table($conn, $status_filter, $title_label) {
 ?>
 
 <h2>Admin - Items</h2>
-<p>List and manage items by status (draft, under review, published).</p>
+<p>List and manage items by status (draft, under review, published, archived/blacklisted).</p>
 
 <?php
 // Displaying tables for each status
 display_items_table($conn, 'under_review', 'Texts - Under Review');
 display_items_table($conn, 'draft', 'Texts - Draft');
 display_items_table($conn, 'published', 'Texts - Published');
+display_items_table($conn, 'archived', 'Texts - Archived / Blacklisted');
 
 include 'footer.php';
 ?>
