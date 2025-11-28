@@ -10,15 +10,6 @@ if (!isset($_SESSION['member_id'])) {
 $member_id = (int) $_SESSION['member_id'];
 $errors = [];
 
-$downloads_by_member = [];
-$downloads_by_member_sql = "SELECT * FROM download WHERE member_id = $member_id";
-$downloads_by_member_result = mysqli_query($conn, $downloads_by_member_sql);
-
-if ($downloads_by_member_result) {
-    while ($row = mysqli_fetch_assoc($downloads_by_member_result)) {
-        $downloads_by_member[] = $row;
-    }
-}
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $text_id = isset($_POST['text_id']) ? intval($_POST['text_id']) : 0;
@@ -46,16 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if member has downloaded the text before allowing comment
     $has_downloaded = false;
-    foreach ($downloads_by_member as $download) {
-        if ($download['text_id'] == $text_id) {
-            $has_downloaded = true;
-            break;
-        }
+
+    $sql_download_check = "
+        SELECT download_id
+        FROM download
+        WHERE member_id = $member_id
+          AND text_id = $text_id
+        LIMIT 1
+    ";
+
+    $result_download_check = mysqli_query($conn, $sql_download_check);
+
+    if ($result_download_check && mysqli_num_rows($result_download_check) > 0) {
+        $has_downloaded = true;
     }
+
     // If not downloaded, add error
     if (!$has_downloaded) {
         $errors[] = "You must download the text before commenting.";
     }
+
     // If no errors, insert the comment
     if (empty($errors)) {
         $comment_added = addslashes($content);
@@ -85,21 +86,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo '<br>';
     }
 }
+
+// Figure out which text we are commenting on (from GET first, then POST)
+if (isset($_GET['text_id'])) {
+    $text_id_for_form = (int) $_GET['text_id'];
+} elseif (isset($_POST['text_id'])) {
+    $text_id_for_form = (int) $_POST['text_id'];
+} else {
+    echo "<p style='color:red;'>No text selected for commenting.</p>";
+    exit;
+}
+
+// Fetch the title of this text for display
+$sql_text = "SELECT title FROM text WHERE text_id = $text_id_for_form";
+$result_text = mysqli_query($conn, $sql_text);
+
+if (!$result_text || mysqli_num_rows($result_text) === 0) {
+    echo "<p style='color:red;'>Selected text not found.</p>";
+    exit;
+}
+
+$row_text = mysqli_fetch_assoc($result_text);
+$text_title = $row_text['title'];
 ?>
 
 <form action="comment_add.php" method="post">
-    <label for="comment_text">Select Text:</label><br>
-    <select name="text_id" id="text_id" required>
-        <?php
-        $texts_sql = "SELECT text_id, title FROM text";
-        $texts_result = mysqli_query($conn, $texts_sql);
-        if ($texts_result) {
-            while ($text = mysqli_fetch_assoc($texts_result)) {
-                echo "<option value=\"" . $text['text_id'] . "\">" . htmlspecialchars($text['title']) . "</option>";
-            }
-        }
-        ?>
-    </select><br>
+
+    <p><strong>Text:</strong> <?php echo htmlspecialchars($text_title); ?></p>
+    <input type="hidden" name="text_id" value="<?php echo $text_id_for_form; ?>">
 
     <?php if (isset($_GET['ReplyTo'])): ?>
         <input type="hidden" name="parent_comment_id" value="<?php echo intval($_GET['ReplyTo']); ?>">
@@ -134,4 +148,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <input type="submit" value="Add Comment">
 </form>
-    
