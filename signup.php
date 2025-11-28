@@ -176,10 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Save matrix and its expiry date in session so we can show it once on login page
             $_SESSION['new_verification_matrix'] = $verification_matrix;
             $_SESSION['matrix_expiry_date'] = $matrix_expiry_date;
+            $_SESSION['matrix_member_id']      = $member_id;
             
             // If this is reached, signup was successful -> head to login page
             $_SESSION['signup_success'] = "Account created successfully!";
-            header("Location: login.php");
+            header("Location: matrix_display.php");
             exit;
         }
     }
