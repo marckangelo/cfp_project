@@ -3,6 +3,10 @@ session_start();
 require 'db.php';
 include 'header.php';
 
+echo '<h2>My Account</h2>
+      <p>TODO: Show member details, download and donation history.</p>
+     ';
+
 // TODO: Ensure user is logged in, then load member profile, download history, donation history
 
 // Show download success message, if any
@@ -81,6 +85,48 @@ if (isset($_SESSION['member_id'])) {
     </a>
     ';
 
+    // ============= DISPLAY VERIFICATION MATRIX (4x4) ================
+    $verification_matrix = $row['verification_matrix'];
+    $matrix_expiry_date  = $row['matrix_expiry_date'];
+
+    if (!empty($verification_matrix) && strlen($verification_matrix) == 16) {
+
+        /*
+            Example: 16-char verification_matrix string = 'AAAABBBBCCCCDDDD'
+
+                    AAAA
+                    BBBB
+                    CCCC
+                    DDDD
+        */
+        $verification_matrix_2d = array();
+        for ($r = 0; $r < 4; $r++) {
+            $verification_matrix_2d[$r] = array();
+            for ($c = 0; $c < 4; $c++) {
+                $index = $r * 4 + $c; // position in the 16-char string
+                $verification_matrix_2d[$r][$c] = $verification_matrix[$index];
+            }
+        }
+
+        echo '
+        <h4>Verification Matrix</h4>
+        <p>Expiry date: ' . htmlspecialchars($matrix_expiry_date) . '</p>
+        <table border="1" cellpadding="5">
+        ';
+
+        for ($r = 0; $r < 4; $r++) {
+            echo '<tr>';
+            for ($c = 0; $c < 4; $c++) {
+                echo '<td>' . htmlspecialchars($verification_matrix_2d[$r][$c]) . '</td>';
+            }
+            echo '</tr>';
+        }
+
+        echo '</table><br>';
+
+        // Button to copy the verification matrix string into Clipboard
+        echo '<button type="button" onclick="copyMyText(\'' . $verification_matrix . '\')">Copy to Clipboard</button>';
+    }
 
     // ============= DISPLAY LIST OF DOWNLOADS ================
 
@@ -283,10 +329,14 @@ if (isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
-
-
-
 ?>
-<h2>My Account</h2>
-<p>TODO: Show member details, download and donation history.</p>
+
+<script>
+    // Function receives the text directly from the button clicked above
+    function copyMyText(textToCopy) {
+        navigator.clipboard.writeText(textToCopy);
+        alert("Copied to clipboard successfully!");
+    }
+</script>
+
 <?php include 'footer.php'; ?>

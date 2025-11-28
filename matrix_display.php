@@ -64,7 +64,7 @@ if ($today_date > $matrix_expiry_date || isset($_SESSION['verification_matrix_ex
 // Show success message from signup (if set)
 if (isset($_SESSION['signup_success'])) {
     echo '<div style="color:green;">' . $_SESSION['signup_success'] . '</div>';
-    // You can unset it so it only shows once:
+    // Unset it so it only shows once:
     unset($_SESSION['signup_success']);
 }
 
