@@ -10,22 +10,17 @@ echo '<h2>My Account</h2>
 // TODO: Ensure user is logged in, then load member profile, download history, donation history
 
 // Show download success message, if any
-if(isset($_SESSION['download_success'])) {
+if (isset($_SESSION['download_success'])) {
     echo '<div style="color:green;">' . $_SESSION['download_success'] . '</div>';
     unset($_SESSION['download_success']);
 }
 
 // Show download error message, if any
-if(isset($_SESSION['download_failure'])) {
+if (isset($_SESSION['download_failure'])) {
     echo '<div style="color:red;">' . $_SESSION['download_failure'] . '</div>';
     unset($_SESSION['download_failure']);
 }
 
-// Show comment error message, if any
-if(isset($_SESSION['download_failure'])) {
-    echo '<div style="color:red;">' . $_SESSION['download_failure'] . '</div>';
-    unset($_SESSION['download_failure']);
-}
 
 // Extract member_id of member logged in
 $member_id  = $_SESSION['member_id'];
@@ -33,17 +28,34 @@ $admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : '';
 
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
-    
+
     // ================ DISPLAY MEMBER DETAILS =================
     $sql_member_details = "SELECT * 
                            FROM member
                            WHERE member_id = $member_id";
-    
+
     // Run the query
     $result_member_details = mysqli_query($conn, $sql_member_details);
 
     // Fetch the data
     $row = mysqli_fetch_assoc($result_member_details);
+
+    // Determine download ability status based on donations in last year
+    $sql_recent_donation = "
+        SELECT COUNT(*) AS donation_count
+        FROM donation
+        WHERE member_id = $member_id
+          AND date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    ";
+    $result_recent_donation = mysqli_query($conn, $sql_recent_donation);
+    $row_donation = mysqli_fetch_assoc($result_recent_donation);
+    $has_recent_donation = ($row_donation && $row_donation['donation_count'] > 0);
+
+    if ($has_recent_donation) {
+        $download_limit_text = "1 download per day (you donated in the last 12 months)";
+    } else {
+        $download_limit_text = "1 download per week (no donation in the last 12 months)";
+    }
 
     // Table header
     echo '
@@ -58,7 +70,7 @@ if (isset($_SESSION['member_id'])) {
                 <th>Primary Email</th>
                 <th>Recovery Email</th>
                 <th>Download Limit</th>';
-    
+
     // If this member is an admin, show an extra column for the role
     if (!empty($admin_role)) {
         echo '
@@ -68,23 +80,23 @@ if (isset($_SESSION['member_id'])) {
     echo '
             </tr>
     ';
-    
-    //Table rows
-        echo '
+
+    // Table rows
+    echo '
             <tr>
                 <td>' . htmlspecialchars($row['name']) . '</td>
                 <td>' . htmlspecialchars($row['organization']) . '</td>
                 <td>' . htmlspecialchars($row['pseudonym']) . '</td>
-                <td>' . 
-                    htmlspecialchars($row['street']) . ', ' . 
-                    htmlspecialchars($row['city']) . ', ' . 
-                    htmlspecialchars($row['country']) . ', ' . 
-                    htmlspecialchars($row['postal_code']) . 
+                <td>' .
+                    htmlspecialchars($row['street']) . ', ' .
+                    htmlspecialchars($row['city']) . ', ' .
+                    htmlspecialchars($row['country']) . ', ' .
+                    htmlspecialchars($row['postal_code']) .
                 '</td>    
                 <td>' . htmlspecialchars($row['primary_email']) . '</td>
                 <td>' . htmlspecialchars($row['recovery_email']) . '</td>
-                <td>' . htmlspecialchars($row['download_limit']) . '</td>';
-    
+                <td>' . htmlspecialchars($download_limit_text) . '</td>';
+
     // If admin, show the role value in the row
     if (!empty($admin_role)) {
         echo '
@@ -96,7 +108,7 @@ if (isset($_SESSION['member_id'])) {
         ';
     echo '</table>';
 
-    echo'
+    echo '
     <a href="edit_profile.php?member_id=' . $row['member_id'] . '">
         <button type="button">Edit Profile</button>
     </a>
@@ -109,7 +121,7 @@ if (isset($_SESSION['member_id'])) {
     if (!empty($verification_matrix) && strlen($verification_matrix) == 16) {
 
         /*
-            Example: 16-char verification_matrix string = 'AAAABBBBCCCCDDDD'
+            Example: 16-char verification_matrix string = \'AAAABBBBCCCCDDDD\'
 
                     AAAA
                     BBBB
@@ -147,8 +159,6 @@ if (isset($_SESSION['member_id'])) {
 
     // ============= DISPLAY LIST OF DOWNLOADS ================
 
-    // DISPLAY MEMBER DETAILS
-
     $sql_download_details = "SELECT 
                                 d.download_date,
                                 t.text_id,
@@ -167,7 +177,7 @@ if (isset($_SESSION['member_id'])) {
                                 ON a.member_id = m.member_id
                              WHERE d.member_id = $member_id
                              ORDER BY d.download_date DESC";
-    
+
     // Run the query
     $result_download_details = mysqli_query($conn, $sql_download_details);
 
@@ -186,10 +196,10 @@ if (isset($_SESSION['member_id'])) {
                 <th>Action</th>
             </tr>
     ';
-    
-    //Table rows (Fetching each row from member detail using while loop)
+
+    // Table rows
     while ($row_download = mysqli_fetch_assoc($result_download_details)) {
-    echo '
+        echo '
         <tr>
             <td>' . htmlspecialchars($row_download['download_date']) . '</td>
             <td>' . htmlspecialchars($row_download['title']) . '</td>
@@ -206,10 +216,8 @@ if (isset($_SESSION['member_id'])) {
     }
     echo '</table>';
 
-
     // ============= DISPLAY LIST OF DONATIONS ================
 
-    // DISPLAY DONATION DETAILS
     $sql_donation_details = "SELECT d.date,
                                     d.amount,
                                     d.currency,
@@ -235,7 +243,6 @@ if (isset($_SESSION['member_id'])) {
                              WHERE d.member_id = $member_id
                              ORDER BY d.date DESC";
 
-    
     // Run the query
     $result_donation_details = mysqli_query($conn, $sql_donation_details);
 
@@ -264,8 +271,8 @@ if (isset($_SESSION['member_id'])) {
                 <th>Charity Mission</th>
             </tr>
     ';
-    
-    //Table rows (Fetching each row from member detail using while loop)
+
+    // Table rows
     while ($row_donation = mysqli_fetch_assoc($result_donation_details)) {
         echo '
             <tr>
@@ -289,7 +296,6 @@ if (isset($_SESSION['member_id'])) {
             </tr>';
     }
     echo '</table>';
-
 
     // ============= DISPLAY LIST OF COMMITTEES JOINED ================
 
@@ -326,8 +332,8 @@ if (isset($_SESSION['member_id'])) {
                 <th># of Member</th>
             </tr>
     ';
-    
-    //Table rows (Fetching each row from member detail using while loop)
+
+    // Table rows
     while ($row_committee = mysqli_fetch_assoc($result_committee_details)) {
         echo '
             <tr>
