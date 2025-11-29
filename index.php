@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+
 // search term
 $search = '';
 
@@ -37,8 +37,18 @@ $query_result_all_authors = mysqli_query($conn, $query_all_authors);
 // top 5 popular topics
 $query_topics = "SELECT topic, count(*) as topic_count FROM text WHERE topic IS NOT NULL AND topic <> '' GROUP BY topic ORDER BY topic_count DESC";
 $query_result_topics = mysqli_query($conn, $query_topics);
-
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CFP Repository - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<?php include 'header.php'; ?>
+
 <h2>Welcome to the CFP Repository</h2>
 <h3>Who are we and what is our mission?</h3>
 <p>
@@ -143,5 +153,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
     <a href="statistics.php">Click here to view detailed statistics about downloads and usage.</a>
 </p>
 
-
 <?php include 'footer.php'; ?>
+
+</body>
+</html>
