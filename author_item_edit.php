@@ -3,57 +3,52 @@ session_start();
 require 'db.php';
 include 'header.php';
 
-// TODO: Load existing item by ID and allow editing
-
-
 // =========== Processing form ==============
 
-
 // Only run this if the form was submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
+if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['text_id']) &&
     isset($_POST['title']) &&
     isset($_POST['abstract']) &&
     isset($_POST['topic']) &&
     isset($_POST['keyword'])) {
-    // Extract values from form
 
-    $text_id = intval($_POST['text_id']);
-    $title    = trim($_POST['title']);
-    $abstract = trim($_POST['abstract']);
-    $topic    = trim($_POST['topic']);
+    // Extract values from form
+    $text_id        = intval($_POST['text_id']);
+    $title          = trim($_POST['title']);
+    $abstract       = trim($_POST['abstract']);
+    $topic          = trim($_POST['topic']);
     $keyword_string = trim($_POST['keyword']);
+    $change_summary = isset($_POST['change_summary']) ? trim($_POST['change_summary']) : "";
 
     // Escapes any character that needs escaping
-    $title    = mysqli_real_escape_string($conn, $title);
-    $abstract = mysqli_real_escape_string($conn, $abstract);
-    $topic    = mysqli_real_escape_string($conn, $topic);
+    $title_sql    = mysqli_real_escape_string($conn, $title);
+    $abstract_sql = mysqli_real_escape_string($conn, $abstract);
+    $topic_sql    = mysqli_real_escape_string($conn, $topic);
 
-    // Query for Update text values
+    // 1) Update main text values (current live version)
     $sql_update_text = "
         UPDATE text
         SET
-            title    = '$title',
-            abstract = '$abstract',
-            topic    = '$topic'
+            title    = '$title_sql',
+            abstract = '$abstract_sql',
+            topic    = '$topic_sql'
         WHERE text_id = $text_id
     ";
 
     $result_update_text = mysqli_query($conn, $sql_update_text);
 
-    // Query for Delete old keywords for this text
+    // 2) Delete old keywords for this text
     $sql_delete_keywords = "
         DELETE FROM text_keyword
         WHERE text_id = $text_id
     ";
-
     $result_delete_keywords = mysqli_query($conn, $sql_delete_keywords);
 
-    // Explode new keywords from textarea
+    // 3) Insert new keywords
     $keywords = explode(",", $keyword_string);
 
     $all_keywords_ok = true;
-    
     foreach ($keywords as $k) {
 
         $k = trim($k);
@@ -61,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
             continue; // skip empty bits
         }
 
-        // Function that escapes characters that need escaping within a string
+        // Escape keyword
         $k_sql = mysqli_real_escape_string($conn, $k);
 
         $sql_insert_keyword = "
@@ -77,13 +72,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'&&
         }
     }
 
+    // 4) Create a new pending version entry in text_version
+    // Build a simple "changes" description string
+    $changes_text  = "Title: "    . $title . "\n";
+    $changes_text .= "Abstract: " . $abstract . "\n";
+    $changes_text .= "Topic: "    . $topic . "\n";
+    $changes_text .= "Keywords: " . $keyword_string . "\n";
 
-    // When reached, update was successful, so go back to item.php page
-    $_SESSION['successful_update'] = "'$title' was successfully Updated";
-    header("Location: item.php");
+    $changes_sql = mysqli_real_escape_string($conn, $changes_text);
+
+    if ($change_summary === "") {
+        $change_summary = "Author edited text content and keywords.";
+    }
+    $change_summary_sql = mysqli_real_escape_string($conn, $change_summary);
+
+    $submitted_date = date('Y-m-d');
+
+    $sql_insert_version = "
+        INSERT INTO text_version (text_id, changes, submitted_date, status, change_summary, moderator_id)
+        VALUES ($text_id, '$changes_sql', '$submitted_date', 'pending', '$change_summary_sql', NULL)
+    ";
+
+    $result_insert_version = mysqli_query($conn, $sql_insert_version);
+
+    // 5) Decide success / failure message
+    if ($result_update_text && $result_delete_keywords && $all_keywords_ok && $result_insert_version) {
+        $_SESSION['successful_update'] = "'$title' was successfully updated and submitted for review.";
+    } else {
+        $_SESSION['failed_update'] = "Failed to update item or create a pending version. Please try again.";
+    }
+
+    // Go back to the item page
+    header("Location: item.php?text_id=" . $text_id);
     exit;
 }
-
 
 // =========== Extracting Form Values (Info of the text before editing them) ==============
 
@@ -103,10 +125,10 @@ $keywords = array();
 
 while ($row = mysqli_fetch_assoc($result_author_text)) {
     // Save the main text attributes once
-    if(empty($text_main_attributes)) {
-        $text_main_attributes['title'] = $row['title'];
+    if (empty($text_main_attributes)) {
+        $text_main_attributes['title']    = $row['title'];
         $text_main_attributes['abstract'] = $row['abstract'];
-        $text_main_attributes['topic'] = $row['topic'];
+        $text_main_attributes['topic']    = $row['topic'];
     }
 
     // Extract all keywords
@@ -118,27 +140,31 @@ $keyword_string = trim(implode(", ", $keywords));
 
 ?>
 <h2>Edit Item</h2>
-<p>TODO: Edit item form.</p>
+<p>Edit your item and optionally describe the changes for the moderator.</p>
 
 <form method="post" action="author_item_edit.php">
 
     <label>Title:
-        <input type="text" name="title" value="<?php echo $text_main_attributes['title'];?>" required>
+        <input type="text" name="title" value="<?php echo htmlspecialchars($text_main_attributes['title']); ?>" required>
     </label><br>
 
     <label>Abstract:
-        <br><textarea name="abstract" required><?php echo $text_main_attributes['abstract'];?></textarea>
+        <br><textarea name="abstract" required><?php echo htmlspecialchars($text_main_attributes['abstract']); ?></textarea>
     </label><br>
     
     <label>Topic:
-        <input type="text" name="topic" value="<?php echo $text_main_attributes['topic'];?>" required>
+        <input type="text" name="topic" value="<?php echo htmlspecialchars($text_main_attributes['topic']); ?>" required>
     </label><br>
 
     <label>Keyword(s) -- (Must be comma separated):
-        <br><textarea name="keyword" required><?php echo $keyword_string;?></textarea>
+        <br><textarea name="keyword" required><?php echo htmlspecialchars($keyword_string); ?></textarea>
+    </label><br><br>
+
+    <label>Change summary for moderator (optional):
+        <br><textarea name="change_summary" rows="3" cols="60" placeholder="Short summary of what you changed and why."></textarea>
     </label><br><br>
   
-    <input type="hidden" name="text_id" value="<?php echo $text_id;?>">
+    <input type="hidden" name="text_id" value="<?php echo $text_id; ?>">
     <button type="submit">Save Changes</button>
 </form>
 
