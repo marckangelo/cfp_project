@@ -37,6 +37,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
 
     if ($new_v_status !== '' && $version_id > 0 && $admin_id > 0) {
 
+        // ========== If APPROVE, first apply the changes to the text + keywords ==========
+        $apply_ok = true;
+
+        if ($version_action === 'approve') {
+
+            // 1) Get the version row (including text_id and changes made text)
+            $sql_get_version = "
+                SELECT text_id, changes
+                FROM text_version
+                WHERE version_id = $version_id
+                LIMIT 1
+            ";
+            $result_get_version = mysqli_query($conn, $sql_get_version);
+
+            if ($result_get_version && mysqli_num_rows($result_get_version) === 1) {
+
+                $row_v   = mysqli_fetch_assoc($result_get_version);
+                $text_id = (int)$row_v['text_id'];
+                $changes = $row_v['changes'];
+
+                // 2) Get changed text details
+                $lines = explode("\n", $changes);
+
+                $new_title          = "";
+                $new_abstract       = "";
+                $new_topic          = "";
+                $new_keywords_str   = "";
+
+                foreach ($lines as $line) {
+                    $line = trim($line);
+
+                    if (strpos($line, "TITLE::") === 0) {
+                        $new_title = substr($line, strlen("TITLE::"));
+                    } elseif (strpos($line, "ABSTRACT::") === 0) {
+                        $new_abstract = substr($line, strlen("ABSTRACT::"));
+                    } elseif (strpos($line, "TOPIC::") === 0) {
+                        $new_topic = substr($line, strlen("TOPIC::"));
+                    } elseif (strpos($line, "KEYWORDS::") === 0) {
+                        $new_keywords_str = substr($line, strlen("KEYWORDS::"));
+                    }
+                }
+
+                // 3) Escape and UPDATE the main text row
+                $new_title_sql    = mysqli_real_escape_string($conn, $new_title);
+                $new_abstract_sql = mysqli_real_escape_string($conn, $new_abstract);
+                $new_topic_sql    = mysqli_real_escape_string($conn, $new_topic);
+
+                $sql_update_text = "
+                    UPDATE text
+                    SET
+                        title    = '$new_title_sql',
+                        abstract = '$new_abstract_sql',
+                        topic    = '$new_topic_sql'
+                    WHERE text_id = $text_id
+                ";
+
+                $result_update_text = mysqli_query($conn, $sql_update_text);
+
+                if (!$result_update_text) {
+                    $apply_ok = false;
+                }
+
+                // 4) If text updated ok, then update keywords as well
+                if ($apply_ok) {
+
+                    // Delete old keywords for this text
+                    $sql_delete_keywords = "
+                        DELETE FROM text_keyword
+                        WHERE text_id = $text_id
+                    ";
+                    $result_delete_keywords = mysqli_query($conn, $sql_delete_keywords);
+
+                    if (!$result_delete_keywords) {
+                        $apply_ok = false;
+                    }
+
+                    if ($apply_ok) {
+
+                        // Re-insert new keywords from $new_keywords_str
+                        $keywords = explode(",", $new_keywords_str);
+                        $all_keywords_ok = true;
+
+                        foreach ($keywords as $k) {
+
+                            $k = trim($k);
+                            if ($k === "") {
+                                continue; // skip empty bits
+                            }
+
+                            $k_sql = mysqli_real_escape_string($conn, $k);
+
+                            $sql_insert_keyword = "
+                                INSERT INTO text_keyword (text_id, keyword)
+                                VALUES ($text_id, '$k_sql')
+                            ";
+
+                            $result_kw = mysqli_query($conn, $sql_insert_keyword);
+
+                            if (!$result_kw) {
+                                $all_keywords_ok = false;
+                                break;
+                            }
+                        }
+
+                        if (!$all_keywords_ok) {
+                            $apply_ok = false;
+                        }
+                    }
+                }
+
+            } else {
+                $apply_ok = false;
+            }
+        }
+
+        // Update the version as approved if we successfully applied the changes
+        if ($version_action === 'approve' && !$apply_ok) {
+            $_SESSION['admin_version_error'] =
+                "Failed to apply changes for version #$version_id. Text was not updated.";
+            header("Location: admin_items.php");
+            exit;
+        }
+
+        // 5) Finally, update the text_version row status (approve or reject)
         $new_v_status_sql = mysqli_real_escape_string($conn, $new_v_status);
         $today            = date('Y-m-d');
 
@@ -201,12 +325,12 @@ function display_items_table($conn, $status_filter, $title_label) {
             } else if ($status_filter === 'draft') {
                 // Admin can either publish directly or archive/blacklist.
                 echo '
-                        <form method="post" action="admin_items.php" style="display:inline;">
+                        <form method="post" action="admin_items.php" style="display:inline%;">
                             <input type="hidden" name="text_id" value="' . $text_id . '">
                             <button type="submit" name="item_action" value="publish">Publish</button>
                         </form>
 
-                        <form method="post" action="admin_items.php" style="display:inline;">
+                        <form method="post" action="admin_items.php" style="display:inline%;">
                             <input type="hidden" name="text_id" value="' . $text_id . '">
                             <button type="submit" name="item_action" value="blacklist">Archive / Blacklist</button>
                         </form>
