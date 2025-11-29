@@ -5,7 +5,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $is_logged_in = !empty($_SESSION['member_id']);
 $is_author    = !empty($_SESSION['orcid']);
-$is_admin     = !empty($_SESSION['admin_id']);
+$is_admin = (!empty($_SESSION['is_admin']) && $_SESSION['is_admin'] === true)
+            || !empty($_SESSION['admin_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">

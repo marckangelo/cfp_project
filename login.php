@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 // Is the member an Admin?
-                $sql_admin = "SELECT admin_id 
+                $sql_admin = "SELECT admin_id, role
                             FROM admin
                             WHERE admin_id = $member_id
                             LIMIT 1";
@@ -72,12 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($result_admin && mysqli_num_rows($result_admin) == 1) {
                     $admin_row = mysqli_fetch_assoc($result_admin);
-                    $_SESSION['is_admin'] = true;
-                    $_SESSION['admin_id'] = $admin_row['admin_id'];
+                    $_SESSION['is_admin']   = true;
+                    $_SESSION['admin_id']   = $admin_row['admin_id'];
+                    $_SESSION['admin_role'] = $admin_row['role']; // 'super', 'content', or 'financial'
                 } else {
-                    $_SESSION['is_admin'] = false;
-                    $_SESSION['admin_id'] = null;
-                }
+                    $_SESSION['is_admin']   = false;
+                    $_SESSION['admin_id']   = null;
+                    $_SESSION['admin_role'] = null;
+}
 
                 // IF login is successful --> Redirect to matrix.php
                 header("Location: matrix_verification.php");

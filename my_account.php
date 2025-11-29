@@ -28,7 +28,8 @@ if(isset($_SESSION['download_failure'])) {
 }
 
 // Extract member_id of member logged in
-$member_id = $_SESSION['member_id'];
+$member_id  = $_SESSION['member_id'];
+$admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : '';
 
 // Checking if signed in
 if (isset($_SESSION['member_id'])) {
@@ -56,7 +57,15 @@ if (isset($_SESSION['member_id'])) {
                 <th>Address</th>
                 <th>Primary Email</th>
                 <th>Recovery Email</th>
-                <th>Download Limit</th>
+                <th>Download Limit</th>';
+    
+    // If this member is an admin, show an extra column for the role
+    if (!empty($admin_role)) {
+        echo '
+                <th>Admin Role</th>';
+    }
+
+    echo '
             </tr>
     ';
     
@@ -74,7 +83,15 @@ if (isset($_SESSION['member_id'])) {
                 '</td>    
                 <td>' . htmlspecialchars($row['primary_email']) . '</td>
                 <td>' . htmlspecialchars($row['recovery_email']) . '</td>
-                <td>' . htmlspecialchars($row['download_limit']) . '</td>
+                <td>' . htmlspecialchars($row['download_limit']) . '</td>';
+    
+    // If admin, show the role value in the row
+    if (!empty($admin_role)) {
+        echo '
+                <td>' . htmlspecialchars($admin_role) . '</td>';
+    }
+
+    echo '
             </tr>
         ';
     echo '</table>';
