@@ -27,13 +27,15 @@ if ($result_unread) {
     $_SESSION['unread_count'] = $unread_count;
     $_SESSION['has_unread']   = ($unread_count > 0);
 
-    if ($unread_count == 0) {
-        // No unread -> make sure popup doesn't trigger
-        $_SESSION['unread_alert_shown'] = true;
-    } else {
-        // There ARE unread messages -> allow popup on next page load
-        unset($_SESSION['unread_alert_shown']);
-    }
+    // *** NOTE *** : Optional to show it once more when entering this INBOX page.
+
+    // if ($unread_count == 0) {
+    //     // No unread -> make sure popup doesn't trigger
+    //     $_SESSION['unread_alert_shown'] = true;
+    // } else {
+    //     // There ARE unread messages -> allow popup on next page load
+    //     unset($_SESSION['unread_alert_shown']);
+    // }
 }
 
 include 'header.php'; // this include is here now so that the unread status before it runs header.php code
