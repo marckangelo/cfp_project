@@ -1,12 +1,24 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<?php include 'header.php'; ?>
+
+<?php
 // Collect errors
 $errors = array();
 
-// Only run when user submits the login form
+// Only run when form submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $primary_email = trim($_POST['primary_email']);
@@ -21,10 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Password is required.";
     }
 
-    // If no errors so far --> check login
+    // If no errors ---> check login
     if (count($errors) == 0) {
 
-        // query to get 1 user by email
         $sql = "SELECT member_id, name, password_hash 
                 FROM member
                 WHERE primary_email = '$primary_email'
@@ -36,21 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $row = mysqli_fetch_assoc($result);
 
-            // Verify password (In PHP, password_verify is the only way to check the password_hash)
+            // Verify password
             if (password_verify($password, $row['password_hash'])) {
 
-                // SUCCESS --> start session data
+                // SUCCESS → start session
                 $_SESSION['member_id'] = $row['member_id'];
                 $_SESSION['name']      = $row['name'];
-
                 $member_id = $row['member_id'];
 
-                // Is the member an Author?
-                $sql_author = "SELECT orcid 
-                               FROM author
-                               WHERE member_id = $member_id
-                               LIMIT 1";
-
+                // Check if Author
+                $sql_author = "SELECT orcid FROM author WHERE member_id = $member_id LIMIT 1";
                 $result_author = mysqli_query($conn, $sql_author);
 
                 if ($result_author && mysqli_num_rows($result_author) == 1) {
@@ -62,26 +68,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['orcid'] = null;
                 }
 
-                // Is the member an Admin?
-                $sql_admin = "SELECT admin_id, role
-                            FROM admin
-                            WHERE admin_id = $member_id
-                            LIMIT 1";
-
+                // Check if Admin
+                $sql_admin = "SELECT admin_id, role FROM admin WHERE admin_id = $member_id LIMIT 1";
                 $result_admin = mysqli_query($conn, $sql_admin);
 
                 if ($result_admin && mysqli_num_rows($result_admin) == 1) {
                     $admin_row = mysqli_fetch_assoc($result_admin);
                     $_SESSION['is_admin']   = true;
                     $_SESSION['admin_id']   = $admin_row['admin_id'];
-                    $_SESSION['admin_role'] = $admin_row['role']; // 'super', 'content', or 'financial'
+                    $_SESSION['admin_role'] = $admin_row['role'];
                 } else {
                     $_SESSION['is_admin']   = false;
                     $_SESSION['admin_id']   = null;
                     $_SESSION['admin_role'] = null;
                 }
 
-                // ================= CHECK FOR UNREAD MESSAGES =================
+                // Check unread messages
                 $sql_unread = "
                     SELECT COUNT(*) AS unread_count
                     FROM message
@@ -100,51 +102,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['unread_count'] = 0;
                 }
 
-                // Make sure we only show the popup once per login
-                unset($_SESSION['unread_alert_shown']);
+                unset($_SESSION['unread_alert_shown']); // show popup once per login
 
-
-                // IF login is successful --> Redirect to matrix.php
+                // REDIRECT → matrix verification
                 header("Location: matrix_verification.php");
                 exit;
 
             } else {
-                // Password is wrong
                 $errors[] = "Incorrect password.";
             }
 
         } else {
-            // Email not found
             $errors[] = "Account not found.";
         }
     }
 }
 ?>
 
-<h2>Login</h2>
 
-<?php
-// Show errors (in red)
-if (count($errors) > 0) {
-    echo '<div style="color:red;"><ul>';
-    foreach ($errors as $e) {
-        echo "<li>$e</li>";
-    }
-    echo '</ul></div>';
-}
-?>
+<div class="login-box">
+    <h2>Login</h2>
 
-<form method="post" action="login.php">
+    <?php if (count($errors) > 0): ?>
+        <div class="errors">
+            <ul>
+                <?php foreach ($errors as $e): ?>
+                    <li><?= $e ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 
-    <label>Email:
-        <input type="email" name="primary_email" required>
-    </label><br>
+    <form method="post" action="login.php" class="centered-form">
 
-    <label>Password:
-        <input type="password" name="password" required>
-    </label><br><br>
+        <label>Email:
+            <input type="email" name="primary_email" required>
+        </label>
 
-    <button type="submit">Log In</button>
-</form>
+        <label>Password:
+            <input type="password" name="password" required>
+        </label>
+
+        <button type="submit">Log In</button>
+    </form>
+</div>
 
 <?php include 'footer.php'; ?>
+
+</body>
+</html>
