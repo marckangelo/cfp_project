@@ -89,9 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
                     SET
                         title    = '$new_title_sql',
                         abstract = '$new_abstract_sql',
-                        topic    = '$new_topic_sql'
+                        topic    = '$new_topic_sql',
+                        version  = version + 1
                     WHERE text_id = $text_id
                 ";
+
 
                 $result_update_text = mysqli_query($conn, $sql_update_text);
 
