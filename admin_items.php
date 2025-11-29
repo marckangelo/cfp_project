@@ -5,6 +5,22 @@ include 'header.php';
 
 // TODO: Admin-only items management (mark plagiarized/blacklisted, etc.)
 
+// ================== ENFORCING ONLY ADMINS WITH 'content' ROLE WITH ACCESS TO THIS PAGE ==================
+
+if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    header("Location: login.php");
+    exit;
+}
+
+$admin_role = $_SESSION['admin_role'] ?? null;
+
+// Only super + content can touch items
+if ($admin_role !== 'super' && $admin_role !== 'content') {
+    echo "<p>You do not have permission to manage items.</p>";
+    include 'footer.php';
+    exit;
+}
+
 // ================== PROCESS ADMIN ACTIONS ON ITEMS/TEXTS ==================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['text_id']) &&
