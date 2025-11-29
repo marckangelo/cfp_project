@@ -16,6 +16,7 @@ $original_comment = null;
 $original_member_name = "";
 $text_id = 0;
 $parent_comment_id = 0;
+$commentor_id = 0;   // member who wrote the original comment
 
 // ================== PROCESS FORM SUBMISSION ==================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $parent_comment_id     = isset($_POST['parent_comment_id']) ? (int) $_POST['parent_comment_id'] : 0;
     $text_id               = isset($_POST['text_id']) ? (int) $_POST['text_id'] : 0;
     $original_member_name  = isset($_POST['original_member_name']) ? $_POST['original_member_name'] : "";
+    $commentor_id          = isset($_POST['commentor_id']) ? (int) $_POST['commentor_id'] : 0;
     $reply_text            = isset($_POST['reply_text']) ? trim($_POST['reply_text']) : "";
     $is_public             = isset($_POST['is_public']) ? 1 : 0;
 
@@ -37,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT member_id
         FROM author
         WHERE orcid = '$author_orcid'
+        LIMIT 1
     ";
     $result_author = mysqli_query($conn, $sql_author);
 
@@ -54,27 +57,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $full_content = "Reply to [" . $original_member_name . "]: " . $reply_text;
         $full_content_sql = mysqli_real_escape_string($conn, $full_content);
 
-        // Insert reply comment
-        $sql_insert_reply = "
-            INSERT INTO comment (member_id, text_id, parent_comment_id, content, date, rating, is_public)
-            VALUES ($author_member_id, $text_id, $parent_comment_id, '$full_content_sql', '$date', NULL, $is_public)
-        ";
+        // If public reply
+        if ($is_public) {
+            // ================= REPLYING PUBLICLY TO A COMMENT ================= 
 
-        $result_insert = mysqli_query($conn, $sql_insert_reply);
+            // Build INSERT reply comment query
+            $sql_insert_reply = "
+                INSERT INTO comment (member_id, text_id, parent_comment_id, content, date, rating, is_public)
+                VALUES ($author_member_id, $text_id, $parent_comment_id, '$full_content_sql', '$date', NULL, 1)
+            ";
 
-        if ($result_insert) {
-            $_SESSION['comment_reply_success'] = "Reply posted successfully.";
-            // You can redirect to item.php or wherever you show the comments
-            $text_id = (int)$_POST['text_id']; 
-            header("Location: item.php?id=" . $text_id);
-            exit;
+            $result_insert = mysqli_query($conn, $sql_insert_reply);
+
+            if ($result_insert) {
+                $_SESSION['comment_reply_success'] = "Reply posted successfully.";
+                $text_id = (int)$text_id;
+                header("Location: item.php?id=" . $text_id);
+                exit;
+            } else {
+                $errors[] = "Failed to save reply. Please try again.";
+            }
+
         } else {
-            $errors[] = "Failed to save reply. Please try again.";
+            // ================= REPLYING PRIVATELY TO A COMMENT (PRIVATE INBOX) =================
+
+           $date = date('Y-m-d');
+
+            // Get the text title (for the subject line)
+            $text_title = "";
+            $sql_text_title = "
+                SELECT title
+                FROM text
+                WHERE text_id = $text_id
+                LIMIT 1
+            ";
+            $result_text_title = mysqli_query($conn, $sql_text_title);
+            if ($result_text_title && mysqli_num_rows($result_text_title) === 1) {
+                $row_text_title = mysqli_fetch_assoc($result_text_title);
+                $text_title = $row_text_title['title'];
+            }
+
+            // Get the original comment content (to include in the message body)
+            $original_comment_body = "";
+            $sql_original_comment = "
+                SELECT content
+                FROM comment
+                WHERE comment_id = $parent_comment_id
+                LIMIT 1
+            ";
+            $result_original_comment = mysqli_query($conn, $sql_original_comment);
+            if ($result_original_comment && mysqli_num_rows($result_original_comment) === 1) {
+                $row_original_comment = mysqli_fetch_assoc($result_original_comment);
+                $original_comment_body = $row_original_comment['content'];
+            }
+
+            // Build subject: include the text title
+            $subject_str = "Reply to your comment on \"" . $text_title . "\"";
+            $subject_sql = mysqli_real_escape_string($conn, $subject_str);
+
+            // Build body: include original comment + reply
+            $body_str  = "Original comment from [" . $original_member_name . "]:\n";
+            $body_str .= $original_comment_body . "\n\n";
+            $body_str .= "Reply from author:\n" . $reply_text;
+
+            $body_sql = mysqli_real_escape_string($conn, $body_str);
+
+            // Insert into message table (private inbox)
+            $sql_insert = "
+                INSERT INTO message (sender_id, recipient_id, subject, body, sent_at, is_read)
+                VALUES ($author_member_id, $commentor_id, '$subject_sql', '$body_sql', NOW(), 0)
+            ";
+
+            $result_insert = mysqli_query($conn, $sql_insert);
+
+            if ($result_insert) {
+                $_SESSION['comment_reply_success'] = "Reply posted successfully.";
+                $text_id = (int)$_POST['text_id'];
+                header("Location: item.php?text_id=" . $text_id);
+                exit;
+            } else {
+                $errors[] = "Failed to save reply. Please try again.";
+            }
         }
     }
 
-    // If there were errors, fall through and reload the original comment
-    // so we can redisplay the form with messages.
+    // If there were errors, we fall through and re-load original comment below
     $parent_comment_id = (int) $parent_comment_id;
 }
 
@@ -89,12 +156,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $parent_comment_id = (int) $_GET['comment_id'];
 }
 
-// Load the original comment + commenter name + text_id
+// Load the original comment + commenter name + text_id + commenter member_id
 $sql_comment = "
     SELECT c.comment_id,
            c.text_id,
            c.content,
            c.date,
+           c.member_id,
            m.name AS member_name
     FROM comment c
     JOIN member m
@@ -112,6 +180,7 @@ if (!$result_comment || mysqli_num_rows($result_comment) === 0) {
 $original_comment      = mysqli_fetch_assoc($result_comment);
 $text_id               = (int) $original_comment['text_id'];
 $original_member_name  = $original_comment['member_name'];
+$commentor_id          = (int) $original_comment['member_id'];  // commenter
 
 // OPTIONAL: Verify this author really owns the text being commented on
 $sql_check_author = "
@@ -162,6 +231,7 @@ if (!empty($errors)) {
     <input type="hidden" name="parent_comment_id" value="<?php echo (int)$original_comment['comment_id']; ?>">
     <input type="hidden" name="text_id" value="<?php echo $text_id; ?>">
     <input type="hidden" name="original_member_name" value="<?php echo htmlspecialchars($original_member_name); ?>">
+    <input type="hidden" name="commentor_id" value="<?php echo (int)$commentor_id; ?>">
 
     <button type="submit">Post Reply</button>
 </form>
