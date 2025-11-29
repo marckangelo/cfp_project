@@ -586,8 +586,17 @@ if ($authorized) {
         echo '<p>You have already voted on this case.</p>';
 
     } else if ($vote_success_msg === "" && !$has_already_voted) {
-        // Not eligible to vote (if e.g.: did not download, outside 14-day window, or case not in "voting")
-        echo '<p>You are currently not eligible to vote on this case.</p>';
+    // Not eligible to vote – explain conditions clearly
+    echo '
+        <p>You are currently not eligible to vote on this case.</p>
+        <p>To be able to vote, all of the following must be true:</p>
+        <ul>
+            <li>The case status is <strong>voting</strong> (set by the committee chair or an admin).</li>
+            <li>You have <strong>downloaded this text</strong> at least once.</li>
+            <li>We are still within <strong>14 days</strong> of the case opening date.</li>
+            <li>You have <strong>not already submitted a vote</strong> for this case.</li>
+        </ul>
+    ';
     }
 }
 ?>
