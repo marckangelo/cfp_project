@@ -79,7 +79,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['is_admin']   = false;
                     $_SESSION['admin_id']   = null;
                     $_SESSION['admin_role'] = null;
-}
+                }
+
+                // ================= CHECK FOR UNREAD MESSAGES =================
+                $sql_unread = "
+                    SELECT COUNT(*) AS unread_count
+                    FROM message
+                    WHERE recipient_id = $member_id
+                    AND is_read = 0
+                ";
+
+                $result_unread = mysqli_query($conn, $sql_unread);
+
+                if ($result_unread) {
+                    $row_unread = mysqli_fetch_assoc($result_unread);
+                    $_SESSION['has_unread']   = ($row_unread['unread_count'] > 0);
+                    $_SESSION['unread_count'] = (int)$row_unread['unread_count'];
+                } else {
+                    $_SESSION['has_unread']   = false;
+                    $_SESSION['unread_count'] = 0;
+                }
+
+                // Make sure we only show the popup once per login
+                unset($_SESSION['unread_alert_shown']);
+
 
                 // IF login is successful --> Redirect to matrix.php
                 header("Location: matrix_verification.php");

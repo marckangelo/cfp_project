@@ -1,7 +1,6 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
 // Make sure user is logged in
 if (!isset($_SESSION['member_id'])) {
@@ -10,6 +9,34 @@ if (!isset($_SESSION['member_id'])) {
 }
 
 $member_id = (int) $_SESSION['member_id'];
+
+// ============= RECALCULATE UNREAD COUNT & UPDATE SESSION =============
+$sql_unread = "
+    SELECT COUNT(*) AS unread_count
+    FROM message
+    WHERE recipient_id = $member_id
+      AND is_read = 0
+";
+
+$result_unread = mysqli_query($conn, $sql_unread);
+
+if ($result_unread) {
+    $row_unread = mysqli_fetch_assoc($result_unread);
+    $unread_count = (int)$row_unread['unread_count'];
+
+    $_SESSION['unread_count'] = $unread_count;
+    $_SESSION['has_unread']   = ($unread_count > 0);
+
+    if ($unread_count == 0) {
+        // No unread -> make sure popup doesn't trigger
+        $_SESSION['unread_alert_shown'] = true;
+    } else {
+        // There ARE unread messages -> allow popup on next page load
+        unset($_SESSION['unread_alert_shown']);
+    }
+}
+
+include 'header.php'; // this include is here now so that the unread status before it runs header.php code
 
 // ============= LOAD INBOX MESSAGES =============
 
