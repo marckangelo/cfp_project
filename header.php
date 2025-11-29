@@ -22,6 +22,7 @@ $is_admin = (!empty($_SESSION['is_admin']) && $_SESSION['is_admin'] === true)
             <a href="index.php">Home</a> |
             <a href="browse.php">Browse</a> |
             <a href="authors.php">Authors</a> |
+            <a href="committees.php">Committees</a> |
             <a href="statistics.php">Statistics</a> |
             <a href="about.php">About</a> |
 
