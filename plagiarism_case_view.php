@@ -194,12 +194,12 @@ if ($error_msg === "" && $authorized && $case_row !== null && $can_manage_case_s
                         $fraction_plag = $plag_cnt / $total_votes;
 
                         if ($fraction_plag >= (2.0 / 3.0)) {
-                            // 2) Blacklist/remove THIS text: use 'archiv' as "removed/blacklisted" (*** TO DOUBLE CHECK ***)
+                            // 2) Blacklist/remove THIS text: use 'archived' as "removed/blacklisted" (*** TO DOUBLE CHECK ***)
                             $text_id_for_case = (int)$case_row['text_id'];
 
                             $sql_blacklist_text = "
                                 UPDATE text
-                                SET status = 'archiv'
+                                SET status = 'archived'
                                 WHERE text_id = $text_id_for_case
                             ";
                             mysqli_query($conn, $sql_blacklist_text);
@@ -250,7 +250,7 @@ if ($error_msg === "" && $authorized && $case_row !== null && $can_manage_case_s
                                         // 6) Suspend/archive ALL their texts since they are blacklisted
                                         $sql_suspend_texts = "
                                             UPDATE text
-                                            SET status = 'archiv'
+                                            SET status = 'archived'
                                             WHERE author_orcid = '$author_orcid'
                                         ";
                                         mysqli_query($conn, $sql_suspend_texts);
