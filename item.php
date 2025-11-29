@@ -115,9 +115,9 @@ if(isset($_SESSION['member_id'])) {
                 // Fetch keywords for this text
                 $keywords = array();
 
-                $text_id = $row['text_id'];
+                $text_id = (int)$row['text_id'];
 
-                // ---------- Fetch author name ----------
+                // Fetch author name
                 $author_name = "-";
                 if (!empty($row['author_orcid'])) {
 
@@ -139,7 +139,6 @@ if(isset($_SESSION['member_id'])) {
                         $author_name = $row_author_name['name'];
                     }
                 }
-                // --------------------------------------
 
 
                 // Retrieving all keywords for this text
@@ -182,9 +181,7 @@ if(isset($_SESSION['member_id'])) {
                     $comment_ids[] = (int)$row_comments['comment_id'];
                 }
 
-
                 $keywords_string = implode(", ", $keywords);
-                
 
                 // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
                 echo '

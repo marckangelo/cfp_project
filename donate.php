@@ -1,24 +1,62 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+
+// Make sure user is logged in as a member
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$member_id = (int) $_SESSION['member_id'];
 
 $errors = array();
 $success = "";
+
+// Check that we have a text_id coming from the Donate button
+if (!isset($_POST['text_id'])) {
+    include 'header.php';
+    echo "<h2>Donate</h2>";
+    echo "<p style='color:red;'>Missing text reference for donation.</p>";
+    include 'footer.php';
+    exit;
+}
+
+// Get text_id
+$text_id = (int) $_POST['text_id'];
+
+// ============ CHECK IF MEMBER HAS DOWNLOADED THIS TEXT BEFORE DONATING ============
+
+$sql_check_download = "
+    SELECT download_id
+    FROM download
+    WHERE member_id = $member_id
+      AND text_id   = $text_id
+    LIMIT 1
+";
+
+$result_check_download = mysqli_query($conn, $sql_check_download);
+
+if (!$result_check_download || mysqli_num_rows($result_check_download) === 0) {
+
+    // User has not downloaded this text -> not allowed to donate yet
+    $_SESSION['failed_donation'] = "You must download this text before you can donate.";
+
+    // Send them back to the item page (top of item.php will show this message in red)
+    header("Location: item.php?text_id=" . $text_id);
+    exit;
+}
+
+// ============ IF THIS IS REACHED, MEMBER IS ALLOWED TO DONATE ============
+
+include 'header.php';
 
 // TODO: On POST, validate allocation and insert donation
 
 echo "<h2>Donate</h2>";
 echo "<p>";
 
-// Check data
-if (!isset($_POST['text_id'])) {
-    echo "<p style='color:red;'>Missing text reference for donation.</p>";
-    include 'footer.php';
-    exit;
-}
 // DISPLAY TEXT DETAILS (the one receiving the donation)
-$text_id = (int) $_POST['text_id'];
 
 /* Percentages will be entered in this form by the user
    and fully validated in donate_process.php, not here.
@@ -37,6 +75,7 @@ $sql_charity = "SELECT charity_id, name
 
 // Run query
 $result_text_title = mysqli_query($conn, $sql_text_title);
+
 // Check results
 if (!$result_text_title || mysqli_num_rows($result_text_title) === 0) {
     echo "<p style='color:red;'>Text not found.</p>";
@@ -46,17 +85,16 @@ if (!$result_text_title || mysqli_num_rows($result_text_title) === 0) {
 
 $result_charities = mysqli_query($conn, $sql_charity);
 
-
-while($c = mysqli_fetch_assoc($result_charities)) {
+// Collect charities in array
+$charities = array();
+while ($c = mysqli_fetch_assoc($result_charities)) {
     $charities[] = $c;
 };
 
-// Fetch the data
-if ($result_text_title) {
-    $row = mysqli_fetch_assoc($result_text_title);
-}
+// Fetch the data for the text title
+$row = mysqli_fetch_assoc($result_text_title);
 
-echo "<h2>Donate for: " . $row['title'] . "</h2>";
+echo "<h2>Donate for: " . htmlspecialchars($row['title']) . "</h2>";
 ?>
 
 <form action="donate_process.php" method="post">
@@ -91,7 +129,7 @@ echo "<h2>Donate for: " . $row['title'] . "</h2>";
     <label>Author %:</label>
     <input type="number" name="author_pct" min="0" max="40" required><br>
 
-    <!-- optional: payment method, currency -->
+    <!-- optional: payment method -->
     <label>Payment method:</label>
     <select name="payment_method">
         <option value="card">Credit Card (simulated)</option>
