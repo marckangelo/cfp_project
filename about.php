@@ -1,7 +1,16 @@
 <?php
 session_start();
 include 'header.php';
+
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CFP Repository - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 <h2>About CFP</h2>
 <h3>About CopyForward Publishing (CFP)</h3>
 <p>
@@ -60,3 +69,5 @@ accessibility in mind, CFP empowers readers, authors, and educators to engage wi
     commitment to openness and informed decision-making.
 </p>
 <?php include 'footer.php'; ?>
+</body>
+</html>
