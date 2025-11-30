@@ -132,3 +132,41 @@ button[type="submit"]:hover {
 .login-box h2 {
     margin-bottom: 20px;
 }
+
+
+/* Centered tite for matrix_verification.php TITLE */
+.centered-title {
+    text-align: center;
+}
+
+
+/* ===== Header / Navbar ===== */
+header {
+    background-color: var(--primary);
+    color: #ffffff;
+    padding: 10px 20px;
+    margin: 0 -20px 20px -20px; /* stretch header full width to match body padding */
+}
+
+header h1 {
+    margin: 0 0 8px 0;
+    font-size: 22px;
+}
+
+/* Simple horizontal nav */
+header nav {
+    font-size: 14px;
+}
+
+header nav a {
+    color: #ffffff;                  /* override global link color */
+    font-weight: bold;
+    margin-right: 8px;
+    padding: 4px 6px;
+    border-radius: 3px;
+}
+
+header nav a:hover {
+    background-color: var(--accent); /* simple hover highlight */
+    text-decoration: none;           /* override global underline on hover */
+}

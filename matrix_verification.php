@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($verification_input == "") {
         $errors[] = "Verification matrix is required.";
     } else {
-        // Must be exactly 16 chars, A-Z and 0-9
+        // Must be exactly 16 chars, A-Z and 0–9
         if (!preg_match("/^[A-Z0-9]{16}$/", $verification_input)) {
             $errors[] = "Verification matrix must be exactly 16 characters (A–Z, 0–9).";
         }
@@ -74,22 +74,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <?php
-// Show errors if there are any (IN RED)
+// Show errors if there are any (using .errors from style.css)
 if (count($errors) > 0) {
-    echo '<div style="color:red;"><ul>';
+    echo '<div class="errors"><ul>';
     for ($i = 0; $i < count($errors); $i++) {
-        echo '<li>' . $errors[$i] . '</li>';
+        echo '<li>' . htmlspecialchars($errors[$i]) . '</li>';
     }
     echo '</ul></div>';
 }
 ?>
 
-<form method="post" action="matrix_verification.php" >
-    <br><br>
-    <label>Verification Matrix String:
-    <input type="text" name="verification_matrix" required maxlength="16" placeholder="Paste your 16-char code here">
-    </label><br><br>
-    <button type="submit">Log In</button>
-</form>
+<div class="centered-form">
+    <h2 class="centered-title">Matrix Verification</h2>
+    <form method="post" action="matrix_verification.php">
+        <label>
+            Verification Matrix String:
+            <input type="text" name="verification_matrix" required maxlength="16" placeholder="Paste your 16-char code here">
+        </label>
+        <br><br>
+        <button type="submit">Log In</button>
+    </form>
+</div>
 
 <?php include 'footer.php'; ?>
