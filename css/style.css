@@ -113,7 +113,6 @@ table {
 }
 
 
-
 /* ===== Error messages ===== */
 .errors {
     background-color: #ffe5e5;
@@ -187,4 +186,12 @@ header nav a {
 header nav a:hover {
     background-color: var(--accent); /* simple hover highlight */
     text-decoration: none;           /* override global underline on hover */
+}
+
+footer {
+    padding: 10px 20px;
+    background-color: #ddd;
+    text-align: center;
+    margin: 0 -20px 0 -20px; /* match the header full-width trick */
+    font-size: 13px;
 }

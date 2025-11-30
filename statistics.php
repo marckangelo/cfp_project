@@ -35,7 +35,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
 
 ?>
 <h2>Statistics</h2>
-<h3>Top 5 Most Downloaded Titles</h3>
+<h3 class="centered-title">Top 5 Most Downloaded Titles</h3>
 <table border="1">
     <tr>
         <th>Title</th>
@@ -49,7 +49,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <?php } ?>
 </table>
 
-<h3>Top 5 Most Downloaded Authors</h3>
+<h3 class="centered-title">Top 5 Most Downloaded Authors</h3>
 <table border="1">
     <tr>
         <th>Author Name</th>
@@ -63,7 +63,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <?php } ?>
 </table>
 
-<h3>Annual Usage Statistics</h3>
+<h3 class="centered-title">Annual Usage Statistics</h3>
 <table border="1">
     <tr>
         <th>Year</th>
@@ -77,7 +77,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <?php } ?>
 </table>
 
-<h3>Annual Access by Country (Top 5)</h3>
+<h3 class="centered-title">Annual Access by Country (Top 5)</h3>
 <table border="1">
     <tr>
         <th>Country</th>
@@ -91,7 +91,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <?php } ?>
 </table>
 
-<h3>Growth Over Time (Uploads)</h3>
+<h3 class="centered-title">Growth Over Time (Uploads)</h3>
 <table border="1">
     <tr>
         <th>Year</th>
@@ -105,7 +105,7 @@ $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
     <?php } ?>
 </table>
 
-<h3>Annual Downloads for a Specific Author </h3>
+<h3 class="centered-title">Annual Downloads for a Specific Author </h3>
 <table border="1">
     <tr>
         <th>Year</th>
