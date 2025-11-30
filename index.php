@@ -37,29 +37,21 @@ $query_result_all_authors = mysqli_query($conn, $query_all_authors);
 // top 5 popular topics
 $query_topics = "SELECT topic, count(*) as topic_count FROM text WHERE topic IS NOT NULL AND topic <> '' GROUP BY topic ORDER BY topic_count DESC";
 $query_result_topics = mysqli_query($conn, $query_topics);
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CFP Repository - Home</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
 
-<?php include 'header.php'; ?>
+include 'header.php';
+?>
 
 <h2>Welcome to the CFP Repository</h2>
 
-<h3>Search</h3>
-<form method="GET" action="index.php">
+<h3 class="centered-title">Search</h3>
+<form method="GET" action="index.php" class="centered-form">
     <input type="text" name="search" placeholder="Search by topic, keyword or author" value="<?php echo htmlspecialchars($search); ?>" style="width: 300px;">
     <button type="submit">Search</button>
 </form>
 <?php if (!empty($search)) { ?>
     <h4>Search Results for "<?php echo htmlspecialchars($search); ?>"</h4>
     <?php if (mysqli_num_rows($result_search) > 0) { ?>
-        <table border="1">
+        <table class="table-centered">
             <tr>
                 <th>Topic</th>
                 <th>Keyword</th>
@@ -79,7 +71,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 <?php } ?>
 
 <h3>Popular Items</h3>
-<table border="1">
+<table class="table-centered">
     <tr>
         <th>Title</th>
         <th>Download Count</th>
@@ -93,7 +85,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 </table>
 
 <h3>New Additions</h3>
-<table border="1">
+<table class="table-centered">
     <tr>
         <th>Title</th>
         <th>Upload Date</th>
@@ -107,7 +99,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 </table>
 
 <h3>All Authors</h3>
-<table border="1">
+<table class="table-centered">
     <tr>
         <th>Author Name</th>
         <th>Bio</th>
@@ -121,7 +113,7 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 </table>
 
 <h3>Top 5 Popular Topics</h3>
-<table border="1">
+<table class="table-centered">
     <tr>
         <th>Topic</th>
         <th>Count</th>
@@ -145,6 +137,3 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 </p>
 
 <?php include 'footer.php'; ?>
-
-</body>
-</html>

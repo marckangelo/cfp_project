@@ -54,8 +54,8 @@ elseif ($filter == 'newest') {
 $result = mysqli_query($conn, $query);
 ?>
 
-<h2>Browse Items</h2>
-<form method="GET" action="browse.php">
+<h2 class="centered-title">Browse Items</h2>
+<form method="GET" action="browse.php" class="centered-form">
     <input type="text" name="search" placeholder="Search by title or author" value="<?php echo htmlspecialchars($search); ?>">
     <select name="filter">
         <option value="">-- Select Filter --</option>

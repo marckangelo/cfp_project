@@ -96,6 +96,24 @@ button[type="submit"]:hover {
     background-color: var(--accent);
 }
 
+/* ===== Table styling ===== */
+table {
+    border-collapse: collapse;
+    width: 80%;              /* don’t take entire window */
+    max-width: 900px;        /* optional safety cap */
+    margin: 10px auto 20px;  /* auto left/right = centered */
+    background-color: #ffffff;
+}
+
+/* ===== Narrow, centered tables (for homepage) ===== */
+.table-centered {
+    width: 80%;              /* don’t take entire window */
+    max-width: 900px;        /* max width table can take */
+    margin: 10px auto 20px;  /* auto left/right = centered */
+}
+
+
+
 /* ===== Error messages ===== */
 .errors {
     background-color: #ffe5e5;
