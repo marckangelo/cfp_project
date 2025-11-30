@@ -50,15 +50,6 @@ $query_result_topics = mysqli_query($conn, $query_topics);
 <?php include 'header.php'; ?>
 
 <h2>Welcome to the CFP Repository</h2>
-<h3>Who are we and what is our mission?</h3>
-<p>
-    CopyForward Publishing (CFP) is a non-profit, online repository that offers
-    free access to academic and educational texts. It aims to reduce the high
-    cost of textbooks by providing open, legal distribution of works while
-    ensuring that authors are recognized and can receive voluntary financial
-    support. Donations associated with downloaded items help sustain CFP’s
-    operations and support selected charities and authors.
-</p>
 
 <h3>Search</h3>
 <form method="GET" action="index.php">
