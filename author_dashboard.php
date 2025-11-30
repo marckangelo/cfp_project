@@ -29,55 +29,57 @@ $sql_author_texts = "
 $result_author_texts = mysqli_query($conn, $sql_author_texts);
 ?>
 
-<h2>Author Dashboard</h2>
+<div class="dashboard-container">
+    <h2 class="centered-title">Author Dashboard</h2>
 
-<ul>
-    <li><a href="author_item_new.php">Add a new item</a></li>
-</ul>
+    <ul class="dashboard-links">
+        <li><a href="author_item_new.php">Add a new item</a></li>
+    </ul>
 
-<h3>My Texts</h3>
+    <h3>My Texts</h3>
 
-<?php
-if ($result_author_texts && mysqli_num_rows($result_author_texts) > 0) {
-
-    echo '
-        <table border="1">
-            <tr>
-                <th>Title</th>
-                <th>Topic</th>
-                <th>Version</th>
-                <th>Upload Date</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-    ';
-
-    while ($row = mysqli_fetch_assoc($result_author_texts)) {
-
-        $text_id = (int)$row['text_id'];
+    <?php
+    if ($result_author_texts && mysqli_num_rows($result_author_texts) > 0) {
 
         echo '
-            <tr>
-                <td>' . htmlspecialchars($row['title']) . '</td>
-                <td>' . htmlspecialchars($row['topic']) . '</td>
-                <td>' . htmlspecialchars($row['version']) . '</td>
-                <td>' . htmlspecialchars($row['upload_date']) . '</td>
-                <td>' . htmlspecialchars($row['status']) . '</td>
-                <td>
-                    <form method="post" action="author_item_edit.php" style="display:inline;">
-                        <input type="hidden" name="text_id" value="' . $text_id . '">
-                        <button type="submit">Edit</button>
-                    </form>
-                </td>
-            </tr>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Topic</th>
+                    <th>Version</th>
+                    <th>Upload Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
         ';
+
+        while ($row = mysqli_fetch_assoc($result_author_texts)) {
+
+            $text_id = (int)$row['text_id'];
+
+            echo '
+                <tr>
+                    <td>' . htmlspecialchars($row['title']) . '</td>
+                    <td>' . htmlspecialchars($row['topic']) . '</td>
+                    <td>' . htmlspecialchars($row['version']) . '</td>
+                    <td>' . htmlspecialchars($row['upload_date']) . '</td>
+                    <td>' . htmlspecialchars($row['status']) . '</td>
+                    <td>
+                        <form method="post" action="author_item_edit.php" style="display:inline;">
+                            <input type="hidden" name="text_id" value="' . $text_id . '">
+                            <button type="submit">Edit</button>
+                        </form>
+                    </td>
+                </tr>
+            ';
+        }
+
+        echo '</table>';
+
+    } else {
+        echo '<p>You have not uploaded any texts yet.</p>';
     }
+    ?>
+</div>
 
-    echo '</table>';
-
-} else {
-    echo '<p>You have not uploaded any texts yet.</p>';
-}
-
-include 'footer.php';
-?>
+<?php include 'footer.php'; ?>

@@ -195,3 +195,45 @@ footer {
     margin: 0 -20px 0 -20px; /* match the header full-width trick */
     font-size: 13px;
 }
+
+/* ===== About page layout ===== */
+.about-container {
+    max-width: 900px;
+    margin: 20px auto 40px;
+    padding: 20px 25px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.about-container p {
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.about-section {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* ===== Dashboard layout (author/admin) ===== */
+.dashboard-container {
+    max-width: 900px;
+    margin: 20px auto 40px;
+    padding: 20px 25px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-links {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.dashboard-links li {
+    margin-bottom: 6px;
+}
