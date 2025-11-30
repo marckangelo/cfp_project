@@ -56,10 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-
 ?>
-<h2>Statistics</h2>
-<p>TODO: Form for adding a committee.</p>
 <?php include 'footer.php'; ?>
 
 <form action="admin_committees_add.php" method="post">
