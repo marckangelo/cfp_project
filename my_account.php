@@ -3,21 +3,22 @@ session_start();
 require 'db.php';
 include 'header.php';
 
-echo '<h2>My Account</h2>
-      <p>TODO: Show member details, download and donation history.</p>
+echo '<div class="account-container">';
+echo '<h2 class="account-title">My Account</h2>
+      <p class="account-intro">TODO: Show member details, download and donation history.</p>
      ';
 
 // TODO: Ensure user is logged in, then load member profile, download history, donation history
 
 // Show download success message, if any
 if (isset($_SESSION['download_success'])) {
-    echo '<div style="color:green;">' . $_SESSION['download_success'] . '</div>';
+    echo '<div class="flash-success">' . htmlspecialchars($_SESSION['download_success']) . '</div>';
     unset($_SESSION['download_success']);
 }
 
 // Show download error message, if any
 if (isset($_SESSION['download_failure'])) {
-    echo '<div style="color:red;">' . $_SESSION['download_failure'] . '</div>';
+    echo '<div class="flash-error">' . htmlspecialchars($_SESSION['download_failure']) . '</div>';
     unset($_SESSION['download_failure']);
 }
 
@@ -59,7 +60,8 @@ if (isset($_SESSION['member_id'])) {
 
     // Table header
     echo '
-    <h4>Member Details</h4>
+    <div class="account-section">
+        <h4>Member Details</h4>
 
         <table border="1">
             <tr>
@@ -109,9 +111,12 @@ if (isset($_SESSION['member_id'])) {
     echo '</table>';
 
     echo '
-    <a href="edit_profile.php?member_id=' . $row['member_id'] . '">
-        <button type="button">Edit Profile</button>
-    </a>
+        <div class="account-actions">
+            <a href="edit_profile.php?member_id=' . $row['member_id'] . '">
+                <button type="button">Edit Profile</button>
+            </a>
+        </div>
+    </div>
     ';
 
     // ============= DISPLAY VERIFICATION MATRIX (4x4) ================
@@ -121,7 +126,7 @@ if (isset($_SESSION['member_id'])) {
     if (!empty($verification_matrix) && strlen($verification_matrix) == 16) {
 
         /*
-            Example: 16-char verification_matrix string = \'AAAABBBBCCCCDDDD\'
+            Example: 16-char verification_matrix string = 'AAAABBBBCCCCDDDD'
 
                     AAAA
                     BBBB
@@ -137,10 +142,12 @@ if (isset($_SESSION['member_id'])) {
             }
         }
 
+        // Matrix card section
         echo '
-        <h4>Verification Matrix</h4>
-        <p>Expiry date: ' . htmlspecialchars($matrix_expiry_date) . '</p>
-        <table border="1" cellpadding="5">
+        <div class="account-section matrix-wrapper">
+            <h4 class="centered-title">Verification Matrix</h4>
+            <p>Expiry date: ' . htmlspecialchars($matrix_expiry_date) . '</p>
+            <table class="matrix-table">
         ';
 
         for ($r = 0; $r < 4; $r++) {
@@ -151,10 +158,11 @@ if (isset($_SESSION['member_id'])) {
             echo '</tr>';
         }
 
-        echo '</table><br>';
-
-        // Button to copy the verification matrix string into Clipboard
-        echo '<button type="button" onclick="copyMyText(\'' . $verification_matrix . '\')">Copy to Clipboard</button>';
+        echo '
+            </table><br>
+            <button type="button" onclick="copyMyText(\'' . $verification_matrix . '\')">Copy to Clipboard</button>
+        </div>
+        ';
     }
 
     // ============= DISPLAY LIST OF DOWNLOADS ================
@@ -183,7 +191,8 @@ if (isset($_SESSION['member_id'])) {
 
     // Table header
     echo '
-    <h4>Download Details</h4>
+    <div class="account-section">
+        <h4>Download Details</h4>
 
         <table border="1">
             <tr>
@@ -215,6 +224,7 @@ if (isset($_SESSION['member_id'])) {
         </tr>';
     }
     echo '</table>';
+    echo '</div>';
 
     // ============= DISPLAY LIST OF DONATIONS ================
 
@@ -248,7 +258,8 @@ if (isset($_SESSION['member_id'])) {
 
     // Table header
     echo '
-    <h4>Donation Details</h4>
+    <div class="account-section">
+        <h4>Donation Details</h4>
 
         <table border="1">
             <tr>
@@ -296,6 +307,7 @@ if (isset($_SESSION['member_id'])) {
             </tr>';
     }
     echo '</table>';
+    echo '</div>';
 
     // ============= DISPLAY LIST OF COMMITTEES JOINED ================
 
@@ -319,7 +331,8 @@ if (isset($_SESSION['member_id'])) {
 
     // Table header
     echo '
-    <h4>Committee(s) Joined Details</h4>
+    <div class="account-section">
+        <h4>Committee(s) Joined Details</h4>
 
         <table border="1">
             <tr>
@@ -347,11 +360,14 @@ if (isset($_SESSION['member_id'])) {
             </tr>';
     }
     echo '</table>';
+    echo '</div>';
 
 } else {
     header("Location: login.php");
     exit;
 }
+
+echo '</div>'; // close .account-container
 ?>
 
 <script>

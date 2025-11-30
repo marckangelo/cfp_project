@@ -86,10 +86,12 @@ for ($row = 0; $row < 4; $row++) {
     }
 }
 
-echo "<h3>Your verification matrix (please save it now)</h3>";
-echo "<p>Expiry date: " . htmlspecialchars($matrix_expiry_date) . "</p>";
+// wrapper + classed table
+echo '<div class="matrix-wrapper">';
+echo '<h3 class="centered-title">Your verification matrix (please save it now)</h3>';
+echo '<p>Expiry date: ' . htmlspecialchars($matrix_expiry_date) . '</p>';
 
-echo "<table border='1' cellpadding='5'>";
+echo "<table class='matrix-table'>";
 for ($row = 0; $row < 4; $row++) {
     echo "<tr>";
     for ($col = 0; $col < 4; $col++) {
@@ -102,13 +104,11 @@ echo "</table><br>";
 // Button to copy the verification matrix string into Clipboard
 echo '<button type="button" onclick="copyMyText(\'' . $verification_matrix . '\')">Copy to Clipboard</button><br><br>';
 
-// Unset the temporary session vars
-unset($_SESSION['matrix_member_id']);
-
 echo '<form method="get" action="login.php">
         <button type="submit">Go to Login</button>
       </form>';
 
+echo '</div>'; // end .matrix-wrapper
 ?>
 
 <script>

@@ -237,3 +237,121 @@ footer {
 .dashboard-links li {
     margin-bottom: 6px;
 }
+
+
+/* ===== Verification Matrix Display ===== */
+.matrix-wrapper {
+    max-width: 320px;        /* small card */
+    margin: 30px auto 40px;  /* centered on page */
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.matrix-table {
+    border-collapse: collapse;
+    margin: 15px auto;
+    width: auto;             /* override global 80% width */
+}
+
+.matrix-table td {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #cccccc;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* ===== My Account layout ===== */
+.account-container {
+    max-width: 1100px;
+    margin: 20px auto 40px;
+    padding: 0 10px 20px;
+}
+
+.account-title {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.account-intro {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+/* Flash messages on My Account */
+.flash-success,
+.flash-error {
+    max-width: 800px;
+    margin: 10px auto;
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.flash-success {
+    background-color: #e6f7e6;
+    color: #206020;
+    border: 1px solid #80c080;
+}
+
+.flash-error {
+    background-color: #ffe5e5;
+    color: var(--danger);
+    border: 1px solid #cc0000;
+}
+
+/* Card-like sections on My Account */
+.account-section {
+    max-width: 1000px;
+    margin: 25px auto;
+    padding: 15px 15px 20px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.account-section h4 {
+    margin-top: 0;
+}
+
+/* Make tables inside sections use full card width */
+.account-section table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Small spacing for buttons under member details */
+.account-actions {
+    margin-top: 10px;
+}
+
+/* Matrix table already uses .matrix-wrapper from before; this just ensures spacing */
+.matrix-wrapper {
+    text-align: center;
+}
+
+/* Make sure the verification matrix stays a compact square grid */
+.account-section .matrix-table {
+    width: auto;             /* override the 100% from .account-section table */
+    max-width: none;
+    margin: 15px auto;
+}
+
+.matrix-table td {
+    width: 40px;
+    height: 40px;
+    padding: 0;              /* remove extra padding so cells are closer to square */
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #cccccc;
+    font-weight: bold;
+    font-size: 18px;
+}
