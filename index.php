@@ -70,7 +70,7 @@ include 'header.php';
     <?php } ?>
 <?php } ?>
 
-<h3>Popular Items</h3>
+<h3 class="centered-title">Popular Items</h3>
 <table class="table-centered">
     <tr>
         <th>Title</th>
@@ -84,7 +84,7 @@ include 'header.php';
     <?php } ?>
 </table>
 
-<h3>New Additions</h3>
+<h3 class="centered-title">New Additions</h3>
 <table class="table-centered">
     <tr>
         <th>Title</th>
@@ -98,7 +98,7 @@ include 'header.php';
     <?php } ?>
 </table>
 
-<h3>All Authors</h3>
+<h3 class="centered-title">All Authors</h3>
 <table class="table-centered">
     <tr>
         <th>Author Name</th>
@@ -112,7 +112,7 @@ include 'header.php';
     <?php } ?>
 </table>
 
-<h3>Top 5 Popular Topics</h3>
+<h3 class="centered-title">Top 5 Popular Topics</h3>
 <table class="table-centered">
     <tr>
         <th>Topic</th>
@@ -131,8 +131,8 @@ include 'header.php';
     <?php } ?>
 </table>
 
-<h3>View our Statistics</h3>
-<p>
+<h3 class="centered-title">View our Statistics</h3>
+<p class="centered-title">
     <a href="statistics.php">Click here to view detailed statistics about downloads and usage.</a>
 </p>
 

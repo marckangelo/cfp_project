@@ -83,5 +83,5 @@ $result = mysqli_query($conn, $query);
         <td><?php echo htmlspecialchars($row['download_count']); ?></td>
     </tr>
     <?php } ?>
-
+</table>
 <?php include 'footer.php'; ?>
