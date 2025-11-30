@@ -309,13 +309,14 @@ footer {
 
 /* Card-like sections on My Account */
 .account-section {
-    max-width: 1000px;
+    max-width: 1500px;
     margin: 25px auto;
     padding: 15px 15px 20px;
     background-color: #ffffff;
     border: 1px solid #dddddd;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    overflow-x: auto;
 }
 
 .account-section h4 {
@@ -326,6 +327,16 @@ footer {
 .account-section table {
     width: 100%;
     margin-top: 10px;
+    table-layout: fixed;      /* distribute space across columns */
+}
+
+/* Make long header/cell text wrap instead of pushing width */
+.account-section table th,
+.account-section table td {
+    word-wrap: break-word;
+    white-space: normal;
+    font-size: 12px;          /* slightly smaller text for dense tables */
+    padding: 6px 8px;         /* a bit tighter padding */
 }
 
 /* Small spacing for buttons under member details */
