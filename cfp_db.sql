@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2025 at 10:04 PM
+-- Generation Time: Nov 30, 2025 at 07:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,9 +30,15 @@ SET time_zone = "+00:00";
 CREATE TABLE `admin` (
   `admin_id` int(11) NOT NULL,
   `role` enum('super','content','financial') NOT NULL,
-  `last_login` datetime DEFAULT NULL,
-  `password` varchar(50) DEFAULT NULL
+  `last_login` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`admin_id`, `role`, `last_login`) VALUES
+(10, 'super', '2025-11-27 16:47:33');
 
 -- --------------------------------------------------------
 
@@ -100,6 +106,20 @@ INSERT INTO `charity` (`charity_id`, `name`, `description`, `mission`, `country`
 (4, 'The Legacy Arts Fund', 'Preserving historical paintings from the 19th century.', 'Preserving history for future generations.', 'UK', '11223344', 'inactive', 1200.00),
 (5, 'Open Access Research Foundation', 'Funding open-source scientific journals and database maintenance.', 'Making knowledge free and accessible to all.', 'Canada', '99999-2222-RR0001', 'active', 8500.75);
 
+--
+-- Triggers `charity`
+--
+DELIMITER $$
+CREATE TRIGGER `committee_deletion_donation_cleanup` BEFORE DELETE ON `charity` FOR EACH ROW BEGIN
+    DELETE
+FROM
+    donation
+WHERE
+    charity_id = OLD.charity_id ;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -127,7 +147,8 @@ INSERT INTO `comment` (`comment_id`, `member_id`, `text_id`, `parent_comment_id`
 (5, 2, 1, 1, 'Reply to [User2]: Thank you.', '2025-11-27 00:00:00', 1, NULL, 'active'),
 (6, 2, 1, 1, 'Reply to [User2]: Thank you.', '2025-11-27 00:00:00', 1, NULL, 'active'),
 (7, 2, 1, 1, 'Reply to [User2]: I appreciate your comment!', '2025-11-27 00:00:00', 1, NULL, 'active'),
-(8, 2, 1, 1, 'Reply to [User2]: Means a lot! Thank you!', '2025-11-27 00:00:00', 1, NULL, 'active');
+(8, 2, 1, 1, 'Reply to [User2]: Means a lot! Thank you!', '2025-11-27 00:00:00', 1, NULL, 'active'),
+(9, 11, 5, NULL, 'Excellent coverage on topic, the author demonstrates a deep understanding of the topic, while providing simple and easy to follow explanation with easy to visualize examples. ', '2025-11-30 00:00:00', 1, 5, 'active');
 
 -- --------------------------------------------------------
 
@@ -228,7 +249,10 @@ CREATE TABLE `download` (
 --
 
 INSERT INTO `download` (`download_id`, `member_id`, `text_id`, `download_date`, `ip_address`, `user_agent`, `country`) VALUES
-(1, 3, 1, '2025-11-26 23:04:56', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Canada');
+(1, 3, 1, '2025-11-26 23:04:56', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Canada'),
+(2, 2, 5, '2025-11-27 17:16:56', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Canada'),
+(3, 2, 6, '2025-11-27 17:29:46', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Canada'),
+(4, 11, 5, '2025-11-30 00:23:04', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36', 'Canada');
 
 -- --------------------------------------------------------
 
@@ -263,14 +287,16 @@ CREATE TABLE `member` (
 
 INSERT INTO `member` (`member_id`, `name`, `organization`, `primary_email`, `recovery_email`, `password_hash`, `pseudonym`, `verification_matrix`, `matrix_expiry_date`, `join_date`, `status`, `download_limit`, `street`, `city`, `state`, `country`, `postal_code`, `introduced_by`) VALUES
 (1, 'John Doe', 'Initial Org', 'john@example.com', NULL, '123456', 'JohnD', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'User1', 'Test Org', 'user1@test.com', 'user1recovery@test.com', '$2y$10$EZvqPe.Pa/rDURKi5N.2SuWCsAfqCyzKbmIh5aixShgsUZLXs6byy', 'U1_Display', '6OGTH73L9X0Z41O6', '2025-12-27', '2025-11-27', 'active', 10, '123 Test St', 'Montreal', 'QC', 'Canada', 'H1H', 1),
+(2, 'User1', 'Test Org', 'user1@test.com', 'user1recovery@test.com', '$2y$10$EZvqPe.Pa/rDURKi5N.2SuWCsAfqCyzKbmIh5aixShgsUZLXs6byy', 'U1_Display', '6OGTH73L9X0Z41O6', '2025-12-27', '2025-11-27', 'active', 8, '123 Test St', 'Montreal', 'QC', 'Canada', 'H1H', 1),
 (3, 'User2', 'Test Org', 'user2@test.com', 'user2recovery@test.com', '$2y$10$6Z8csJCEjC4ogc1oJR.1aOhk/aWrxoEhc/aFwZXnEL16kyrticxNW', 'U2_Display', 'FPJW1LD3VA0NTRJV', '2025-12-27', '2025-11-27', 'active', 9, '234 Test St', 'Montreal', 'QC', 'Canada', 'H1H', 1),
 (4, 'Alice Author', 'Science Corp', 'alice@test.com', NULL, '123456', 'AliceA', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (5, 'Bob Biologist', 'Bio Labs', 'bob@test.com', NULL, '123456', 'BobB', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (6, 'Charlie Chemist', 'Chem Inc', 'charlie@test.com', NULL, '123456', 'CharlieC', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (7, 'David Reviewer', 'Review Org', 'david@test.com', NULL, '123456', 'DaveR', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (8, 'Eve Enthusiast', 'Uni of Montreal', 'eve@test.com', NULL, '123456', 'EveE', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(9, 'Frank Fan', 'Tech World', 'frank@test.com', NULL, '123456', 'FrankF', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1);
+(9, 'Frank Fan', 'Tech World', 'frank@test.com', NULL, '123456', 'FrankF', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(10, 'admin123', 'Admin', 'admin123@admin.com', 'admin123recovery@admin.com', '$2y$10$iwOIEaW9ponie1.5JpprwumxVO6Gr1YPINtwfp3xstfze/DnRNplG', 'admin123', '45UBGCR9A2FRY6KP', '2025-12-27', '2025-11-27', 'active', NULL, 'Admin St', 'Admin City', 'Admin', 'Canada', '0AD M1N', 1),
+(11, 'Arshdeep Singh', 'Concordia University', 'arshdeep200423@gmail.com', 'email@email.com', '$2y$10$G5yEaLmbFG2o8dB3tBYmye9bqw7sJ.WSLaYncZTAJxh8vGOkhBU72', 'DeepDeep', 'XKABUD04YAEFO52Y', '2025-12-30', '2025-11-30', 'active', 0, '1560 Place Kennedy', 'Dorval', 'QC', 'Canada', 'H9P 1P9', 10);
 
 -- --------------------------------------------------------
 
@@ -398,12 +424,28 @@ CREATE TABLE `text` (
 --
 
 INSERT INTO `text` (`text_id`, `author_orcid`, `title`, `abstract`, `topic`, `version`, `upload_date`, `status`, `download_count`, `total_donations`, `avg_rating`) VALUES
-(1, '0000-0000-0000-0001', 'Principles of Modern Web Development', 'An extensive overview of full-stack frameworks and the shift towards reactive frontend libraries.', 'Computer Science', 1, '2025-11-01', 'published', 120, 50.00, 4.50),
-(2, '0000-0000-0000-0002', 'Understanding Database Normalization', 'A critical look at why Third Normal Form (3NF) remains essential for data integrity in large-scale systems.', 'Database Systems', 1, '2025-10-15', 'published', 45, 10.00, 3.80),
-(3, '0000-0000-0000-0003', 'Neural Networks for Beginners', 'A deep dive into the mathematics of backpropagation and how nodes simulate learning.', 'Artificial Intelligence', 1, '2025-01-20', 'under_review', 0, 0.00, NULL),
-(4, '0000-0000-0000-0004', 'Coral Reef Preservation Techniques', 'Analyzing the impact of rising ocean temperatures on marine ecosystems and proposed restoration methods.', 'Biology', 1, '2024-11-20', 'published', 89, 150.25, 4.90),
+(1, '0000-0000-0000-0001', 'Principles of Modern Web Development', 'An extensive overview of full-stack frameworks and the shift towards reactive frontend libraries.', 'Computer Science', 1, '2025-11-01', '', 120, 50.00, 4.50),
+(2, '0000-0000-0000-0002', 'Understanding Database Normalization', 'A critical look at why Third Normal Form (3NF) remains essential for data integrity in large-scale systems.', 'Database Systems', 1, '2025-10-15', 'under_review', 45, 10.00, 3.80),
+(3, '0000-0000-0000-0003', 'Neural Networks for Beginners', 'A deep dive into the mathematics of backpropagation and how nodes simulate learning.', 'Artificial Intelligence', 1, '2025-01-20', '', 0, 0.00, NULL),
+(4, '0000-0000-0000-0004', 'Coral Reef Preservation Techniques', 'Analyzing the impact of rising ocean temperatures on marine ecosystems and proposed restoration methods.', 'Biology', 1, '2024-11-20', 'under_review', 89, 150.25, 4.90),
 (5, '0000-0000-0000-0005', 'Polymers in Modern Medicine', 'Investigating the use of organic synthetic compounds for targeted drug delivery systems.', 'Chemistry', 2, '2025-11-26', 'published', 30, 25.00, 4.10),
 (6, '0000-0000-0000-0002', 'Optimizing SQL Queries for Performance', 'A deep dive into query execution plans, indexing strategies, and common pitfalls in SQL optimization.', 'Database Systems', 1, '2025-11-27', 'published', 0, 0.00, NULL);
+
+--
+-- Triggers `text`
+--
+DELIMITER $$
+CREATE TRIGGER `remove_downloads_for_archived_texts` AFTER UPDATE ON `text` FOR EACH ROW BEGIN
+        IF OLD.status <> 'archived' AND NEW.status = 'archived' THEN
+    DELETE
+FROM
+    download
+WHERE
+    text_id = NEW.text_id;
+    END IF ;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -641,7 +683,7 @@ ALTER TABLE `charity`
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `committee`
@@ -665,13 +707,13 @@ ALTER TABLE `donation`
 -- AUTO_INCREMENT for table `download`
 --
 ALTER TABLE `download`
-  MODIFY `download_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `download_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `member`
 --
 ALTER TABLE `member`
-  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `message`
