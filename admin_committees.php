@@ -65,7 +65,8 @@ if ($result_committee_details) {
                                 <button type="submit" name="edit_committee">Edit</button>
                             </form>
 
-                            <form method="post" action="admin_committees.php">
+                            <form method="post" action="admin_committees_delete.php"
+                            onsubmit="return confirm(\'Are you sure you want to delete this committee?\');">
                                 <input type="hidden" name="committee_id" value="' . $committee_id . '">
                                 <button type="submit" name="delete_committee">Delete</button>
                             </form>
