@@ -27,6 +27,10 @@ $result_committee_details = mysqli_query($conn, $sql_committee_details);
 if ($result_committee_details) {
     if (mysqli_num_rows($result_committee_details) > 0) {
 
+        echo '
+            <a href="admin_committees_add.php" class="btn">Add Committee</a>
+        ';
+
         // Table header
         echo '
         <h4>List of Committees</h4>

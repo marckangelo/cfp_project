@@ -50,10 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: admin_committees.php");
         exit;
     }
-    
-} else {
-    header("Location: login.php");
-    exit;
 }
 
 ?>
