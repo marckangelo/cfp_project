@@ -65,7 +65,8 @@ if ($result_charity_details) {
                             <button type="submit" name="edit_charity">Edit</button>
                         </form>
 
-                        <form method="post" action="admin_charities.php">
+                        <form method="post" action="admin_charities_delete.php"
+                        onsubmit="return confirm(\'Are you sure you want to delete this charity? Related donation will also be removed.\');">
                             <input type="hidden" name="charity_id" value="' . $charity_id . '">
                             <button type="submit" name="delete_charity">Delete</button>
                         </form>
