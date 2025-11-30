@@ -3,6 +3,12 @@ session_start();
 require 'db.php';
 include 'header.php';
 
+// Show committee_request error message, if any
+if (isset($_SESSION['committee_request_error'])) {
+    echo '<div class="flash-error">' . htmlspecialchars($_SESSION['committee_request_error']) . '</div>';
+    unset($_SESSION['committee_request_error']);
+}
+
 
 //DISPLAY LIST OF COMMITTEES
 $sql_committee_details = "SELECT * FROM committee";
@@ -14,7 +20,7 @@ if ($result_committee_details) {
 
         // Table header
         echo '
-        <h4>List of Committees</h4>
+        <h2 class="centered-title">List of Committees</h2>
 
             <table border="1">
                 <tr>
