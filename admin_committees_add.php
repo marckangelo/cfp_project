@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <?php include 'footer.php'; ?>
 
-<form action="admin_committees_add.php" method="post">
+<form action="admin_committees_add.php" method="post" class="centered-form">
 
     <label for="name">Committee Name:</label><br>
     <input type="text" id="name" name="name" required><br><br>
