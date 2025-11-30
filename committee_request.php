@@ -22,6 +22,10 @@ if (isset($_SESSION['member_id'])) {
                     '$term_end_date'
                 )";
     
+    $sql_member_update = "UPDATE committee 
+                       SET member_count = member_count + 1 
+                       WHERE committee_id = $committee_id";
+    
     $result_request = mysqli_query($conn, $sql_request);
     // Redirect based on success or failure
     if ($result_request) {
