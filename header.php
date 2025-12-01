@@ -30,6 +30,9 @@ $admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : null;
 // A check to show "Plagiarism Cases" link
 $show_plag_cases_link = false;
 
+// A check to show "Charities" link
+$show_charities_link = false;
+
 if ($is_fully_logged_in && !empty($_SESSION['member_id']) && isset($conn)) {
 
     $member_id = (int) $_SESSION['member_id'];
@@ -55,6 +58,32 @@ if ($is_fully_logged_in && !empty($_SESSION['member_id']) && isset($conn)) {
 
         if ($result_plag_scope && mysqli_num_rows($result_plag_scope) > 0) {
             $show_plag_cases_link = true;
+        }
+    }
+
+    // Charities link
+
+    // Case 1: financial admin always sees the Charities link
+    if ($is_admin && $admin_role === 'financial') {
+        $show_charities_link = true;
+    } else {
+        // Case 2: any member who is in an active finance-scope committee
+        $sql_finance_scope = "
+            SELECT cm.membership_id
+            FROM committee_membership cm
+            JOIN committee c
+                ON cm.committee_id = c.committee_id
+            WHERE cm.member_id = $member_id
+              AND cm.status = 'active'
+              AND c.status = 'active'
+              AND c.scope = 'finance'
+            LIMIT 1
+        ";
+
+        $result_finance_scope = mysqli_query($conn, $sql_finance_scope);
+
+        if ($result_finance_scope && mysqli_num_rows($result_finance_scope) > 0) {
+            $show_charities_link = true;
         }
     }
 }
@@ -84,6 +113,10 @@ if ($is_fully_logged_in && !empty($_SESSION['member_id']) && isset($conn)) {
 
                 <?php if ($show_plag_cases_link): ?>
                     <a href="plagiarism_cases.php">Plagiarism Cases</a> |
+                <?php endif; ?>
+
+                <?php if ($show_charities_link): ?>
+                    <a href="charities.php">Charities</a> |
                 <?php endif; ?>
 
                 <!-- Inbox with NEW label if unread -->

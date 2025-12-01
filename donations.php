@@ -3,17 +3,51 @@ session_start();
 require 'db.php';
 include 'header.php';
 
-// ================== ENFORCE ADMIN WITH PROPER ROLE ==================
+// ================== ENFORCE PERMISSIONS (ADMIN OR FINANCE COMMITTEE MEMBER) ==================
 
-if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+// Must be logged in at least
+if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
 
+$member_id = (int) $_SESSION['member_id'];
+
+$is_admin = (!empty($_SESSION['is_admin']) && $_SESSION['is_admin'] === true)
+            || !empty($_SESSION['admin_id']);
 $admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : null;
 
-// Only super or financial admins can view donations
-if ($admin_role !== 'super' && $admin_role !== 'financial') {
+$authorized = false;
+
+// Case 1: admin with proper role
+if ($is_admin && ($admin_role === 'super' || $admin_role === 'financial')) {
+    $authorized = true;
+}
+
+// Case 2: member who has joined a committee with scope = 'finance'
+if (!$authorized) {
+
+    $sql_finance_scope = "
+        SELECT cm.membership_id
+        FROM committee_membership cm
+        JOIN committee c
+            ON cm.committee_id = c.committee_id
+        WHERE cm.member_id = $member_id
+          AND cm.status = 'active'
+          AND c.status = 'active'
+          AND c.scope = 'finance'
+        LIMIT 1
+    ";
+
+    $result_finance_scope = mysqli_query($conn, $sql_finance_scope);
+
+    if ($result_finance_scope && mysqli_num_rows($result_finance_scope) > 0) {
+        $authorized = true;
+    }
+}
+
+// If still not authorized, block access
+if (!$authorized) {
     echo "<p>You do not have permission to view donations.</p>";
     include 'footer.php';
     exit;
