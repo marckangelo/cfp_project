@@ -61,7 +61,7 @@ if (isset($_SESSION['member_id'])) {
     // Table header
     echo '
     <div class="account-section">
-        <h4>Member Details</h4>
+        <h4 class="centered-title">Member Details</h4>
 
         <table border="1">
             <tr>
@@ -192,7 +192,7 @@ if (isset($_SESSION['member_id'])) {
     // Table header
     echo '
     <div class="account-section">
-        <h4>Download Details</h4>
+        <h4 class="centered-title">Download Details</h4>
 
         <table border="1">
             <tr>
@@ -259,7 +259,7 @@ if (isset($_SESSION['member_id'])) {
     // Table header
     echo '
     <div class="account-section">
-        <h4>Donation Details</h4>
+        <h4 class="centered-title">Donation Details</h4>
 
         <table border="1">
             <tr>
@@ -332,7 +332,7 @@ if (isset($_SESSION['member_id'])) {
     // Table header
     echo '
     <div class="account-section">
-        <h4>Committee(s) Joined Details</h4>
+        <h4 class="centered-title">Committee(s) Joined Details</h4>
 
         <table border="1">
             <tr>
