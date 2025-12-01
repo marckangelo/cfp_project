@@ -70,6 +70,11 @@ if ($result_charity_details) {
                             <input type="hidden" name="charity_id" value="' . $charity_id . '">
                             <button type="submit" name="delete_charity">Delete</button>
                         </form>
+
+                        <form method="get" action="donations.php">
+                            <input type="hidden" name="charity_id" value="' . $charity_id . '">
+                            <button type="submit" name="view_donations">View Donations</button>
+                        </form>
                     </td>
                 </tr>
             ';
