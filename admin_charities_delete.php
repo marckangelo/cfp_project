@@ -11,27 +11,24 @@ include 'header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $committee_id = (int) $_POST['committee_id'];
+    $charity_id = (int) $_POST['charity_id'];
 
-    // Build the MySql DELETE query
     $sql_delete = "
-        DELETE FROM committee
-        WHERE committee_id = $committee_id
+        DELETE FROM charity
+        WHERE charity_id = $charity_id
     ";
 
-    // Run the DELETE query
     $result_delete = mysqli_query($conn, $sql_delete);
-
     if ($result_delete) {
-        $_SESSION['successful_committee_delete'] = "Committee has been deleted successfully!";
+        $_SESSION['successful_charity_delete'] = "Charity has been deleted successfully!";
     } else {
-        $_SESSION['failed_committee_delete'] = "Failed to delete committee.";
+        $_SESSION['failed_charity_delete'] = "Failed to delete charity.";
     }
 
-    header("Location: admin_committees.php");
+    header("Location: admin_charities.php");
     exit;
 } else {
-    // If not a POST request, redirect back to committees page
-    header("Location: admin_committees.php");
+    // If not a POST request, redirect back to charities page
+    header("Location: admin_charities.php");
     exit;
 }
