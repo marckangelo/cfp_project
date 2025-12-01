@@ -265,9 +265,33 @@ function display_items_table($conn, $status_filter, $title_label) {
     $status_sql = mysqli_real_escape_string($conn, $status_filter);
 
     $sql_text_details = "
-        SELECT *
-        FROM text
-        WHERE status = '$status_sql'
+        SELECT 
+            t.text_id,
+            t.title,
+            t.abstract,
+            t.topic,
+            t.version,
+            t.upload_date,
+            t.status,
+            t.download_count,
+            t.total_donations,
+            t.avg_rating,
+            GROUP_CONCAT(tk.keyword SEPARATOR ', ') AS keywords
+        FROM text t
+        LEFT JOIN text_keyword tk
+            ON t.text_id = tk.text_id
+        WHERE t.status = '$status_sql'
+        GROUP BY
+            t.text_id,
+            t.title,
+            t.abstract,
+            t.topic,
+            t.version,
+            t.upload_date,
+            t.status,
+            t.download_count,
+            t.total_donations,
+            t.avg_rating
     ";
 
     $result_text_details = mysqli_query($conn, $sql_text_details);
@@ -282,6 +306,7 @@ function display_items_table($conn, $status_filter, $title_label) {
                     <th>Title</th>
                     <th>Abstract</th>
                     <th>Topic</th>
+                    <th>Keywords</th>
                     <th>Version</th>
                     <th>Upload Date</th>
                     <th>Status</th>
@@ -302,6 +327,7 @@ function display_items_table($conn, $status_filter, $title_label) {
                     <td>' . htmlspecialchars($row['title']) . '</td>
                     <td>' . htmlspecialchars($row['abstract']) . '</td>
                     <td>' . htmlspecialchars($row['topic']) . '</td>
+                    <td>' . htmlspecialchars($row['keywords']) . '</td>
                     <td>' . htmlspecialchars($row['version']) . '</td>
                     <td>' . htmlspecialchars($row['upload_date']) . '</td>
                     <td>' . htmlspecialchars($row['status']) . '</td> 
@@ -309,6 +335,16 @@ function display_items_table($conn, $status_filter, $title_label) {
                     <td>' . htmlspecialchars($row['total_donations']) . '</td>
                     <td>' . htmlspecialchars($row['avg_rating']) . '</td>
                     <td>
+                        <!-- Edit button: send current text info via GET to admin_items_edit.php -->
+                        <form action="admin_items_edit.php" method="get" style="display:inline;">
+                            <input type="hidden" name="text_id" value="' . $text_id . '">
+                            <input type="hidden" name="title" value="' . htmlspecialchars($row['title']) . '">
+                            <input type="hidden" name="abstract" value="' . htmlspecialchars($row['abstract']) . '">
+                            <input type="hidden" name="topic" value="' . htmlspecialchars($row['topic']) . '">
+                            <input type="hidden" name="version" value="' . htmlspecialchars($row['version']) . '">
+                            <input type="hidden" name="status" value="' . htmlspecialchars($row['status']) . '">
+                            <button type="submit">Edit</button>
+                        </form>
             ';
 
             // Different actions depending on current status
@@ -325,7 +361,6 @@ function display_items_table($conn, $status_filter, $title_label) {
                         </form>
                 ';
             } else if ($status_filter === 'draft') {
-                // Admin can either publish directly or archive/blacklist.
                 echo '
                         <form method="post" action="admin_items.php" style="display:inline%;">
                             <input type="hidden" name="text_id" value="' . $text_id . '">
@@ -350,7 +385,6 @@ function display_items_table($conn, $status_filter, $title_label) {
                         </form>
                 ';
             } else {
-                // Fallback for any other status (e.g., archived = blacklisted)
                 echo '
                         <em>No actions available.</em>
                 ';
