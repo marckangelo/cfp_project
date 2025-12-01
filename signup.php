@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $introduced_by = trim($_POST['introduced_by']);
     $pseudonym = trim($_POST['pseudonym']);
     $orcid = trim($_POST['orcid']);
+    $bio = trim($_POST['bio']);
 
     // 2. Basic validation (very simple)
 
@@ -44,28 +45,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Address is required (street, city, country and postal code).";
     }
 
-
     // Primary email required
     if ($primary_email == "") {
         $errors[] = "Primary email is required.";
     } else {
-        // super basic email check: must contain format like alphanumeric@domain.com
+        // Super basic email check: must contain format like alphanumeric@domain.com
         if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $primary_email)) {
             $errors[] = "Primary email is not valid. Use format like: alphanumeric@domain.com (example: user@cs.concordia.ca).";
         }
-
-        // other version of email check (checks for common domains like gmail, yahoo or outlook):
-        // if (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo|outlook)\.(com|ca)$/", $primary_email)) {
-        //     $errors[] = "Email must be gmail, yahoo, or outlook (.com or .ca).";
-        // }
     }
 
     // Recovery email required
-    // super basic email check: must contain format like alphanumeric@domain.com
     if ($recovery_email == "") {
-    $errors[] = "Recovery email is required.";
+        $errors[] = "Recovery email is required.";
     } else {
-        // Same simple regex as primary email check
         if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $recovery_email)) {
             $errors[] = "Recovery email is not valid. Use format like: alphanumeric@domain.com (example: user@cs.concordia.ca).";
         }
@@ -78,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($introduced_by == "") {
         $errors[] = "Introduced By email is required.";
     } else {
-        // Use same simple regex
         if (!preg_match("/^[a-zA-Z0-9]+@[a-zA-Z0-9\.]+\.(com|ca|org)$/", $introduced_by)) {
             $errors[] = "Introduced By email is not valid. Use format like: alphanumeric@domain.com.";
         }
@@ -92,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 3. If no validation errors so far, check if primary email already exists
     if (count($errors) == 0) {
 
-      // Check if primary email already exists
+        // Check if primary email already exists
         $sql_check = "SELECT * FROM member WHERE primary_email = '$primary_email'";
         $result_check = mysqli_query($conn, $sql_check);
 
@@ -125,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 4. If still no errors, insert into database
     if (count($errors) == 0) {
 
-        // Hash the password (one function, you can think of it as "encrypt")
+        // Hash the password
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         // Simple values
@@ -136,14 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         $verification_matrix = "";
 
-        // loop where it concatenates 1 random character 16 times to create the  verification_matrix
         for ($i = 0; $i < 16; $i++) {
-            $verification_matrix .= $chars[rand(0, strlen($chars) - 1)]; // This is what will be saved into DB
+            $verification_matrix .= $chars[rand(0, strlen($chars) - 1)];
         }
 
-        // Expiry date: 30 days from now (can still be changed --> **30 days only FOR NOW**)
+        // Expiry date: 30 days from now
         $matrix_expiry_date = date("Y-m-d", strtotime("+30 days"));
-
 
         $sql = "INSERT INTO member
                 (name, organization, primary_email, recovery_email, password_hash, join_date, status,
@@ -158,17 +148,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (mysqli_query($conn, $sql)) {
 
-            // Get the member_id that was most recently inserted (built-in MySql function)
+            // Get the member_id that was most recently inserted
             $member_id = mysqli_insert_id($conn);
 
             // If ORCID was provided, then also insert into AUTHOR table
-            if($orcid != "") {
+            if ($orcid != "") {
                 // ORCID format check --> Must be like: 0000-0000-0000-0000
                 if (!preg_match("/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/", $orcid)) {
                     $errors[] = "ORCID is not valid. Use format like: 0000-0000-0000-0000.";
                 } else {
-                    $sql_author = "INSERT INTO author (member_id, orcid)
-                               VALUES ($member_id, '$orcid')";
+                    // Escape bio so quotes don't break the query
+                    $bio_safe = mysqli_real_escape_string($conn, $bio);
+
+                    // Insert bio along with author record
+                    $sql_author = "INSERT INTO author (member_id, orcid, bio)
+                                   VALUES ($member_id, '$orcid', '$bio_safe')";
                     mysqli_query($conn, $sql_author);
                 }
             }
@@ -176,9 +170,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Save matrix and its expiry date in session so we can show it once on login page
             $_SESSION['new_verification_matrix'] = $verification_matrix;
             $_SESSION['matrix_expiry_date'] = $matrix_expiry_date;
-            $_SESSION['matrix_member_id']      = $member_id;
+            $_SESSION['matrix_member_id'] = $member_id;
             
-            // If this is reached, signup was successful -> head to login page
+            // If this is reached, signup was successful -> head to matrix display
             $_SESSION['signup_success'] = "Account created successfully!";
             header("Location: matrix_display.php");
             exit;
@@ -243,8 +237,13 @@ if ($success != "") {
         <input type="text" name="pseudonym">
     </label><br>
 
-     <label>ORCID (optional, for Authors):
+    <label>ORCID (optional, for Authors):
         <input type="text" name="orcid">
+    </label><br>
+
+    <!-- NEW: Bio field (optional, for authors) -->
+    <label>Bio (optional, for Authors):
+        <textarea name="bio" rows="4" cols="40"></textarea>
     </label><br>
 
     <label>Primary Email:
