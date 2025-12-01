@@ -23,6 +23,41 @@ $unread_count = isset($_SESSION['unread_count']) ? (int)$_SESSION['unread_count'
 if ($unread_count <= 0) {
     $has_unread = false;
 }
+
+// Admin role ('super', 'content' or 'financial')
+$admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : null;
+
+// A check to show "Plagiarism Cases" link
+$show_plag_cases_link = false;
+
+if ($is_fully_logged_in && !empty($_SESSION['member_id']) && isset($conn)) {
+
+    $member_id = (int) $_SESSION['member_id'];
+
+    // Case 1: super admin always sees the link
+    if ($is_admin && $admin_role === 'super') {
+        $show_plag_cases_link = true;
+    } else {
+        // Case 2: any member who is in an active plagiarism-scope committee
+        $sql_plag_scope = "
+            SELECT cm.membership_id
+            FROM committee_membership cm
+            JOIN committee c
+                ON cm.committee_id = c.committee_id
+            WHERE cm.member_id = $member_id
+              AND cm.status = 'active'
+              AND c.status = 'active'
+              AND c.scope = 'plagiarism'
+            LIMIT 1
+        ";
+
+        $result_plag_scope = mysqli_query($conn, $sql_plag_scope);
+
+        if ($result_plag_scope && mysqli_num_rows($result_plag_scope) > 0) {
+            $show_plag_cases_link = true;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,6 +81,10 @@ if ($unread_count <= 0) {
 
                 <!-- Committees only once fully logged in (after matrix verified) -->
                 <a href="committees.php">Committees</a> |
+
+                <?php if ($show_plag_cases_link): ?>
+                    <a href="plagiarism_cases.php">Plagiarism Cases</a> |
+                <?php endif; ?>
 
                 <!-- Inbox with NEW label if unread -->
                 <a href="messages_inbox.php">
