@@ -67,6 +67,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result_insert_comment = mysqli_query($conn, $sql_insert_comment);
         // Redirect back to item page after successful comment
         if ($result_insert_comment) {
+
+            // ===== NEW: Recalculate and update avg_rating for this text =====
+            $sql_avg = "
+                SELECT AVG(rating) AS avg_rating
+                FROM comment
+                WHERE text_id = $text_id
+                  AND rating IS NOT NULL
+            ";
+            $result_avg = mysqli_query($conn, $sql_avg);
+
+            if ($result_avg) {
+                $row_avg = mysqli_fetch_assoc($result_avg);
+                if ($row_avg && $row_avg['avg_rating'] !== null) {
+                    $avg_rating = round((float)$row_avg['avg_rating'], 2);
+
+                    $sql_update_avg = "
+                        UPDATE text
+                        SET avg_rating = $avg_rating
+                        WHERE text_id = $text_id
+                    ";
+                    mysqli_query($conn, $sql_update_avg);
+                }
+            }
+            // ===== END NEW PART =====
+
             header("Location: my_account.php");
             exit;
         // display error if insertion fails
