@@ -8,8 +8,6 @@ echo '<h2 class="account-title">My Account</h2>
       <p class="account-intro">TODO: Show member details, download and donation history.</p>
      ';
 
-// TODO: Ensure user is logged in, then load member profile, download history, donation history
-
 // Show download success message, if any
 if (isset($_SESSION['download_success'])) {
     echo '<div class="flash-success">' . htmlspecialchars($_SESSION['download_success']) . '</div>';
@@ -22,7 +20,6 @@ if (isset($_SESSION['download_failure'])) {
     unset($_SESSION['download_failure']);
 }
 
-
 // Extract member_id of member logged in
 $member_id  = $_SESSION['member_id'];
 $admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : '';
@@ -31,15 +28,20 @@ $admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : '';
 if (isset($_SESSION['member_id'])) {
 
     // ================ DISPLAY MEMBER DETAILS =================
-    $sql_member_details = "SELECT * 
-                           FROM member
-                           WHERE member_id = $member_id";
+    // Join author to fetch bio & orcid (if this member is an author)
+    $sql_member_details = "SELECT m.*, a.bio, a.orcid AS author_orcid
+                           FROM member m
+                           LEFT JOIN author a ON m.member_id = a.member_id
+                           WHERE m.member_id = $member_id";
 
     // Run the query
     $result_member_details = mysqli_query($conn, $sql_member_details);
 
     // Fetch the data
     $row = mysqli_fetch_assoc($result_member_details);
+
+    // Is this member an author?
+    $is_author = (!empty($row['bio']) || !empty($row['author_orcid']));
 
     // Determine download ability status based on donations in last year
     $sql_recent_donation = "
@@ -70,7 +72,16 @@ if (isset($_SESSION['member_id'])) {
                 <th>Pseudonym</th>
                 <th>Address</th>
                 <th>Primary Email</th>
-                <th>Recovery Email</th>
+                <th>Recovery Email</th>';
+
+    // Only show Bio / ORCID columns if this member is an author
+    if ($is_author) {
+        echo '
+                <th>Bio</th>
+                <th>ORCID</th>';
+    }
+
+    echo '
                 <th>Download Limit</th>';
 
     // If this member is an admin, show an extra column for the role
@@ -83,7 +94,7 @@ if (isset($_SESSION['member_id'])) {
             </tr>
     ';
 
-    // Table rows
+    // Table row
     echo '
             <tr>
                 <td>' . htmlspecialchars($row['name']) . '</td>
@@ -94,9 +105,18 @@ if (isset($_SESSION['member_id'])) {
                     htmlspecialchars($row['city']) . ', ' .
                     htmlspecialchars($row['country']) . ', ' .
                     htmlspecialchars($row['postal_code']) .
-                '</td>    
+                '</td>
                 <td>' . htmlspecialchars($row['primary_email']) . '</td>
-                <td>' . htmlspecialchars($row['recovery_email']) . '</td>
+                <td>' . htmlspecialchars($row['recovery_email']) . '</td>';
+
+    // Only output Bio / ORCID cells if author
+    if ($is_author) {
+        echo '
+                <td>' . htmlspecialchars($row['bio']) . '</td>
+                <td>' . htmlspecialchars($row['author_orcid']) . '</td>';
+    }
+
+    echo '
                 <td>' . htmlspecialchars($download_limit_text) . '</td>';
 
     // If admin, show the role value in the row
