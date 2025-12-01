@@ -110,7 +110,7 @@ INSERT INTO `charity` (`charity_id`, `name`, `description`, `mission`, `country`
 -- Triggers `charity`
 --
 DELIMITER $$
-CREATE TRIGGER `committee_deletion_donation_cleanup` BEFORE DELETE ON `charity` FOR EACH ROW BEGIN
+CREATE TRIGGER `charity_deletion_donation_cleanup` BEFORE DELETE ON `charity` FOR EACH ROW BEGIN
     DELETE
 FROM
     donation
