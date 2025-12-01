@@ -414,17 +414,40 @@ function display_pending_versions($conn) {
             tv.change_summary,
             tv.status,
             t.title,
+            t.abstract,
+            t.topic,
+            t.version,
+            t.upload_date,
+            t.avg_rating,
             t.status AS text_status,
             a.orcid,
-            m.name AS author_name
+            m.name AS author_name,
+            GROUP_CONCAT(tk.keyword SEPARATOR ', ') AS keywords
         FROM text_version tv
         JOIN text t
             ON tv.text_id = t.text_id
+        LEFT JOIN text_keyword tk
+            ON t.text_id = tk.text_id
         JOIN author a
             ON t.author_orcid = a.orcid
         JOIN member m
             ON a.member_id = m.member_id
         WHERE tv.status = 'pending'
+        GROUP BY
+            tv.version_id,
+            tv.text_id,
+            tv.submitted_date,
+            tv.change_summary,
+            tv.status,
+            t.title,
+            t.abstract,
+            t.topic,
+            t.version,
+            t.upload_date,
+            t.avg_rating,
+            t.status,
+            a.orcid,
+            m.name
         ORDER BY tv.submitted_date DESC, tv.version_id DESC
     ";
 
@@ -439,6 +462,12 @@ function display_pending_versions($conn) {
                 <tr>
                     <th>Version ID</th>
                     <th>Text Title</th>
+                    <th>Topic</th>
+                    <th>Abstract</th>
+                    <th>Keywords</th>
+                    <th>Version</th>
+                    <th>Upload Date</th>
+                    <th>Average Rating</th>
                     <th>Author</th>
                     <th>Submitted Date</th>
                     <th>Current Text Status</th>
@@ -456,6 +485,12 @@ function display_pending_versions($conn) {
                 <tr>
                     <td>' . $version_id . '</td>
                     <td>' . htmlspecialchars($row['title']) . '</td>
+                    <td>' . htmlspecialchars($row['topic']) . '</td>
+                    <td>' . htmlspecialchars($row['abstract']) . '</td>
+                    <td>' . htmlspecialchars($row['keywords']) . '</td>
+                    <td>' . htmlspecialchars($row['version']) . '</td>
+                    <td>' . htmlspecialchars($row['upload_date']) . '</td>
+                    <td>' . htmlspecialchars($row['avg_rating']) . '</td>
                     <td>' . htmlspecialchars($row['author_name']) . '</td>
                     <td>' . htmlspecialchars($row['submitted_date']) . '</td>
                     <td>' . htmlspecialchars($row['text_status']) . '</td>
