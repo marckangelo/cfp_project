@@ -202,7 +202,6 @@ if ($result_text_details) {
 
             $keywords_string = implode(", ", $keywords);
 
-            // *** DELETE THE BUTTON DOESN'T DO ANYTHING YET. IT'S JUST THERE  FOR NOW***
             echo '
             
                 <tr>

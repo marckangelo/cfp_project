@@ -3,7 +3,7 @@ session_start();
 require 'db.php';
 include 'header.php';
 
-// Optional: restrict to admins only (adjust to your session keys if needed)
+// Restrict to admins only (adjust to your session keys if needed)
 if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {
     echo "<p>You must be an admin to access this page.</p>";
     include 'footer.php';
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ===================== LOAD MEMBER TO EDIT (GET) =====================
 
-// We need a member_id to edit: prefer GET, fallback to POST if needed
+// We need a member_id to edit: get info through GET, using POST if needed
 if (isset($_GET['member_id'])) {
     $member_id = (int) $_GET['member_id'];
 } elseif (isset($_POST['member_id'])) {

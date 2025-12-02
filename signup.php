@@ -246,7 +246,6 @@ if ($success != "") {
         <input type="text" name="orcid">
     </label><br>
 
-    <!-- NEW: Bio field (optional, for authors) -->
     <label>Bio (optional, for Authors):
         <textarea name="bio" rows="4" cols="40"></textarea>
     </label><br>

@@ -1,4 +1,8 @@
 <?php
+/*
+    **** MIGHT A BE A REDUNDANT FILE ****
+*/
+
 session_start();
 require 'db.php';
 include 'header.php';

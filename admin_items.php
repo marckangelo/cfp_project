@@ -191,14 +191,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
 if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     isset($_POST['text_id']) &&
     isset($_POST['item_action']) &&
-    !isset($_POST['version_id']) // make sure this branch is only for text status, not version actions
+    !isset($_POST['version_id']) // this is for text_version
 ) {
 
     $text_id     = (int) $_POST['text_id'];
     $item_action = $_POST['item_action'];
     $new_status  = '';
 
-    // Map actions to new status
+    // Actions changes text status to the appropriate one
     if ($item_action === 'publish') {
         $new_status = 'published';
     } else if ($item_action === 'draft') {
@@ -523,6 +523,9 @@ function display_pending_versions($conn) {
 <p>List and manage items by status, and review pending versions submitted by authors.</p>
 
 <?php
+
+// =============== DISPLAYING THE TABLES ===============
+
 // First: show pending versions for moderation
 display_pending_versions($conn);
 

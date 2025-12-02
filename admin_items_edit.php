@@ -118,7 +118,7 @@ if (!$result_text || mysqli_num_rows($result_text) === 0) {
     exit;
 }
 
-// Collect main attributes and keywords (similar style to author_item_edit.php)
+// Collect main attributes and keywords (basically same as author_item_edit.php)
 $text_main_attributes = array();
 $keywords = array();
 

@@ -9,7 +9,7 @@ if (!isset($_GET['orcid'])) {
     include 'footer.php';
     exit;
 }
-// Sanitize input
+// Make input safe by esacping characters that need escaping
 $orcid = mysqli_real_escape_string($conn, $_GET['orcid']);
 // Fetch author information
 $sql_author = "SELECT a.orcid, m.name, a.bio, a.specialization, a.total_downloads 

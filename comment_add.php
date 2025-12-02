@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Redirect back to item page after successful comment
         if ($result_insert_comment) {
 
-            // ===== NEW: Recalculate and update avg_rating for this text =====
+            // ===== Recalculate and update avg_rating for this text =====
             $sql_avg = "
                 SELECT AVG(rating) AS avg_rating
                 FROM comment
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_query($conn, $sql_update_avg);
                 }
             }
-            // ===== END NEW PART =====
+            // ===== END avg_rating recalculation =====
 
             header("Location: my_account.php");
             exit;

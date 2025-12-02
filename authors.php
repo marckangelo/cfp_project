@@ -3,9 +3,7 @@ session_start();
 require 'db.php';
 include 'header.php';
 
-// TODO: Admin-only member management (view, change status, etc.)
-
-// Checking if signed in as member **** SHOULD BE CHECKING IF SIGNED IN AS ADMIN ****
+// Checking if signed in as member **** SHOULD BE CHECKING IF SIGNED IN AS ADMIN as well****
 if (isset($_SESSION['member_id'])) {
     // DISPLAY MEMBER DETAILS
     $sql_author_details = "SELECT 

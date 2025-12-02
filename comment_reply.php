@@ -182,7 +182,7 @@ $text_id               = (int) $original_comment['text_id'];
 $original_member_name  = $original_comment['member_name'];
 $commentor_id          = (int) $original_comment['member_id'];  // commenter
 
-// OPTIONAL: Verify this author really owns the text being commented on
+//Verify this author really owns the text being commented on
 $sql_check_author = "
     SELECT 1
     FROM text
