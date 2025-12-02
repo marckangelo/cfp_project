@@ -1,4 +1,9 @@
 <?php
+/*
+Contributor to this file:
+- Muhammad RAZA (40284058)
+*/
+
 session_start();
 require 'db.php';
 ?>
