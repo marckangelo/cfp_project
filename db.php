@@ -1,9 +1,9 @@
 <?php
 // Basic database connection (procedural style)
-$servername = "localhost";
-$username   = "root";
-$password   = "";
-$dbname     = "cfp_db";
+$servername = "dvc353.encs.concordia.ca";
+$username   = "dvc353_2";
+$password   = "fuzzymist97";
+$dbname     = "dvc353_2";
 
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
