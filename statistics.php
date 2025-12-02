@@ -34,7 +34,7 @@ GROUP BY year, a.orcid ORDER BY year DESC, download_count DESC";
 $query_result_annual_for_author = mysqli_query($conn, $query_annual_for_author);
 
 ?>
-<h2>Statistics</h2>
+<h2 class="centered-title">Statistics</h2>
 <h3 class="centered-title">Top 5 Most Downloaded Titles</h3>
 <table border="1">
     <tr>

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2025 at 07:17 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: Dec 02, 2025 at 03:58 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,7 +38,9 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`admin_id`, `role`, `last_login`) VALUES
-(10, 'super', '2025-11-27 16:47:33');
+(10, 'super', '2025-11-27 16:47:33'),
+(12, 'content', '2025-11-28 23:44:41'),
+(13, 'financial', NULL);
 
 -- --------------------------------------------------------
 
@@ -296,7 +298,9 @@ INSERT INTO `member` (`member_id`, `name`, `organization`, `primary_email`, `rec
 (8, 'Eve Enthusiast', 'Uni of Montreal', 'eve@test.com', NULL, '123456', 'EveE', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (9, 'Frank Fan', 'Tech World', 'frank@test.com', NULL, '123456', 'FrankF', NULL, NULL, '2025-11-26', 'active', NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (10, 'admin123', 'Admin', 'admin123@admin.com', 'admin123recovery@admin.com', '$2y$10$iwOIEaW9ponie1.5JpprwumxVO6Gr1YPINtwfp3xstfze/DnRNplG', 'admin123', '45UBGCR9A2FRY6KP', '2025-12-27', '2025-11-27', 'active', NULL, 'Admin St', 'Admin City', 'Admin', 'Canada', '0AD M1N', 1),
-(11, 'Arshdeep Singh', 'Concordia University', 'arshdeep200423@gmail.com', 'email@email.com', '$2y$10$G5yEaLmbFG2o8dB3tBYmye9bqw7sJ.WSLaYncZTAJxh8vGOkhBU72', 'DeepDeep', 'XKABUD04YAEFO52Y', '2025-12-30', '2025-11-30', 'active', 0, '1560 Place Kennedy', 'Dorval', 'QC', 'Canada', 'H9P 1P9', 10);
+(11, 'Arshdeep Singh', 'Concordia University', 'arshdeep200423@gmail.com', 'email@email.com', '$2y$10$G5yEaLmbFG2o8dB3tBYmye9bqw7sJ.WSLaYncZTAJxh8vGOkhBU72', 'DeepDeep', 'XKABUD04YAEFO52Y', '2025-12-30', '2025-11-30', 'active', 0, '1560 Place Kennedy', 'Dorval', 'QC', 'Canada', 'H9P 1P9', 10),
+(12, 'admin_content', 'Admin', 'adminContent@admin.com', 'adminContentRecovery@admin.com', '$2y$10$RiljOtjNyi5ziNbkulj.0eUDWYGQbX4CAAS2KDmuaWHUP59hMHkMe', 'admin_content', 'D7YTFRWGFGWAZFCO', '2026-01-01', '2025-12-02', 'active', NULL, 'Admin St', 'Admin City', 'Admin', 'Canada', '0AD M1N', 1),
+(13, 'admin_financial', 'Admin', 'adminFinancial@admin.com', 'adminFinancialRecovery@admin.com', '$2y$10$V/m/KaVp0wwu1OU2Z7aUBeLMPfNpRJD1PKpMWlXe3XufKW5AnTSju', 'admin_financial', 'V2BQRGV3EC8BTQCP', '2026-01-01', '2025-12-02', 'active', NULL, 'Admin St', 'Admin City', 'Admin', 'Canada', '0AD M1N', 1);
 
 -- --------------------------------------------------------
 
@@ -424,12 +428,21 @@ CREATE TABLE `text` (
 --
 
 INSERT INTO `text` (`text_id`, `author_orcid`, `title`, `abstract`, `topic`, `version`, `upload_date`, `status`, `download_count`, `total_donations`, `avg_rating`) VALUES
-(1, '0000-0000-0000-0001', 'Principles of Modern Web Development', 'An extensive overview of full-stack frameworks and the shift towards reactive frontend libraries.', 'Computer Science', 1, '2025-11-01', '', 120, 50.00, 4.50),
+(1, '0000-0000-0000-0001', 'Principles of Modern Web Development', 'An extensive overview of full-stack frameworks and the shift towards reactive frontend libraries.', 'Computer Science', 1, '2025-11-01', 'published', 120, 50.00, 4.50),
 (2, '0000-0000-0000-0002', 'Understanding Database Normalization', 'A critical look at why Third Normal Form (3NF) remains essential for data integrity in large-scale systems.', 'Database Systems', 1, '2025-10-15', 'under_review', 45, 10.00, 3.80),
-(3, '0000-0000-0000-0003', 'Neural Networks for Beginners', 'A deep dive into the mathematics of backpropagation and how nodes simulate learning.', 'Artificial Intelligence', 1, '2025-01-20', '', 0, 0.00, NULL),
+(3, '0000-0000-0000-0003', 'Neural Networks for Beginners', 'A deep dive into the mathematics of backpropagation and how nodes simulate learning.', 'Artificial Intelligence', 1, '2025-01-20', 'published', 0, 0.00, NULL),
 (4, '0000-0000-0000-0004', 'Coral Reef Preservation Techniques', 'Analyzing the impact of rising ocean temperatures on marine ecosystems and proposed restoration methods.', 'Biology', 1, '2024-11-20', 'under_review', 89, 150.25, 4.90),
 (5, '0000-0000-0000-0005', 'Polymers in Modern Medicine', 'Investigating the use of organic synthetic compounds for targeted drug delivery systems.', 'Chemistry', 2, '2025-11-26', 'published', 30, 25.00, 4.10),
-(6, '0000-0000-0000-0002', 'Optimizing SQL Queries for Performance', 'A deep dive into query execution plans, indexing strategies, and common pitfalls in SQL optimization.', 'Database Systems', 1, '2025-11-27', 'published', 0, 0.00, NULL);
+(6, '0000-0000-0000-0002', 'Optimizing SQL Queries for Performance', 'A deep dive into query execution plans, indexing strategies, and common pitfalls in SQL optimization.', 'Database Systems', 1, '2025-11-27', 'published', 0, 0.00, NULL),
+(7, '0000-0000-0000-0003', 'Evolution of Neural Networks', 'An in-depth analysis of how neural network architectures have evolved over the last decade.', 'Computer Science', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(8, '0000-0000-0000-0003', 'Optimizing Binary Search Trees', 'A study on balancing algorithms for binary search trees in high-load database environments.', 'Computer Science', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(9, '0000-0000-0000-0003', 'Natural Language Processing APIs', 'Evaluating the efficiency of modern NLP APIs for real-time translation services.', 'Computer Science', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(10, '0000-0000-0000-0004', 'Resilience of Coral Reefs', 'Investigating the survival rates of coral ecosystems in rising ocean temperatures.', 'Biology', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(11, '0000-0000-0000-0004', 'Deep Sea Biodiversity', 'Mapping the unknown species residing in the Mariana Trench ecosystems.', 'Biology', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(12, '0000-0000-0000-0004', 'Microplastics in Marine Food Webs', 'Tracking the accumulation of microplastics in Atlantic fish populations.', 'Biology', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(13, '0000-0000-0000-0005', 'Carbon Chain Synthesis', 'Novel methods for stabilizing long-chain carbon structures in organic compounds.', 'Chemistry', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(14, '0000-0000-0000-0005', 'Hydrophobic Interactions', 'Analyzing the role of hydrophobic interactions in complex organic solvents.', 'Chemistry', 1, '2025-12-01', 'published', 0, 0.00, NULL),
+(15, '0000-0000-0000-0005', 'Green Chemistry Catalysts', 'Developing sustainable catalysts for industrial pharmaceutical production.', 'Chemistry', 1, '2025-12-01', 'published', 0, 0.00, NULL);
 
 --
 -- Triggers `text`
@@ -480,7 +493,34 @@ INSERT INTO `text_keyword` (`text_id`, `keyword`) VALUES
 (5, 'medicine'),
 (6, 'optimization'),
 (6, 'performance'),
-(6, 'sql');
+(6, 'sql'),
+(7, 'AI'),
+(7, 'Deep Learning'),
+(7, 'Neural Networks'),
+(8, 'Algorithms'),
+(8, 'Data Structures'),
+(8, 'Trees'),
+(9, 'API'),
+(9, 'NLP'),
+(9, 'Translation'),
+(10, 'Conservation'),
+(10, 'Ecology'),
+(10, 'Marine Biology'),
+(11, 'Biodiversity'),
+(11, 'Deep Sea'),
+(11, 'Oceanography'),
+(12, 'Marine'),
+(12, 'Microplastics'),
+(12, 'Pollution'),
+(13, 'Carbon'),
+(13, 'Organic Chemistry'),
+(13, 'Synthesis'),
+(14, 'Chemistry'),
+(14, 'Molecular'),
+(14, 'Solvents'),
+(15, 'Catalysts'),
+(15, 'Pharma'),
+(15, 'Sustainability');
 
 -- --------------------------------------------------------
 
@@ -713,7 +753,7 @@ ALTER TABLE `download`
 -- AUTO_INCREMENT for table `member`
 --
 ALTER TABLE `member`
-  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `message`
@@ -737,7 +777,7 @@ ALTER TABLE `plagiarism_case`
 -- AUTO_INCREMENT for table `text`
 --
 ALTER TABLE `text`
-  MODIFY `text_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `text_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `text_version`

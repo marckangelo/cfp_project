@@ -15,8 +15,8 @@ $sql_charity_details = "
 $result_charity_details = mysqli_query($conn, $sql_charity_details);
 ?>
 
-<h2>Charities</h2>
-<p>Below is a list of registered charities available in the CFP system.</p>
+<h2 class="centered-title">Charities</h2>
+<p class="centered-title">Below is a list of registered charities available in the CFP system.</p>
 
 <?php
 if ($result_charity_details) {

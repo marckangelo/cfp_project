@@ -29,7 +29,7 @@ if ($result_charity_details) {
 
         // Table header
         echo '
-        <h4>List of Charities</h4>
+        <h2 class="centered-title">List of Charities</h2>
 
             <table border="1">
                 <tr>
