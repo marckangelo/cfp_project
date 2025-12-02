@@ -1,4 +1,9 @@
 <?php
+/*
+Contributor to this file:
+- Muhammad Adnan SHAHZAD (40282531)
+*/
+
 session_start();
 require 'db.php';
 

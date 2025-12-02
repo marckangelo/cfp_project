@@ -1,4 +1,11 @@
 <?php
+/*
+Contributor to this file:
+- Marck Angelo Geli (40265711)
+
+*/
+
+
 session_start();
 require 'db.php';
 include 'header.php';
