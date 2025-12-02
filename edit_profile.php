@@ -4,8 +4,7 @@ require 'db.php';
 include 'header.php';
 
 // Temporary title of this page
-echo    '<h2>Edit Profile</h2>
-        <p>TODO: Implement profile edit form.</p>';
+echo    '<h2>Edit Profile</h2>';
 
 // Process the form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -91,9 +90,10 @@ if (isset($_SESSION['member_id'])) {
 
     // Form
     echo '
+    <div class="profile-form">
     <form method="post" action="edit_profile.php">
 
-    <h4>Edit Member Details</h4>
+    <h4>Member Details</h4>
 
         <table border="1">
             <tr>
@@ -160,6 +160,8 @@ if (isset($_SESSION['member_id'])) {
     echo '<button type="submit">Save Changes</button> ';
     echo '<a href="my_account.php"><button type="button">Cancel</button></a>';
     echo '</form>';
+    
+    echo '</div>'; // close div tag
 
 } else {
     header("Location: login.php");

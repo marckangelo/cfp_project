@@ -366,3 +366,21 @@ footer {
     font-weight: bold;
     font-size: 18px;
 }
+
+/* ===== Edit Profile form (wide) ===== */
+.profile-form form {
+    max-width: 100%;      /* override global form 400px limit */
+    width: 100%;
+    padding: 0;           
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    margin-bottom: 0;
+}
+
+/* Make the profile table fill the form nicely instead of centering at 80% */
+.profile-form table {
+    width: 100%;
+    max-width: 100%;
+    margin: 10px 0 20px 0;
+}

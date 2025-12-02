@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'db.php';
+include 'header.php';
 
 
 if (!isset($_SESSION['member_id'])) {
