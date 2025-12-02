@@ -20,6 +20,12 @@ if (isset($_SESSION['download_failure'])) {
     unset($_SESSION['download_failure']);
 }
 
+// Show download success message, if any
+if (isset($_SESSION['successful_donation'])) {
+    echo '<div class="flash-success">' . htmlspecialchars($_SESSION['successful_donation']) . '</div>';
+    unset($_SESSION['successful_donation']);
+}
+
 // Extract member_id of member logged in
 $member_id  = $_SESSION['member_id'];
 $admin_role = isset($_SESSION['admin_role']) ? $_SESSION['admin_role'] : '';

@@ -90,6 +90,17 @@ if(isset($_SESSION['member_id'])) {
 if ($result_text_details) {
     if (mysqli_num_rows($result_text_details) > 0) {
 
+        // Get first row to know the status of this text
+        $first_row = mysqli_fetch_assoc($result_text_details);
+        $show_actions_column = ($first_row['status'] !== 'under_review');
+
+        // Put all rows (first + remaining) into an array for processing
+        $rows = array();
+        $rows[] = $first_row;
+        while ($row_tmp = mysqli_fetch_assoc($result_text_details)) {
+            $rows[] = $row_tmp;
+        }
+
         // Table header
         echo '
         <h2>Item Details</h2>
@@ -107,13 +118,18 @@ if ($result_text_details) {
                     <th>Download Count</th>
                     <th>Total Donations ($)</th>
                     <th>Average Rating</th>
-                    <th>Comments</th>
-                    <th>Action</th>
+                    <th>Comments</th>';
+                    
+        if ($show_actions_column) {
+            echo '<th>Action</th>';
+        }
+
+        echo '
                 </tr>
         ';
 
         // Table rows
-        while ($row = mysqli_fetch_assoc($result_text_details)) {
+        foreach ($rows as $row) {
 
             // Fetch keywords for this text
             $keywords = array();
@@ -227,7 +243,11 @@ if ($result_text_details) {
                         echo '<hr>';
                     }
 
-                    echo   '</td>
+                    echo   '</td>';
+                    
+                    if ($show_actions_column) {
+
+                        echo '
                     <td>
                         <form method="post" action="download.php">
                             <input type="hidden" name="text_id" value="'. $row['text_id'] . '">
@@ -239,35 +259,39 @@ if ($result_text_details) {
                         </form>
                     ';
                         
-                if (!empty($_SESSION['orcid']) && $_SESSION['orcid'] === $row['author_orcid']) {
-                  echo '<form method="post" action="author_item_edit.php">
-                            <input type="hidden" name="text_id" value="'. htmlspecialchars($row['text_id']) . '">
-                            
-                            <input type="hidden" name="title" value="'. htmlspecialchars($row['title']) . '">
-                            <input type="hidden" name="abstract" value="'. htmlspecialchars($row['abstract']) . '">
-                            
-                            <input type="hidden" name="topic" value="'. htmlspecialchars($row['topic']) . '">
-                            
-                            <input type="hidden" name="keywords_string" value="'. htmlspecialchars($keywords_string) . '">
-                            <button type="submit" name="edit">Edit</button>
-                        </form>
-                    ';
-                }
+                        if (!empty($_SESSION['orcid']) && $_SESSION['orcid'] === $row['author_orcid']) {
+                          echo '<form method="post" action="author_item_edit.php">
+                                    <input type="hidden" name="text_id" value="'. htmlspecialchars($row['text_id']) . '">
+                                    
+                                    <input type="hidden" name="title" value="'. htmlspecialchars($row['title']) . '">
+                                    <input type="hidden" name="abstract" value="'. htmlspecialchars($row['abstract']) . '">
+                                    
+                                    <input type="hidden" name="topic" value="'. htmlspecialchars($row['topic']) . '">
+                                    
+                                    <input type="hidden" name="keywords_string" value="'. htmlspecialchars($keywords_string) . '">
+                                    <button type="submit" name="edit">Edit</button>
+                                </form>
+                            ';
+                        }
 
-                    // If the logged-in member is in an active plagiarism committee,
-                    // show a button to open a plagiarism case for this text
-                    if ($is_plag_committee_member && $committee_id_for_user !== null) {
+                        // If the logged-in member is in an active plagiarism committee,
+                        // show a button to open a plagiarism case for this text
+                        if ($is_plag_committee_member && $committee_id_for_user !== null) {
+                            echo '
+                            <form method="get" action="plagiarism_case_open.php">
+                                <input type="hidden" name="text_id" value="'. (int)$row['text_id'] . '">
+                                <input type="hidden" name="committee_id" value="'. (int)$committee_id_for_user . '">
+                                <button type="submit" name="open_plagiarism_case">Open Plagiarism Case</button>
+                            </form>
+                            ';
+                        }
+
                         echo '
-                        <form method="get" action="plagiarism_case_open.php">
-                            <input type="hidden" name="text_id" value="'. (int)$row['text_id'] . '">
-                            <input type="hidden" name="committee_id" value="'. (int)$committee_id_for_user . '">
-                            <button type="submit" name="open_plagiarism_case">Open Plagiarism Case</button>
-                        </form>
-                        ';
+                    </td> 
+                ';
                     }
 
-                    echo '
-                    </td> 
+            echo '
                 </tr>
             ';
         }

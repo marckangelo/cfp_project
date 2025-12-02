@@ -34,21 +34,21 @@ $text_title = $_POST['title'];
 // Amount must be > 0
 if ($amount <= 0) {
     $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Donation amount must be greater than 0.");
-    header("Location: item.php");
+    header("Location: item.php?text_id=$text_id");
     exit;
 }
 
 // Charity must be at least 60%
 if ($charity_pct < 60) {
     $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Charity percentage must be at least 60%.");
-    header("Location: item.php");
+    header("Location: item.php?text_id=$text_id");
     exit;
 }
 
 // CFP and Author between 0 and 40 (to match the HTML constraints)
 if ($cfp_pct < 0 || $cfp_pct > 40 || $author_pct < 0 || $author_pct > 40) {
     $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! CFP and Author percentages must be between 0% and 40%.");
-    header("Location: item.php");
+    header("Location: item.php?text_id=$text_id");
     exit;
 }
 
@@ -61,7 +61,7 @@ $total_pct = $charity_pct + $cfp_pct + $author_pct;
 */
 if ($total_pct !== 100) {
     $_SESSION['failed_donation'] = htmlspecialchars("Failed donated to '$text_title'! Charity, Author and CFP percentages must add up to 100% (you have $total_pct%)."); 
-    header("Location: item.php");
+    header("Location: item.php?text_id=$text_id");
     exit;
 }
 
