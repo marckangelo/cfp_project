@@ -6,20 +6,7 @@ Contributor to this file:
 
 session_start();
 require 'db.php';
-?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<?php include 'header.php'; ?>
-
-<?php
 // Collect errors
 $errors = array();
 
@@ -124,6 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<?php include 'header.php'; ?>
 
 <div class="login-box">
     <h2>Login</h2>

@@ -1,7 +1,6 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
 // // Checks if user is an admin
 // if (isset($_SESSION['admin_id'])) {
@@ -56,6 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<?php include 'header.php'; ?>
 
 <h2>Admin - Add Charity</h2>
 <p>TODO: Form for adding a charity.</p>

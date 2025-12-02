@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // // Checks if user is an admin
 // if (isset($_SESSION['admin_id'])) {
@@ -11,18 +11,15 @@ include 'header.php';
 //     exit;
 // }
 
-
-
 // Process form 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Extract values from form submitted
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $purpose = mysqli_real_escape_string($conn, $_POST['purpose']);
-    $scope = mysqli_real_escape_string($conn, $_POST['scope']);
-    $formation_date = mysqli_real_escape_string($conn, $_POST['formation_date']);
-    $status = mysqli_real_escape_string($conn, $_POST['status']);
+    $name            = mysqli_real_escape_string($conn, $_POST['name']);
+    $purpose         = mysqli_real_escape_string($conn, $_POST['purpose']);
+    $scope           = mysqli_real_escape_string($conn, $_POST['scope']);
+    $formation_date  = mysqli_real_escape_string($conn, $_POST['formation_date']);
+    $status          = mysqli_real_escape_string($conn, $_POST['status']);
 
     $sql_insert = "INSERT INTO committee (
             name,
@@ -32,11 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             status,
             member_count
           ) VALUES (
-            $name,
-            $purpose,
-            $scope,
-            $formation_date,
-            $status
+            '$name',
+            '$purpose',
+            '$scope',
+            '$formation_date',
+            '$status'
         )";
 
     $result_insert = mysqli_query($conn, $sql_insert);
@@ -51,8 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-
 ?>
+
+<?php include 'header.php'; ?>
 <?php include 'footer.php'; ?>
 
 <form action="admin_committees_add.php" method="post" class="centered-form">

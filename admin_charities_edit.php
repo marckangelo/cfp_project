@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // // Checks if user is an admin
 // if (!isset($_SESSION['admin_id'])) {
@@ -64,6 +64,8 @@ $sql_select = "SELECT * FROM charity WHERE charity_id = $charity_id";
 
 // Run the SELECT query
 $result_select = mysqli_query($conn, $sql_select);
+
+include 'header.php';
 
 if (!$result_select || mysqli_num_rows($result_select) === 0) {
     echo "<p>Charity not found.</p>";
