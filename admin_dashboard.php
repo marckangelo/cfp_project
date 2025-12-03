@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // TODO: Restrict to admin users
 if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {
@@ -10,6 +10,7 @@ if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {
 }
 
 $admin_role = $_SESSION['admin_role']; // 'super', 'content', or 'financial'
+include 'header.php';
 ?>
 
 <div class="dashboard-container">

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // ========== Enforce admin with 'content' or 'super' role ==========
 if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
@@ -138,7 +138,7 @@ while ($row = mysqli_fetch_assoc($result_text)) {
 
 // Build a comma-separated keyword string
 $keyword_string = trim(implode(", ", $keywords));
-
+include 'header.php';
 ?>
 <h2>Admin - Edit Item</h2>
 <p>Edit this item. Your changes take effect immediately (no moderation step).</p>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // Restrict to admins only (adjust to your session keys if needed)
 if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {
@@ -101,7 +101,7 @@ if (!$result_member_details || mysqli_num_rows($result_member_details) == 0) {
 
 // Fetch the data
 $row = mysqli_fetch_assoc($result_member_details);
-
+include 'header.php';
 // ===================== SHOW EDIT FORM =====================
 
 echo '

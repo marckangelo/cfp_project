@@ -5,7 +5,7 @@
 
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 $errors = array();
 
@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+include 'header.php';
 ?>
 
 <h2>Admin Login</h2>

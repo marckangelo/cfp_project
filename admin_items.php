@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // ================== ENFORCING ONLY ADMINS WITH 'content' ROLE (OR 'super') ==================
 
@@ -237,6 +237,8 @@ if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
+
+include 'header.php';
 
 // ================== SHOW STATUS MESSAGES ==================
 if (isset($_SESSION['admin_item_success'])) {

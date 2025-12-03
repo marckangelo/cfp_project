@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // // Checks if user is an admin
 // if (!isset($_SESSION['admin_id'])) {
@@ -73,6 +73,7 @@ if (!$result_select || mysqli_num_rows($result_select) === 0) {
 }
 
 $committee = mysqli_fetch_assoc($result_select);
+include 'header.php';
 ?>
 
 <h2>Edit Committee</h2>
