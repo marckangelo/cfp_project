@@ -1,6 +1,13 @@
 <?php
 session_start();
 require 'db.php';
+
+// Make sure user is logged in **before** sending any output/header.php
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
 include 'header.php';
 
 echo '<div class="account-container">';
@@ -151,14 +158,6 @@ if (isset($_SESSION['member_id'])) {
 
     if (!empty($verification_matrix) && strlen($verification_matrix) == 16) {
 
-        /*
-            Example: 16-char verification_matrix string = 'AAAABBBBCCCCDDDD'
-
-                    AAAA
-                    BBBB
-                    CCCC
-                    DDDD
-        */
         $verification_matrix_2d = array();
         for ($r = 0; $r < 4; $r++) {
             $verification_matrix_2d[$r] = array();
@@ -389,6 +388,8 @@ if (isset($_SESSION['member_id'])) {
     echo '</div>';
 
 } else {
+    // This else will never execute now because of the check at the top,
+    // but we keep it to preserve your structure.
     header("Location: login.php");
     exit;
 }

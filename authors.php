@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // Checking if signed in as member **** SHOULD BE CHECKING IF SIGNED IN AS ADMIN as well****
 if (isset($_SESSION['member_id'])) {
@@ -28,6 +28,7 @@ else {
     header("Location: login.php");
     exit();
 }
+include 'header.php';
 ?>
 
 <h2 class="centered-title">Authors</h2>

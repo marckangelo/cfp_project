@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // =========== Processing form ==============
 
@@ -115,6 +115,7 @@ while ($row = mysqli_fetch_assoc($result_author_text)) {
 
 // Convert keywords to comma-separated string
 $keyword_string = trim(implode(", ", $keywords));
+include 'header.php';
 
 ?>
 <h2>Edit Item</h2>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 
 if (!isset($_SESSION['member_id'])) {
@@ -135,6 +135,7 @@ if (!$result_text || mysqli_num_rows($result_text) === 0) {
 $row_text = mysqli_fetch_assoc($result_text);
 $text_title = $row_text['title'];
 ?>
+<?php include 'header.php'; ?>
 
 <form action="comment_add.php" method="post">
 

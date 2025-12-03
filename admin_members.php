@@ -1,12 +1,13 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
 // TODO: Admin-only member management (view, change status, etc.)
 
 // Checking if signed in as member **** SHOULD BE CHECKING IF SIGNED IN AS ADMIN ****
 if (isset($_SESSION['member_id'])) {
+    include 'header.php';
+
     // DISPLAY MEMBER DETAILS
     $sql_member_details = "SELECT * 
                            FROM member";

@@ -1,13 +1,13 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
 // Only logged-in members can open a plagiarism case
 if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
+include 'header.php';
 
 $member_id = (int) $_SESSION['member_id'];
 $error_msg = "";

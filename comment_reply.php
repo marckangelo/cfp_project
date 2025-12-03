@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // Only authors can reply to comments
 if (!isset($_SESSION['orcid'])) {
@@ -196,7 +196,7 @@ if (!$result_check || mysqli_num_rows($result_check) === 0) {
     include 'footer.php';
     exit;
 }
-
+include 'header.php';
 ?>
 
 <h2>Reply to Comment</h2>

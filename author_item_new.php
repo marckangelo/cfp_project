@@ -8,7 +8,7 @@ Contributor to this file:
 
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // Run only if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -136,6 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+include 'header.php';
 ?>
 
 <h2>New Item</h2>

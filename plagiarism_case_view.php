@@ -1,13 +1,13 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
 // ================== ONLY ALLOW LOGGED-IN MEMBER ==================
 if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
+include 'header.php';
 
 // Storing the role of the current user (easier checks using these variables in if-statements)
 $member_id = (int) $_SESSION['member_id'];

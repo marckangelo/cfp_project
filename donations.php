@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // ================== ENFORCE PERMISSIONS (ADMIN OR FINANCE COMMITTEE MEMBER) ==================
 
@@ -114,6 +114,7 @@ $sql_donations = "
 ";
 
 $result_donations = mysqli_query($conn, $sql_donations);
+include 'header.php';
 ?>
 
 <h2>Donations for Charity</h2>

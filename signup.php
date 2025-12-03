@@ -6,7 +6,6 @@ Contributor to this file:
 
 session_start();
 require 'db.php';
-include 'header.php';
 
 // Array to keep error messages
 $errors = array();
@@ -184,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+include 'header.php';
 ?>
 
 <h2>Sign Up</h2>

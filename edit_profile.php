@@ -1,10 +1,8 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
-// Temporary title of this page
-echo    '<h2>Edit Profile</h2>';
+// include 'header.php';
 
 // Process the form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -53,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result_update) {
         // Also update BIO in author table if this member is an author
-        // If the member is not an author, this UPDATE won't be executed
         $sql_update_bio = "
             UPDATE author
             SET bio = '$safe_bio'
@@ -63,33 +60,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Save success message in session
         $_SESSION['profile_success'] = "Profile successfully updated!";
-        // Redirect back to my_account.php
         header("Location: my_account.php");
         exit;
     } else {
-        echo "<div style='color:red;'>Error updating profile. Try again.</div>";
+        // store error to print later
+        $update_error = "<div style='color:red;'>Error updating profile. Try again.</div>";
     }
 }
 
 // Checking if signed in
-if (isset($_SESSION['member_id'])) {
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php");
+    exit;
+}
 
-    // Load member details + author bio (if any)
-    $sql_member_details = "SELECT m.*, a.bio, a.member_id AS is_author
-                           FROM member m
-                           LEFT JOIN author a ON m.member_id = a.member_id
-                           WHERE m.member_id = " . (int)$_SESSION['member_id'];
+include 'header.php';
+echo '<h2>Edit Profile</h2>';
 
-    // Run the query
-    $result_member_details = mysqli_query($conn, $sql_member_details);
+// print error if it existed
+if (!empty($update_error)) {
+    echo $update_error;
+}
 
-    // Fetch the data
-    $row = mysqli_fetch_assoc($result_member_details);
+// Load member details + author bio (if any)
+$sql_member_details = "SELECT m.*, a.bio, a.member_id AS is_author
+                       FROM member m
+                       LEFT JOIN author a ON m.member_id = a.member_id
+                       WHERE m.member_id = " . (int)$_SESSION['member_id'];
 
-    $is_author = !empty($row['is_author']); // true if there's an author row
+$result_member_details = mysqli_query($conn, $sql_member_details);
+$row = mysqli_fetch_assoc($result_member_details);
 
-    // Form
-    echo '
+$is_author = !empty($row['is_author']); // true if there's an author row
+
+// Form
+echo '
     <div class="profile-form">
     <form method="post" action="edit_profile.php">
 
@@ -104,18 +109,17 @@ if (isset($_SESSION['member_id'])) {
                 <th>Primary Email</th>
                 <th>Recovery Email</th>';
 
-    // Only show Bio column if this member is an author
-    if ($is_author) {
-        echo '
-                <th>Bio</th>';
-    }
-
+if ($is_author) {
     echo '
+                <th>Bio</th>';
+}
+
+echo '
             </tr>
     ';
-    
-    // Table row
-    echo '
+
+// Table row
+echo '
             <tr>
                 <td>
                     <input type="text" name="name" value="' . htmlspecialchars($row['name']) . '" required>
@@ -143,31 +147,24 @@ if (isset($_SESSION['member_id'])) {
                 <td>
                     <input type="text" name="recovery_email" value="' . htmlspecialchars($row['recovery_email']) . '" required>
                 </td>';
-    
-    // Bio cell only if author
-    if ($is_author) {
-        echo '
+
+if ($is_author) {
+    echo '
                 <td>
                     <textarea name="bio" rows="4" cols="30">' . htmlspecialchars($row['bio']) . '</textarea>
                 </td>';
-    }
-
-    echo '
-            </tr>
-        ';
-    echo '</table><br>';
-
-    echo '<button type="submit">Save Changes</button> ';
-    echo '<a href="my_account.php"><button type="button">Cancel</button></a>';
-    echo '</form>';
-    
-    echo '</div>'; // close div tag
-
-} else {
-    header("Location: login.php");
-    exit;
 }
 
+echo '
+            </tr>
+        ';
+echo '</table><br>';
+
+echo '<button type="submit">Save Changes</button> ';
+echo '<a href="my_account.php"><button type="button">Cancel</button></a>';
+echo '</form>';
+
+echo '</div>'; // close div tag
 ?>
 
 <?php include 'footer.php'; ?>

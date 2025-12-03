@@ -1,13 +1,15 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // Make sure user is logged in
 if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
+
+include 'header.php';
 
 $member_id = (int) $_SESSION['member_id'];
 

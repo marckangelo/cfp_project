@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // User must be logged in as a member
 if (!isset($_SESSION['member_id'])) {
@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+include 'header.php';
 ?>
 
 <h2>Send Message</h2>

@@ -1,13 +1,13 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
 
 // ================== ONLY ALLOW LOGGED-IN MEMBER ==================
 if (!isset($_SESSION['member_id'])) {
     header("Location: login.php");
     exit;
 }
+include 'header.php';
 
 $member_id = (int) $_SESSION['member_id'];
 $is_admin  = isset($_SESSION['admin_id']); // Optional: if you later wire real admin login

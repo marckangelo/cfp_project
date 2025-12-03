@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'db.php';
-include 'header.php';
+// include 'header.php';
 
 // Make sure user is logged in
 if (!isset($_SESSION['member_id'])) {
@@ -50,6 +50,7 @@ if ($message['is_read'] == 0) {
     ";
     mysqli_query($conn, $sql_mark_read);
 }
+include 'header.php';
 ?>
 
 <h2>View Message</h2>
