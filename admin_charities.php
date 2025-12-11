@@ -30,6 +30,11 @@ if ($result_charity_details) {
         // Table header
         echo '
         <h2 class="centered-title">List of Charities</h2>
+        <div style="margin: 15px 0; text-align: center;">
+            <form method="get" action="admin_charities_add.php">
+                <button type="submit">Add New Charity</button>
+            </form>
+        </div>
 
             <table border="1">
                 <tr>
@@ -48,7 +53,7 @@ if ($result_charity_details) {
         while ($row = mysqli_fetch_assoc($result_charity_details)) {
 
             // Get this row's charity_id that is being sent through form
-            $charity_id = (int)$row['charity_id'];
+            $charity_id = (int) $row['charity_id'];
 
             echo '
                 <tr>
@@ -82,6 +87,7 @@ if ($result_charity_details) {
         echo '</table>'; // List of Charities table closer tag
     }
 }
+
 ?>
 
 <h2>Admin - Charities</h2>
