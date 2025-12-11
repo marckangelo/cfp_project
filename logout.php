@@ -5,6 +5,12 @@
 - Muhammad Adnan SHAHZAD (40282531)
 - Muhammad RAZA (40284058)
 */
+
+/*
+Contributor to this file:
+- Muhammad RAZA (40284058)
+*/
+
 // Destroy all SESSION data when logging out
 
 session_start();

@@ -1,5 +1,6 @@
 <?php
-/*
+/* Everyone Contributed to this file. (Basic DB connection):
+
 - Marck Angelo GELI (40265711)
 - Arshdeep SINGH (40286514)
 - Muhammad Adnan SHAHZAD (40282531)

@@ -8,6 +8,11 @@ require 'db.php';
 - Muhammad RAZA (40284058)
 */
 
+/*
+Contributor to this file:
+- Marck Angelo GELI (40265711)
+*/
+
 // Restrict to admins only (adjust to your session keys if needed)
 if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {
     echo "<p>You must be an admin to access this page.</p>";

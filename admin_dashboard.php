@@ -7,7 +7,12 @@ require 'db.php';
 - Muhammad Adnan SHAHZAD (40282531)
 - Muhammad RAZA (40284058)
 */
-// TODO: Restrict to admin users
+
+/*
+Contributor to this file:
+- Marck Angelo GELI (40265711)
+*/
+
 if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {
     header("Location: login.php");
     exit;

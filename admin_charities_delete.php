@@ -8,6 +8,11 @@ require 'db.php';
 - Muhammad RAZA (40284058)
 */
 
+/*
+Contributor to this file:
+- Marck Angelo GELI (40265711)
+*/
+
 // // Checks if user is an admin
 // if (!isset($_SESSION['admin_id'])) {
 //     header("Location: login.php");

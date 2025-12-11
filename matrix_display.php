@@ -8,6 +8,7 @@
 /*
 Contributor to this file:
 - Muhammad RAZA (40284058)
+- Marck Angelo Geli (40265711)
 */
 
 session_start();

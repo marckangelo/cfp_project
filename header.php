@@ -5,6 +5,13 @@
 - Muhammad Adnan SHAHZAD (40282531)
 - Muhammad RAZA (40284058)
 */
+
+/*
+Contributor to this file:
+- Marck Angelo Geli (40265711)
+*/
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

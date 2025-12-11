@@ -1,3 +1,13 @@
+-- =====================================
+-- Everyone contributed to this DB file:
+-- Marck Angelo GELI (40265711)
+-- Arshdeep SINGH (40286514)
+-- Muhammad Adnan SHAHZAD (40282531)
+-- Muhammad RAZA (40284058)
+-- =====================================
+
+
+
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/

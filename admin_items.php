@@ -8,6 +8,11 @@ require 'db.php';
 - Muhammad RAZA (40284058)
 */
 
+/*
+Contributor to this file:
+- Marck Angelo GELI (40265711)
+*/
+
 // ================== ENFORCING ONLY ADMINS WITH 'content' ROLE (OR 'super') ==================
 
 if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
