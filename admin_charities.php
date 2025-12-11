@@ -30,11 +30,7 @@ if ($result_charity_details) {
         // Table header
         echo '
         <h2 class="centered-title">List of Charities</h2>
-        <div style="margin: 15px 0; text-align: center;">
-            <form method="get" action="admin_charities_add.php">
-                <button type="submit">Add New Charity</button>
-            </form>
-        </div>
+        <a href="admin_committees_add.php" class="btn">Add Committee</a>
 
             <table border="1">
                 <tr>
