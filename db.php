@@ -1,4 +1,10 @@
 <?php
+/*
+- Marck Angelo GELI (40265711)
+- Arshdeep SINGH (40286514)
+- Muhammad Adnan SHAHZAD (40282531)
+- Muhammad RAZA (40284058)
+*/
 // Basic database connection (procedural style)
 $servername = "dvc353.encs.concordia.ca";
 $username   = "dvc353_2";

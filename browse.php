@@ -1,7 +1,14 @@
 <?php
 /*
+- Marck Angelo GELI (40265711)
+- Arshdeep SINGH (40286514)
+- Muhammad Adnan SHAHZAD (40282531)
+- Muhammad RAZA (40284058)
+
 Contributor to this file:
 - Muhammad RAZA (40284058)
+- Arshdeep SINGH (40286514)
+
 */
 
 session_start();

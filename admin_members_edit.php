@@ -1,7 +1,12 @@
 <?php
 session_start();
 require 'db.php';
-// include 'header.php';
+/*
+- Marck Angelo GELI (40265711)
+- Arshdeep SINGH (40286514)
+- Muhammad Adnan SHAHZAD (40282531)
+- Muhammad RAZA (40284058)
+*/
 
 // Restrict to admins only (adjust to your session keys if needed)
 if (empty($_SESSION['is_admin']) || empty($_SESSION['admin_role'])) {

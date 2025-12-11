@@ -1,7 +1,17 @@
 <?php
 session_start();
 require 'db.php';
-// include 'header.php';
+/*
+- Marck Angelo GELI (40265711)
+- Arshdeep SINGH (40286514)
+- Muhammad Adnan SHAHZAD (40282531)
+- Muhammad RAZA (40284058)
+*/
+
+/*
+Contributor to this file:
+- Arshdeep SINGH (40286514)
+*/
 
 // ========== Enforce admin with 'content' or 'super' role ==========
 if (empty($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
